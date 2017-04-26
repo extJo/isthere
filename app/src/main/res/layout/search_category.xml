@@ -10,56 +10,66 @@
 
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:padding="10dp"
         android:text="카테고리 검색"
-        android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="30dp"
+        android:textSize="20dp"
         />
 
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         />
 
     <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-    </Spinner>
-
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-
-    </Spinner>
-
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="2"></LinearLayout>
-
-    <Button
-        android:id="@+id/category_done"
+        android:id="@+id/category1"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/roundcorner_fullblue"
-        android:text="카테고리 확정"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:spinnerMode="dropdown">
+
+    </Spinner>
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"></LinearLayout>
+        android:layout_weight="2"/>
+
+    <Spinner
+        android:id="@+id/category2"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:spinnerMode="dropdown">
+
+
+    </Spinner>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="3.5"/>
+
+    <Button
+        android:id="@+id/category_done"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
+        android:background="@drawable/roundcorner_edge"
+        android:padding="5dp"
+        android:text="카테고리 확정"
+        android:textColor="@color/black"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 </LinearLayout>
