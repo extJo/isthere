@@ -16,56 +16,56 @@ import java.util.List;
  */
 
 public class SearchCategory extends AppCompatActivity {
-  private Spinner category1, category2;
-  private Button btnSubmit;
+    private Spinner category1, category2;
+    private Button btnSubmit;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.search_category);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.search_category);
 
-    Button btn_done = (Button) findViewById(R.id.category_done);
+        Button btn_done = (Button) findViewById(R.id.category_done);
 
-    btn_done.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        Intent intent = new Intent(SearchCategory.this, ReviewMain.class);
-        startActivity(intent);
-        finish();
-      }
-    });
+        btn_done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SearchCategory.this, ReviewMain.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 //
 //    addItemsOncategory2();
 //    addListenerOnButton();
 //    addListenerOnSpinnerItemSelection();
-  }
+    }
 
-  // add items into spinner dynamically
-  public void addItemsOncategory2() {
+    // add items into spinner dynamically
+    public void addItemsOncategory2() {
 
-    category2 = (Spinner) findViewById(R.id.category2);
-    List<String> list = new ArrayList<String>();
-    list.add("list 1");
-    list.add("list 2");
-    list.add("list 3");
-    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-        android.R.layout.simple_spinner_item, list);
-    dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-    category2.setAdapter(dataAdapter);
-  }
+        category2 = (Spinner) findViewById(R.id.category2);
+        List<String> list = new ArrayList<String>();
+        list.add("list 1");
+        list.add("list 2");
+        list.add("list 3");
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+            android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category2.setAdapter(dataAdapter);
+    }
 
-  public void addListenerOnSpinnerItemSelection() {
-    category1 = (Spinner) findViewById(R.id.category1);
-    category1.setOnItemSelectedListener(new CustomOnItemSelectedListener());
-  }
+    public void addListenerOnSpinnerItemSelection() {
+        category1 = (Spinner) findViewById(R.id.category1);
+        category1.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+    }
 
-  // get the selected dropdown list value
-  public void addListenerOnButton() {
+    // get the selected dropdown list value
+    public void addListenerOnButton() {
 
-    category1 = (Spinner) findViewById(R.id.category1);
-    category2 = (Spinner) findViewById(R.id.category2);
+        category1 = (Spinner) findViewById(R.id.category1);
+        category2 = (Spinner) findViewById(R.id.category2);
 
-  }
+    }
 
 
 }

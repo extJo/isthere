@@ -1,129 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:weightSum="10">
 
+    <include layout="@layout/toolbar"/>
+
     <RelativeLayout
-        android:id="@+id/review_title"
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
-        android:visibility="visible"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
-            android:text="리뷰 뿅뿅"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20dp"/>
+        android:layout_height="match_parent">
 
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/map_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="50dp">
-    </RelativeLayout>
-
-    <com.getbase.floatingactionbutton.FloatingActionsMenu
-        android:id="@+id/multiple_actions_down"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/review_title"
-        app:fab_addButtonColorNormal="@color/colorPrimary"
-        app:fab_addButtonColorPressed="@color/colorPrimary"
-        app:fab_addButtonSize="normal"
-        app:fab_expandDirection="down"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp">
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_size="mini"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/white_pressed"
-            fab:fab_title="Click to remove"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button_gone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_colorPressed="@color/white_pressed"/>
-
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/action_enable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/white"
-            fab:fab_title="Set bottom menu enabled/disabled"
-            fab:fab_colorPressed="@color/white_pressed"/>
-
-
-    </com.getbase.floatingactionbutton.FloatingActionsMenu>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
-        android:background="@drawable/roundcorner_edge"
-        >
-
-        <ImageView
-            android:id="@+id/review_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_margin="20dp"
-            android:background="@drawable/roundcorner_fullblue"
-            android:padding="10dp"
-            android:src="@drawable/ic_gps"/>
-
-        <TextView
-            android:id="@+id/review_name"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_alignTop="@+id/review_image"
-            android:layout_marginBottom="5dp"
-            android:layout_toRightOf="@+id/review_image"
-            android:text="부산대 정문 스타벅스"
-            android:textColor="@color/black"
-            android:textSize="16dp"/>
-
-        <TextView
-            android:id="@+id/review_review"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:layout_below="@+id/review_name"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/review_image"
-            android:text="스타벅스 짱"
-            android:textColor="@color/black"
-            android:textSize="12dp"/>
-
-    </RelativeLayout>
-
 
 </RelativeLayout>
