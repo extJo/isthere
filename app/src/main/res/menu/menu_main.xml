@@ -6,6 +6,5 @@
         android:title="context_menu"
         android:icon="@drawable/ic_menu"
         android:orderInCategory="100"
-        app:showAsAction="always" />
-
+        app:showAsAction="always"/>
 </menu>

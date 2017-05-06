@@ -1,6 +1,5 @@
 package com.apptive.joDuo.isthere;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -46,10 +44,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         addFragment(new MainFragment(), true, R.id.container);
     }
 
-
     // TODO status bar 흰색으로 변하는거 고치기
-    // TODO 맵이 첫번쨰 fragment view 일 때 뒤로가기를 누르면 앱이 종료되는 대신 맵이 사라짐
-
 
     /* menu button lib method */
 
@@ -169,5 +164,13 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
+            mMenuDialogFragment.dismiss();
+        } else {
+            finish();
+        }
+    }
 
 }

@@ -111,9 +111,9 @@
                 android:id="@+id/save_id_check"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:buttonTint="@color/colorPrimaryDark"
+                android:buttonTint="@color/white"
                 android:text="아이디 저장"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/white"
                 android:textSize="15dp"/>
 
         </LinearLayout>
@@ -131,9 +131,9 @@
                 android:id="@+id/auto_login_check"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:buttonTint="@color/colorPrimaryDark"
+                android:buttonTint="@color/white"
                 android:text="자동 로그인"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/white"
                 android:textSize="15dp"/>
 
         </LinearLayout>
@@ -149,7 +149,7 @@
         android:layout_weight="0.7"
         android:background="@drawable/roundcorner_fullblue"
         android:text="비회원 입장"
-        android:textColor="@color/colorPrimaryDark"/>
+        android:textColor="@color/white"/>
 
     <Button
         android:id="@+id/member_button"

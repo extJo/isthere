@@ -17,7 +17,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="카테고리 검색"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/white"
         android:textSize="20dp"
         />
 
