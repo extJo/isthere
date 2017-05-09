@@ -28,7 +28,6 @@ import java.util.List;
 
 public class ReviewMain extends AppCompatActivity implements OnMenuItemClickListener, OnMenuItemLongClickListener {
 
-    //  MapPoint pnu;
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
 
@@ -43,8 +42,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         initMenuFragment();
         addFragment(new MainFragment(), true, R.id.container);
     }
-
-    // TODO status bar 흰색으로 변하는거 고치기
 
     /* menu button lib method */
 

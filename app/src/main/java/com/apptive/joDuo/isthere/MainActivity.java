@@ -2,64 +2,38 @@ package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
+
+import com.github.florent37.viewanimator.ViewAnimator;
 
 public class MainActivity extends AppCompatActivity {
+
+    ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-    /* 로그인 창 애니매이션 구현 */
-//    LinearLayout login_layout = (LinearLayout) findViewById(R.id.login_layout);
-//    login_layout.setLayoutParams(new LinearLayout.LayoutParams(200, 0, 0));
-//
-//
-//    Timer T = new Timer();
-//    T.scheduleAtFixedRate(new TimerTask() {
-//      @Override
-//      public void run() {
-//        runOnUiThread(new Runnable()
-//        {
-//          int layoutWeight = 0;
-//          @Override
-//          public void run()
-//          {
-//
-//            layoutWeight++;
-//            LinearLayout login_layout = (LinearLayout) findViewById(R.id.login_layout);
-//            login_layout.setLayoutParams(new LinearLayout.LayoutParams(200, 0, layoutWeight));
-//            login_layout.setAlpha(layoutWeight);
-//          }
-//        });
-//      }
-//    }, 5000, 5000);
+        // animation 설정
+        logo = (ImageView) findViewById(R.id.logo);
+        final ViewAnimator viewAnimator = ViewAnimator.animate(logo)
+            .dp().translationY(-300, 0)
+            .alpha(0, 1)
+            .start();
 
-        Button nonMember = (Button) findViewById(R.id.non_member_button);
-        Button Member = (Button) findViewById(R.id.member_button);
-
-        // 비회원 입장
-        nonMember.setOnClickListener(new View.OnClickListener() {
+        // 일정시간 이후에 자동으로 화면 전환 및 애니메이션 중지
+        Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View view) {
+            public void run() {
+                viewAnimator.cancel();
                 Intent intent = new Intent(MainActivity.this, SearchCategory.class);
                 startActivity(intent);
                 finish();
             }
-        });
-
-        // 회원 입장
-        Member.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SearchCategory.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
+        }, 3000); // 4000ms
     }
 }
