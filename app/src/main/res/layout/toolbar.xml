@@ -6,15 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:minHeight="?attr/actionBarSize"
-    android:background="@color/colorPrimary">
+    android:background="@drawable/bottom_blue">
 
     <TextView
         android:id="@+id/text_view_toolbar_title"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textColor="@color/white"
+        android:textColor="@color/colorPrimary"
         android:textSize="@dimen/tool_bar_text_size"
+        android:textStyle="bold"
         android:gravity="center" />
 
 </android.support.v7.widget.Toolbar>

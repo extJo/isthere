@@ -9,9 +9,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -23,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by joseong-yun on 2017. 4. 24..
+ * Created by joseong-yun on 2017. 5. 15..
  */
 
-public class SearchCategory extends AppCompatActivity implements OnMenuItemClickListener {
+public class LikeReview extends AppCompatActivity implements OnMenuItemClickListener {
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
@@ -35,10 +32,7 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.review_main);
-
-
-
+        setContentView(R.layout.like_review);
 
 
 
@@ -46,7 +40,6 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
-
 
     }
 
@@ -71,7 +64,7 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        mToolBarTextView.setText("거가 거가");
+        mToolBarTextView.setText("좋아한 리뷰");
     }
 
 //    protected void addFragment(Fragment fragment, boolean addToBackStack, int containerId) {
@@ -91,7 +84,28 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        //
+        switch (position){
+            case 1:
+                Intent intent2 = new Intent(LikeReview.this, ReviewMain.class);
+                startActivity(intent2);
+                finish();
+                break;
+            case 2:
+                break;
+            case 3:
+                Intent intent1 = new Intent(LikeReview.this, MakeReview.class);
+                startActivity(intent1);
+                finish();
+                break;
+            case 4:
+                break;
+            case 5:
+                Intent intent3 = new Intent(LikeReview.this, Setting.class);
+                startActivity(intent3);
+                break;
+            default:
+                break;
+        }
     }
 
     public List<MenuObject> getMenuObjects() {

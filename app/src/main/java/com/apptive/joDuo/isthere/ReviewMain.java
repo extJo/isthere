@@ -1,22 +1,28 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
-import com.yalantis.contextmenu.lib.interfaces.OnMenuItemLongClickListener;
+
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapLayout;
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
+import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +32,18 @@ import java.util.List;
  * Created by joseong-yun on 2017. 4. 25..
  */
 
-public class ReviewMain extends AppCompatActivity implements OnMenuItemClickListener, OnMenuItemLongClickListener {
+public class ReviewMain extends AppCompatActivity implements OnMenuItemClickListener, MapView.MapViewEventListener, MapView.POIItemEventListener {
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
+
+    MapPoint pnu;
+    MapView mapView;
+
+    private static final MapPoint CUSTOM_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.537229, 127.005515);
+    private static final MapPoint DEFAULT_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.4020737, 127.1086766);
+    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952,126.97794509999994);
 
 
     @Override
@@ -37,11 +51,113 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_main);
 
+
+        /* daum map api 부분 */
+
+        pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
+
+
+        mapView = (MapView) findViewById(R.id.map_view);
+        mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
+        mapView.setMapViewEventListener(this);
+        mapView.setPOIItemEventListener(this);
+
+
+
+
+
+        /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
-        addFragment(new MainFragment(), true, R.id.container);
+
+
     }
+
+    private void showAll() {
+        int padding = 20;
+        float minZoomLevel = 7;
+        float maxZoomLevel = 10;
+        MapPointBounds bounds = new MapPointBounds(CUSTOM_MARKER_POINT, DEFAULT_MARKER_POINT);
+        mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(bounds, padding, minZoomLevel, maxZoomLevel));
+    }
+
+
+    // 맵이 초기화 된 이후에 마커가 지도에 떠야 오류가 나지 않음
+    public void onMapViewInitialized(MapView mapView) {
+        // 커스텀 마커 추가
+        MapPOIItem customMarker = new MapPOIItem();
+        customMarker.setItemName("Custom Marker");
+        customMarker.setTag(0);
+        customMarker.setMapPoint(Soeul_city_hall);
+        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
+        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+        mapView.addPOIItem(customMarker);
+        showAll();
+    }
+
+    @Override
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+
+    }
+
+    @Override
+    public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
 
     /* menu button lib method */
 
@@ -52,7 +168,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         menuParams.setClosableOutside(true);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
         mMenuDialogFragment.setItemClickListener(this);
-        mMenuDialogFragment.setItemLongClickListener(this);
     }
 
     private void initToolbar() {
@@ -65,39 +180,46 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-//        mToolbar.setNavigationIcon(R.drawable.);
-//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onBackPressed();
-//            }
-//        });
-
-        mToolBarTextView.setText("거가 거가");
+        mToolBarTextView.setText("리뷰 보기");
     }
 
-    protected void addFragment(Fragment fragment, boolean addToBackStack, int containerId) {
-        invalidateOptionsMenu();
-        String backStackName = fragment.getClass().getName();
-        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
-        if (!fragmentPopped) {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(containerId, fragment, backStackName)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            if (addToBackStack)
-                transaction.addToBackStack(backStackName);
-            transaction.commit();
-        }
-    }
+//    protected void addFragment(Fragment fragment, boolean addToBackStack, int containerId) {
+//        invalidateOptionsMenu();
+//        String backStackName = fragment.getClass().getName();
+//        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
+//        if (!fragmentPopped) {
+//            FragmentTransaction transaction = fragmentManager.beginTransaction();
+//            transaction.add(containerId, fragment, backStackName)
+//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+//            if (addToBackStack)
+//                transaction.addToBackStack(backStackName);
+//            transaction.commit();
+//        }
+//    }
+
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        //
-    }
-
-    @Override
-    public void onMenuItemLongClick(View clickedView, int position) {
-        //
+        switch (position){
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                Intent intent1 = new Intent(ReviewMain.this, MakeReview.class);
+                startActivity(intent1);
+                break;
+            case 4:
+                Intent intent2 = new Intent(ReviewMain.this, LikeReview.class);
+                startActivity(intent2);
+                break;
+            case 5:
+                Intent intent3 = new Intent(ReviewMain.this, Setting.class);
+                startActivity(intent3);
+                break;
+            default:
+                break;
+        }
     }
 
     public List<MenuObject> getMenuObjects() {
@@ -122,8 +244,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         MenuObject close = new MenuObject();
         close.setResource(R.drawable.ic_left_arrow);
 
-        MenuObject findReview = new MenuObject("리뷰 찾기");
-        findReview.setResource(R.drawable.ic_search);
+        MenuObject showReview = new MenuObject("리뷰 보기");
+        showReview.setResource(R.drawable.ic_consulting_message);
+
+        MenuObject searchCategory = new MenuObject("카테고리 검색");
+        searchCategory.setResource(R.drawable.ic_search);
 
         MenuObject makeReview = new MenuObject("리뷰 작성");
         makeReview.setResource(R.drawable.ic_new_file);
@@ -135,7 +260,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         setting.setResource(R.drawable.ic_settings);
 
         menuObjects.add(close);
-        menuObjects.add(findReview);
+        menuObjects.add(showReview);
+        menuObjects.add(searchCategory);
         menuObjects.add(makeReview);
         menuObjects.add(likeReview);
         menuObjects.add(setting);
@@ -166,8 +292,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
             mMenuDialogFragment.dismiss();
         } else {
-            finish();
+            backPressCloseHandler.onBackPressed();
         }
     }
+
 
 }

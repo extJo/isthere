@@ -7,7 +7,8 @@
     <color name="black">#000000</color>
     <!--  hh -->
     <color name="black_semi_transparent">#B2000000</color>
-    <color name="half_black">#808080</color>
+    <color name="half_black">#8f8f8f</color>
+    <color name="gray_cus">#bababa</color>
     <color name="white">#fafafa</color>
     <color name="pink">#e91e63</color>
     <color name="pink_pressed">#ec407a</color>

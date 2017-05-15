@@ -2,16 +2,61 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:layout_height="match_parent">
 
     <include layout="@layout/toolbar"/>
 
     <RelativeLayout
-        android:id="@+id/container"
+        android:id="@+id/map_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="?attr/actionBarSize">
+        <net.daum.mf.map.api.MapView
+            android:id="@+id/map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/review_dsc"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/roundcorner_edge">
+
+        <ImageView
+            android:id="@+id/review_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="20dp"
+            android:background="@drawable/roundcorner_fullblue"
+            android:padding="10dp"
+            android:src="@drawable/ic_gps"/>
+
+        <TextView
+            android:id="@+id/review_name"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignTop="@+id/review_image"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/review_image"
+            android:text="부산대 정문 스타벅스"
+            android:textColor="@color/black"
+            android:textSize="16dp"/>
+
+        <TextView
+            android:id="@+id/review_review"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_below="@+id/review_name"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/review_image"
+            android:text="스타벅스 짱"
+            android:textColor="@color/black"
+            android:textSize="12dp"/>
 
     </RelativeLayout>
 

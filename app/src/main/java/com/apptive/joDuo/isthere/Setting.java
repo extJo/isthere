@@ -9,9 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -23,10 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by joseong-yun on 2017. 4. 24..
+ * Created by joseong-yun on 2017. 5. 15..
  */
 
-public class SearchCategory extends AppCompatActivity implements OnMenuItemClickListener {
+public class Setting extends AppCompatActivity implements OnMenuItemClickListener {
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
@@ -35,7 +33,7 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.review_main);
+        setContentView(R.layout.setting);
 
 
 
@@ -46,7 +44,6 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
-
 
     }
 
@@ -91,7 +88,29 @@ public class SearchCategory extends AppCompatActivity implements OnMenuItemClick
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        //
+        switch (position){
+            case 1:
+                Intent intent2 = new Intent(Setting.this, ReviewMain.class);
+                startActivity(intent2);
+                finish();
+                break;
+            case 2:
+                break;
+            case 3:
+                Intent intent1 = new Intent(Setting.this, MakeReview.class);
+                startActivity(intent1);
+                finish();
+                break;
+            case 4:
+                Intent intent3 = new Intent(Setting.this, LikeReview.class);
+                startActivity(intent3);
+                finish();
+                break;
+            case 5:
+                break;
+            default:
+                break;
+        }
     }
 
     public List<MenuObject> getMenuObjects() {
