@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
@@ -16,6 +17,6 @@
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/tool_bar_text_size"
         android:textStyle="bold"
-        android:gravity="center" />
+        android:gravity="center_vertical"/>
 
 </android.support.v7.widget.Toolbar>

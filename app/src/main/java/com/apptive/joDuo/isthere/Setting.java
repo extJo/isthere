@@ -1,6 +1,7 @@
 package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,25 +10,26 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
-import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
-import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by joseong-yun on 2017. 5. 15..
  */
 
-public class Setting extends AppCompatActivity implements OnMenuItemClickListener {
+public class Setting extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private SearchCategory category;
+
+    TextView Login;
+    TextView Individual;
+    TextView Clause;
+    TextView Error;
+    TextView Version;
 
 
     @Override
@@ -35,9 +37,37 @@ public class Setting extends AppCompatActivity implements OnMenuItemClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setting);
 
+        Login = (TextView) findViewById(R.id.login);
+        Individual = (TextView) findViewById(R.id.individual);
+        Clause = (TextView) findViewById(R.id.clause);
+        Error = (TextView) findViewById(R.id.errorCall);
+        Version = (TextView) findViewById(R.id.version);
 
 
+        // Login dialog
 
+
+        // 개인정보 처리방침
+
+
+        // 이용약관
+
+
+        // Error feedback
+        Error.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("market://details?id=" + getPackageName()));
+                startActivity(intent);
+            }
+        });
+
+        // show version
+        String versionName = "v." + BuildConfig.VERSION_NAME;
+        Version.setText(versionName);
+
+        // 제작자 정보
 
 
         /* menu button lib */
@@ -52,10 +82,8 @@ public class Setting extends AppCompatActivity implements OnMenuItemClickListene
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
         menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
-        menuParams.setMenuObjects(getMenuObjects());
         menuParams.setClosableOutside(true);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
-        mMenuDialogFragment.setItemClickListener(this);
     }
 
     private void initToolbar() {
@@ -71,110 +99,17 @@ public class Setting extends AppCompatActivity implements OnMenuItemClickListene
         mToolBarTextView.setText("거가 거가");
     }
 
-//    protected void addFragment(Fragment fragment, boolean addToBackStack, int containerId) {
-//        invalidateOptionsMenu();
-//        String backStackName = fragment.getClass().getName();
-//        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
-//        if (!fragmentPopped) {
-//            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            transaction.add(containerId, fragment, backStackName)
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//            if (addToBackStack)
-//                transaction.addToBackStack(backStackName);
-//            transaction.commit();
-//        }
-//    }
-
-
-    @Override
-    public void onMenuItemClick(View clickedView, int position) {
-        switch (position){
-            case 1:
-                Intent intent2 = new Intent(Setting.this, ReviewMain.class);
-                startActivity(intent2);
-                finish();
-                break;
-            case 2:
-                break;
-            case 3:
-                Intent intent1 = new Intent(Setting.this, MakeReview.class);
-                startActivity(intent1);
-                finish();
-                break;
-            case 4:
-                Intent intent3 = new Intent(Setting.this, LikeReview.class);
-                startActivity(intent3);
-                finish();
-                break;
-            case 5:
-                break;
-            default:
-                break;
-        }
-    }
-
-    public List<MenuObject> getMenuObjects() {
-        // You can use any [resource, bitmap, drawable, color] as image:
-        // item.setResource(...)
-        // item.setBitmap(...)
-        // item.setDrawable(...)
-        // item.setColor(...)
-        // You can set image ScaleType:
-        // item.setScaleType(ScaleType.FIT_XY)
-        // You can use any [resource, drawable, color] as background:
-        // item.setBgResource(...)
-        // item.setBgDrawable(...)
-        // item.setBgColor(...)
-        // You can use any [color] as text color:
-        // item.setTextColor(...)
-        // You can set any [color] as divider color:
-        // item.setDividerColor(...)
-
-        List<MenuObject> menuObjects = new ArrayList<>();
-
-        MenuObject close = new MenuObject();
-        close.setResource(R.drawable.ic_left_arrow);
-
-        MenuObject showReview = new MenuObject("리뷰 보기");
-        showReview.setResource(R.drawable.ic_consulting_message);
-
-        MenuObject searchCategory = new MenuObject("카테고리 검색");
-        searchCategory.setResource(R.drawable.ic_search);
-
-        MenuObject makeReview = new MenuObject("리뷰 작성");
-        makeReview.setResource(R.drawable.ic_new_file);
-
-        MenuObject likeReview = new MenuObject("좋아한 리뷰");
-        likeReview.setResource(R.drawable.ic_like);
-
-        MenuObject setting = new MenuObject("설정");
-        setting.setResource(R.drawable.ic_settings);
-
-        menuObjects.add(close);
-        menuObjects.add(showReview);
-        menuObjects.add(searchCategory);
-        menuObjects.add(makeReview);
-        menuObjects.add(likeReview);
-        menuObjects.add(setting);
-        return menuObjects;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_setting, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu:
-                if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-                    mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
-                }
-                break;
-        }
+        finish();
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -186,4 +121,19 @@ public class Setting extends AppCompatActivity implements OnMenuItemClickListene
             finish();
         }
     }
+
+    // dialog event listener
+
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
+    private View.OnClickListener rightListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
 }

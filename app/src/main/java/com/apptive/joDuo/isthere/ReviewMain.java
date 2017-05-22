@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
+    private SearchCategory category;
 
     MapPoint pnu;
     MapView mapView;
@@ -70,9 +72,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
-
-
     }
+
+    /* map 관련 method */
 
     private void showAll() {
         int padding = 20;
@@ -139,13 +141,15 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
 
     @Override
-    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {;
 
     }
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+        ViewGroup reviewD = (ViewGroup) findViewById(R.id.review_dsc);
 
+        reviewD.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -204,6 +208,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             case 1:
                 break;
             case 2:
+                category = new SearchCategory(this, leftListener, rightListener);
+                category.show();
                 break;
             case 3:
                 Intent intent1 = new Intent(ReviewMain.this, MakeReview.class);
@@ -275,6 +281,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         return true;
     }
 
+
+    // map의 custom balloon 과 context menu가 혼합되서 사용된다
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -296,5 +304,19 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         }
     }
 
+
+    // dialog event listener
+
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
+    private View.OnClickListener rightListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
 
 }

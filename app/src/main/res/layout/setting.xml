@@ -22,18 +22,16 @@
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginTop="25dp"
-        android:orientation="vertical"
-        android:weightSum="10">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_height="60dp"/>
 
         <TextView
+            android:id="@+id/login"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="로그인 정보"
             android:textAlignment="textStart"
@@ -44,22 +42,9 @@
             />
 
         <TextView
+            android:id="@+id/individual"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingLeft="15dp"
-            android:text="공지 사항"
-            android:textAlignment="textStart"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20dp"
-            android:background="@drawable/bottom_border"
-            android:gravity="center_vertical"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="개인정보 처리방침"
             android:textAlignment="textStart"
@@ -70,9 +55,9 @@
             />
 
         <TextView
+            android:id="@+id/clause"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="이용약관"
             android:textAlignment="textStart"
@@ -83,9 +68,9 @@
             />
 
         <TextView
+            android:id="@+id/errorCall"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="오류 신고"
             android:textAlignment="textStart"
@@ -95,10 +80,10 @@
             android:gravity="center_vertical"
             />
 
-        <TextView
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="버전 정보"
             android:textAlignment="textStart"
@@ -106,12 +91,38 @@
             android:textSize="20dp"
             android:background="@drawable/bottom_border"
             android:gravity="center_vertical"
-            />
+            android:weightSum="2"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.2"
+                android:text="버전 정보"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:gravity="bottom"
+                />
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.8"
+                android:text="버전"
+                android:textAlignment="textStart"
+                android:textColor="@color/gray_cus"
+                android:textSize="15dp"
+                android:gravity="center_vertical"
+                />
+
+        </LinearLayout>
 
         <TextView
+            android:id="@+id/info"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="60dp"
             android:paddingLeft="15dp"
             android:text="제작자 정보"
             android:textAlignment="textStart"

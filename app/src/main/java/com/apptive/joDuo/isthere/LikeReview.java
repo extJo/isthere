@@ -27,6 +27,8 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private SearchCategory category;
+
 
 
     @Override
@@ -86,11 +88,10 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     public void onMenuItemClick(View clickedView, int position) {
         switch (position){
             case 1:
-                Intent intent2 = new Intent(LikeReview.this, ReviewMain.class);
-                startActivity(intent2);
-                finish();
                 break;
             case 2:
+                category = new SearchCategory(this, leftListener, rightListener);
+                category.show();
                 break;
             case 3:
                 Intent intent1 = new Intent(LikeReview.this, MakeReview.class);
@@ -104,6 +105,7 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
                 startActivity(intent3);
                 break;
             default:
+                finish();
                 break;
         }
     }
@@ -181,4 +183,18 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
             finish();
         }
     }
+
+    // dialog event listener
+
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
+    private View.OnClickListener rightListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
 }

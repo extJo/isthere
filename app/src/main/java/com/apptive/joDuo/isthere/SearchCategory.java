@@ -1,170 +1,76 @@
 package com.apptive.joDuo.isthere;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
-import com.yalantis.contextmenu.lib.MenuObject;
-import com.yalantis.contextmenu.lib.MenuParams;
-import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 /**
- * Created by joseong-yun on 2017. 4. 24..
+ * Created by joseong-yun on 2017. 5. 22..
  */
 
-public class SearchCategory extends AppCompatActivity implements OnMenuItemClickListener {
+public class SearchCategory extends Dialog {
+    private TextView textView;
+    private MaterialSpinner firstSpinner;
+    private MaterialSpinner secondSpinner;
+    private Button mLeftButton;
+    private Button mRightButton;
 
-    private FragmentManager fragmentManager;
-    private ContextMenuDialogFragment mMenuDialogFragment;
 
+    private static final String[] Category1 = {"식당", "카페", "술집", "자취방", "뷰티 및 건강"};
+    private static final String[] Category2 = {"식당", "카페", "술집", "자취방", "뷰티 및 건강"};
+
+
+    private View.OnClickListener mLeftClickListener;
+    private View.OnClickListener mRightClickListener;
+
+    // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
+    public SearchCategory(Context context, View.OnClickListener leftListener, View.OnClickListener rightListener) {
+        super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        this.mLeftClickListener = leftListener;
+        this.mRightClickListener = rightListener;
+    }
+
+    public SearchCategory() {
+        super(null);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.review_main);
 
+        // 다이얼로그 외부 화면 흐리게 표현
+        WindowManager.LayoutParams lpWindow = new WindowManager.LayoutParams();
+        lpWindow.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        lpWindow.dimAmount = 0.8f;
+        getWindow().setAttributes(lpWindow);
 
+        setContentView(R.layout.search_category);
 
+        textView = (TextView) findViewById(R.id.category_text);
+        firstSpinner = (MaterialSpinner) findViewById(R.id.firstSpinner);
+        secondSpinner = (MaterialSpinner) findViewById(R.id.secondSpinner);
+        mLeftButton = (Button) findViewById(R.id.okButton);
+        mRightButton = (Button) findViewById(R.id.noButton);
 
+        // 스피너 아이템 설정
+        firstSpinner.setItems(Category1);
+        secondSpinner.setItems(Category2);
 
-
-        /* menu button lib */
-        fragmentManager = getSupportFragmentManager();
-        initToolbar();
-        initMenuFragment();
-
-
-    }
-
-    /* menu button lib method */
-
-    private void initMenuFragment() {
-        MenuParams menuParams = new MenuParams();
-        menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
-        menuParams.setMenuObjects(getMenuObjects());
-        menuParams.setClosableOutside(true);
-        mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
-        mMenuDialogFragment.setItemClickListener(this);
-    }
-
-    private void initToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        TextView mToolBarTextView = (TextView) findViewById(R.id.text_view_toolbar_title);
-        setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(false);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
-
-        mToolBarTextView.setText("거가 거가");
-    }
-
-//    protected void addFragment(Fragment fragment, boolean addToBackStack, int containerId) {
-//        invalidateOptionsMenu();
-//        String backStackName = fragment.getClass().getName();
-//        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStackName, 0);
-//        if (!fragmentPopped) {
-//            FragmentTransaction transaction = fragmentManager.beginTransaction();
-//            transaction.add(containerId, fragment, backStackName)
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//            if (addToBackStack)
-//                transaction.addToBackStack(backStackName);
-//            transaction.commit();
-//        }
-//    }
-
-
-    @Override
-    public void onMenuItemClick(View clickedView, int position) {
-        //
-    }
-
-    public List<MenuObject> getMenuObjects() {
-        // You can use any [resource, bitmap, drawable, color] as image:
-        // item.setResource(...)
-        // item.setBitmap(...)
-        // item.setDrawable(...)
-        // item.setColor(...)
-        // You can set image ScaleType:
-        // item.setScaleType(ScaleType.FIT_XY)
-        // You can use any [resource, drawable, color] as background:
-        // item.setBgResource(...)
-        // item.setBgDrawable(...)
-        // item.setBgColor(...)
-        // You can use any [color] as text color:
-        // item.setTextColor(...)
-        // You can set any [color] as divider color:
-        // item.setDividerColor(...)
-
-        List<MenuObject> menuObjects = new ArrayList<>();
-
-        MenuObject close = new MenuObject();
-        close.setResource(R.drawable.ic_left_arrow);
-
-        MenuObject showReview = new MenuObject("리뷰 보기");
-        showReview.setResource(R.drawable.ic_consulting_message);
-
-        MenuObject searchCategory = new MenuObject("카테고리 검색");
-        searchCategory.setResource(R.drawable.ic_search);
-
-        MenuObject makeReview = new MenuObject("리뷰 작성");
-        makeReview.setResource(R.drawable.ic_new_file);
-
-        MenuObject likeReview = new MenuObject("좋아한 리뷰");
-        likeReview.setResource(R.drawable.ic_like);
-
-        MenuObject setting = new MenuObject("설정");
-        setting.setResource(R.drawable.ic_settings);
-
-        menuObjects.add(close);
-        menuObjects.add(showReview);
-        menuObjects.add(searchCategory);
-        menuObjects.add(makeReview);
-        menuObjects.add(likeReview);
-        menuObjects.add(setting);
-        return menuObjects;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(final Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu:
-                if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-                    mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
-                }
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mMenuDialogFragment != null && mMenuDialogFragment.isAdded()) {
-            mMenuDialogFragment.dismiss();
+        // 클릭 이벤트 셋팅
+        if (mLeftClickListener != null && mRightClickListener != null) {
+            mLeftButton.setOnClickListener(mLeftClickListener);
+            mRightButton.setOnClickListener(mRightClickListener);
+        } else if (mLeftClickListener != null
+            && mRightClickListener == null) {
+            mLeftButton.setOnClickListener(mLeftClickListener);
         } else {
-            finish();
+
         }
     }
 }

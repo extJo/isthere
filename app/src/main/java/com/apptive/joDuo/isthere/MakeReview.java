@@ -27,6 +27,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private SearchCategory category;
 
 
     @Override
@@ -90,11 +91,10 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         switch (position){
             case 1:
-                Intent intent2 = new Intent(MakeReview.this, ReviewMain.class);
-                startActivity(intent2);
-                finish();
                 break;
             case 2:
+                category = new SearchCategory(this, leftListener, rightListener);
+                category.show();
                 break;
             case 3:
                 break;
@@ -108,6 +108,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 startActivity(intent3);
                 break;
             default:
+                finish();
                 break;
         }
     }
@@ -185,4 +186,19 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             finish();
         }
     }
+
+    // dialog event listener
+
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
+    private View.OnClickListener rightListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            category.dismiss();
+        }
+    };
+
 }
