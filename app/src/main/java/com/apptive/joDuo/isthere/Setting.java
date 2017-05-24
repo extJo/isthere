@@ -23,7 +23,7 @@ public class Setting extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
-    private SearchCategory category;
+    private LoginPage loginPage;
 
     TextView Login;
     TextView Individual;
@@ -44,8 +44,14 @@ public class Setting extends AppCompatActivity {
         Version = (TextView) findViewById(R.id.version);
 
 
-        // Login dialog
-
+        // Login
+        loginPage = new LoginPage(this, loginClickListener);
+        Login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginPage.show();
+            }
+        });
 
         // 개인정보 처리방침
 
@@ -122,18 +128,14 @@ public class Setting extends AppCompatActivity {
         }
     }
 
-    // dialog event listener
-
-    private View.OnClickListener leftListener = new View.OnClickListener() {
+    private View.OnClickListener loginClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            category.dismiss();
+            // 콜백으로 로그인 확인 방법 작성
+
+            loginPage.dismiss();
         }
     };
 
-    private View.OnClickListener rightListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            category.dismiss();
-        }
-    };
+
 
 }
