@@ -91,6 +91,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         switch (position){
             case 1:
+                finish();
                 break;
             case 2:
                 category = new SearchCategory(this, leftListener, rightListener);

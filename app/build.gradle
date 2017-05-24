@@ -43,6 +43,7 @@ dependencies {
     compile 'com.github.florent37:viewanimator:1.0.5'
     compile 'com.jaredrummler:animated-svg-view:1.0.4'
     compile 'com.jaredrummler:material-spinner:1.1.0'
+    compile 'com.github.lguipeng:AnimCheckBox:1.0.1'
 
     testCompile 'junit:junit:4.12'
 }

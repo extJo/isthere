@@ -1,154 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/background"
-    android:orientation="vertical"
-    android:weightSum="10">
+    android:layout_height="match_parent">
+
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <ImageView
-        android:layout_width="220dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="2"
-        android:padding="10dp"
-        android:src="@drawable/ic_logo"
-        />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <LinearLayout
-        android:id="@+id/login_layout"
+        android:id="@+id/login_page"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="3"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:weightSum="3">
-        <!--android:alpha="0"-->
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:background="@color/background"
+        android:orientation="vertical">
 
+        <Button
+            android:id="@+id/login_dismiss_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="10dp"
+            android:layout_gravity="right"
+            android:background="@drawable/ic_close"
+            />
 
-        <LinearLayout
+        <ImageView
             android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:background="@drawable/roundcorner_edge"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/roundcorner_fullblue"
-                android:scaleType="center"
-                android:src="@drawable/ic_user"/>
-
-            <EditText
-                android:layout_width="180dp"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:hint="아이디"
-                android:padding="4dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/half_black"
-                android:textSize="15dp"
-                android:imeOptions="actionDone"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="0dp"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1"
+            android:src="@drawable/ic_logo"
+            />
+
+
+        <LinearLayout
+            android:id="@+id/login_layout"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/roundcorner_edge"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/roundcorner_fullblue"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_user"/>
+
+                <EditText
+                    android:id="@+id/userID"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="아이디"
+                    android:imeOptions="actionDone"
+                    android:padding="4dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/half_black"
+                    android:textSize="15dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/roundcorner_edge"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/roundcorner_fullblue"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_key"/>
+
+                <EditText
+                    android:id="@+id/userPassword"
+                    android:layout_width="180dp"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:hint="비밀번호"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:padding="4dp"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/half_black"
+                    android:textSize="15dp"
+                    />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/saveID_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.github.lguipeng.library.animcheckbox.AnimCheckBox
+                    android:id="@+id/saveID_button"
+                    android:layout_width="22dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    app:checked="false"
+                    app:circle_color="@color/colorPrimary"
+                    app:stroke_color="@color/white"
+                    app:stroke_width="2dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="아이디 저장"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/autoLogin_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.github.lguipeng.library.animcheckbox.AnimCheckBox
+                    android:id="@+id/autoLogin_button"
+                    android:layout_width="22dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    app:checked="false"
+                    app:circle_color="@color/colorPrimary"
+                    app:stroke_color="@color/white"
+                    app:stroke_width="2dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="자동 로그인"
+                    android:textColor="@color/white"
+                    android:textSize="16dp"
+                    />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:background="@drawable/roundcorner_edge"
-            android:orientation="horizontal">
+            android:text="로그인"
+            android:textColor="@color/colorPrimary"/>
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/roundcorner_fullblue"
-                android:scaleType="center"
-                android:src="@drawable/ic_key"/>
-
-            <EditText
-                android:layout_width="180dp"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:hint="비밀번호"
-                android:inputType="textPassword"
-                android:padding="4dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/half_black"
-                android:textSize="15dp"
-                android:imeOptions="actionDone"
-                />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/save_id_check"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:buttonTint="@color/white"
-                android:text="아이디 저장"
-                android:textColor="@color/white"
-                android:textSize="15dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="200dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/auto_login_check"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:buttonTint="@color/white"
-                android:text="자동 로그인"
-                android:textColor="@color/white"
-                android:textSize="15dp"/>
-
-        </LinearLayout>
+        <Button
+            android:id="@+id/register_service"
+            android:layout_width="180dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/roundcorner_fullblue"
+            android:text="회원가입"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
-
-
-    <Button
-        android:id="@+id/member_button"
-        android:layout_width="150dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:layout_weight="0.7"
-        android:background="@drawable/roundcorner_edge"
-        android:text="로그인"
-        android:textColor="@color/black"/>
-    />
-
-</LinearLayout>
+</RelativeLayout>

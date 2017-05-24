@@ -88,6 +88,7 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     public void onMenuItemClick(View clickedView, int position) {
         switch (position){
             case 1:
+                finish();
                 break;
             case 2:
                 category = new SearchCategory(this, leftListener, rightListener);
