@@ -38,8 +38,6 @@ public class Setting extends AppCompatActivity {
         setContentView(R.layout.setting);
 
         Login = (TextView) findViewById(R.id.login);
-        Individual = (TextView) findViewById(R.id.individual);
-        Clause = (TextView) findViewById(R.id.clause);
         Error = (TextView) findViewById(R.id.errorCall);
         Version = (TextView) findViewById(R.id.version);
 
@@ -52,12 +50,6 @@ public class Setting extends AppCompatActivity {
                 loginPage.show();
             }
         });
-
-        // 개인정보 처리방침
-
-
-        // 이용약관
-
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {
