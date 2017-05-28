@@ -14,7 +14,6 @@
         android:layout_below="@+id/toolbar"/>
 
     <LinearLayout
-        android:id="@+id/map_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/blank"
@@ -28,44 +27,27 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"/>
 
-        <TextView
-            android:id="@+id/login"
+        <LinearLayout
+            android:id="@+id/login_status"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:paddingLeft="15dp"
-            android:text="로그인 정보"
-            android:textAlignment="textStart"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20dp"
+            android:layout_height="120dp"
             android:background="@drawable/border"
-            android:gravity="center_vertical"
-            />
+            android:gravity="center"
+            >
 
-        <TextView
-            android:id="@+id/individual"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:paddingLeft="15dp"
-            android:text="개인정보 처리방침"
-            android:textAlignment="textStart"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20dp"
-            android:background="@drawable/bottom_border"
-            android:gravity="center_vertical"
-            />
+            <TextView
+                android:id="@+id/login"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:text="로그인 정보"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:gravity="center_vertical"
+                />
 
-        <TextView
-            android:id="@+id/clause"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:paddingLeft="15dp"
-            android:text="이용약관"
-            android:textAlignment="textStart"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20dp"
-            android:background="@drawable/bottom_border"
-            android:gravity="center_vertical"
-            />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/errorCall"
@@ -81,7 +63,7 @@
             />
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:paddingLeft="15dp"
@@ -90,30 +72,28 @@
             android:textColor="@color/colorPrimary"
             android:textSize="20dp"
             android:background="@drawable/bottom_border"
-            android:gravity="center_vertical"
-            android:weightSum="2"
             >
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="버전 정보"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp"
-                android:gravity="bottom"
+                android:gravity="center_vertical"
+                android:layout_marginRight="20dp"
                 />
 
             <TextView
                 android:id="@+id/version"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.8"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="버전"
                 android:textAlignment="textStart"
                 android:textColor="@color/gray_cus"
-                android:textSize="15dp"
+                android:textSize="18dp"
+                android:textStyle="bold"
                 android:gravity="center_vertical"
                 />
 
