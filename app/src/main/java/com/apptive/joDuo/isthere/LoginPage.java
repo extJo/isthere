@@ -2,14 +2,18 @@ package com.apptive.joDuo.isthere;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.github.lguipeng.library.animcheckbox.AnimCheckBox;
+
+import java.io.IOException;
 
 /**
  * Created by joseong-yun on 2017. 5. 22..
@@ -29,11 +33,15 @@ public class LoginPage extends Dialog {
     private AnimCheckBox autoLoginBox;
     private AnimCheckBox saveIDBox;
 
+    private IsThereHttpHelper httpHelper;
+    private Context context;
+
     private View.OnClickListener loginClickListener;
 
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public LoginPage(Context context, View.OnClickListener loginClickListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
+        this.context = context;
         this.loginClickListener = loginClickListener;
     }
 
@@ -79,7 +87,7 @@ public class LoginPage extends Dialog {
         autoLoginLine.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    autoLoginBox.setChecked(!autoLoginBox.isChecked());
+                autoLoginBox.setChecked(!autoLoginBox.isChecked());
             }
         });
         saveIDLine.setOnClickListener(new View.OnClickListener() {
@@ -89,15 +97,39 @@ public class LoginPage extends Dialog {
             }
         });
 
+        // Set loginButton clickListener
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doLogin(v, userID.getText().toString(), userPassword.getText().toString());
+            }
+        });
+
+    }
+
+    private void doLogin(final View v, String id, String password) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("로그인 시도...");
+                httpHelper = MainActivity.GetHttpHelper();
+
+                try {
+                    boolean loginResult = httpHelper.postLogin(userID.getText().toString(), userPassword.getText().toString());
 
 
-//        loginButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // loginEvent call 해야함
-//
-//            }
-//        });
+                    if (loginResult) {
+                        System.out.println("로그인 성공");
+                        System.out.println(httpHelper.getIdToken());
+                    } else {
+                        System.out.println("로그인 실패");
+                    }
+                } catch (IOException e) {
+                    System.out.println("exception occurred at login");
+                    e.printStackTrace();
+                }
 
+            }
+        });
     }
 }

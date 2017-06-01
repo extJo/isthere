@@ -1,10 +1,12 @@
 package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +27,7 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,22 +43,25 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private BackPressCloseHandler backPressCloseHandler = new BackPressCloseHandler(this);
     private SearchCategory category;
 
+    private IsThereHttpHelper httpHelper = null;
+    private ArrayList<IsThereReview> reviews = null;
+    private ArrayList<MapPOIItem> markers = null;
+
     MapPoint pnu;
     MapView mapView;
 
     private static final MapPoint CUSTOM_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.537229, 127.005515);
     private static final MapPoint DEFAULT_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.4020737, 127.1086766);
-    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952,126.97794509999994);
+    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952, 126.97794509999994);
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_main);
-
+        httpHelper = MainActivity.GetHttpHelper();
 
         /* daum map api 부분 */
-
         pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
 
 
@@ -97,6 +103,12 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
         mapView.addPOIItem(customMarker);
         showAll();
+
+        // Drawing review markers.
+        drawReviewMarkers("테스트", "", "2323");
+
+
+
     }
 
     @Override
@@ -141,7 +153,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
 
     @Override
-    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {;
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        ;
 
     }
 
@@ -204,7 +217,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        switch (position){
+        switch (position) {
             case 1:
                 break;
             case 2:
@@ -318,5 +331,66 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             category.dismiss();
         }
     };
+
+
+    /*
+        Draw markers on Map using Thread.
+     */
+    public void drawReviewMarkers(final String category, final String detailCategory, final String userLocation) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    reviews = httpHelper.getIsThereReviews(category, detailCategory, userLocation);
+                    httpHelper.postCreateNewAccount("uxooxu@naver.com", "1q2w3e4r", "0ho");
+                } catch (IOException e) {
+                    Log.d("ReviewMain", "ERROR: drawReviewMarkers.IOException");
+                    e.printStackTrace();
+                }
+
+                // Error handling.
+                // There is no reviews...
+                if (reviews == null) {
+                    System.out.println("no reviews...");
+                    return;
+                }
+
+                // Actual drawing markers.
+                markers = new ArrayList<MapPOIItem>();
+                for(IsThereReview review: reviews) {
+                    review.printValues();
+
+                    // 커스텀 마커 추가
+                    MapPOIItem newMarker = makeIsThereReviewMarker(review, reviews.indexOf(review));
+                    mapView.addPOIItem(newMarker);
+                    markers.add(newMarker);
+                }
+
+
+            }
+        });
+    }
+
+
+
+    /*
+        Make Marker that fits on IsThereReview
+     */
+    private MapPOIItem makeIsThereReviewMarker(IsThereReview review, int tag) {
+        // Make MapPoint
+        MapPoint newPoint = MapPoint.mapPointWithGeoCoord(review.getCoordX(), review.getCoordY());
+
+        // Make MapMarker
+        MapPOIItem newMarker = new MapPOIItem();
+        newMarker.setItemName(review.getName());
+        newMarker.setTag(tag);
+        newMarker.setMapPoint(newPoint);
+        newMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+        newMarker.setCustomImageResourceId(R.drawable.custom_pin_blue);
+        newMarker.setCustomImageAnchor(0.5f, 0.5f);
+
+        return newMarker;
+    }
+
 
 }
