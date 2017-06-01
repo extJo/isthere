@@ -2,7 +2,6 @@ package com.apptive.joDuo.isthere;
 
 import android.util.JsonReader;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,18 +33,18 @@ import java.util.HashMap;
     postCreateNewAccount
  */
 public class IsThereHttpHelper {
-    private String basicURLStr = "http://52.78.33.177:9000";
-    private String gettingReviewsURLStr = "/reviews/";
-    private String postingReviewURLStr = "/reviews/review";
-    private String postingFavoritReviewURLStr = "/review/like";
-    private String deletingForvirtReviewURLStr = "/review/dislike";
-    private String gettingReviewCommentURLStr = "/comments/";
-    private String postingCommentURLStr = "/comment";
-    private String deletingCommentURLStr = "/comment";
-    private String updatingLikePointURLStr = "/comment/like-point/";
-    private String updatingDislikePointURLStr = "/comment/dislike-point/";
-    private String postingLoginURLStr = "/users/user/login";
-    private String postingNewAccountURLStr = "/users/user/create";
+    private static String basicURLStr = "http://52.78.33.177:9000";
+    private static String gettingReviewsURLStr = "/reviews/";
+    private static String postingReviewURLStr = "/reviews/review";
+    private static String postingLikeReviewURLStr = "/review/like";
+    private static String deletingLikeReviewURLStr = "/review/dislike";
+    private static String gettingReviewCommentURLStr = "/comments/";
+    private static String postingCommentURLStr = "/comment";
+    private static String deletingCommentURLStr = "/comment";
+    private static String updatingLikePointURLStr = "/comment/like-point/";
+    private static String updatingDislikePointURLStr = "/comment/dislike-point/";
+    private static String postingLoginURLStr = "/users/user/login";
+    private static String postingNewAccountURLStr = "/users/user/create";
 
 
     /// Authorization ///
@@ -66,28 +65,24 @@ public class IsThereHttpHelper {
 
         String realURL = basicURLStr + gettingReviewsURLStr + "/" + URLEncoder.encode(category, "UTF-8") + "?detail=" + detailCategory + "&loc=" + loc;
 
-        ArrayList<HashMap<ReviewKey, String>> reviewsArray = null;
+        final ArrayList<HashMap<ReviewKey, String>> reviewsArray = new ArrayList<>();
 
-        URL gettingReviewsURL = new URL(realURL);
+        getJson(realURL, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
 
-        HttpURLConnection gettingReviewsConnection = (HttpURLConnection) gettingReviewsURL.openConnection();
-        gettingReviewsConnection.setRequestMethod("GET");
+            }
 
+            @Override
+            public void onFailed(boolean isIOException) {
+                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "getReview2 failed!");
+            }
 
-        // if connection is succeed.
-        if (gettingReviewsConnection.getResponseCode() == 200) {
-            // Allocation memory for array having re
-            // view values.
-            reviewsArray = new ArrayList<>();
-
-            InputStream responseBody = gettingReviewsConnection.getInputStream();
-
-            InputStreamReader responseBodyReader = new InputStreamReader(responseBody, "UTF-8");
-
-            JsonReader jsonReader = new JsonReader(responseBodyReader);
-
-            jsonReader.beginArray();
-            while (jsonReader.hasNext()) {
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+                try {
+                    jsonReader.beginArray();
+                    while (jsonReader.hasNext()) {
                     /*
                         JSON Order
                         id
@@ -101,68 +96,59 @@ public class IsThereHttpHelper {
                         is_deleted
                      */
 
-                HashMap<ReviewKey, String> review = new HashMap<>();
+                        HashMap<ReviewKey, String> review = new HashMap<>();
 
-                jsonReader.beginObject();
+                        jsonReader.beginObject();
 
-                jsonReader.skipValue(); // id key
-                review.put(ReviewKey.REVIEW_ID, jsonReader.nextString()); // id value
-                jsonReader.skipValue(); // location key
-                review.put(ReviewKey.LOCATION, jsonReader.nextString()); // location value
-                jsonReader.skipValue(); // location x key
-                review.put(ReviewKey.LOCATION_CORD_X, jsonReader.nextString()); // location x value
-                jsonReader.skipValue(); // location y key
-                review.put(ReviewKey.LOCATION_CORD_Y, jsonReader.nextString()); // location y value
-                jsonReader.skipValue(); // name key
-                review.put(ReviewKey.NAME, jsonReader.nextString()); // name value
-                jsonReader.skipValue(); // information key
-                review.put(ReviewKey.INFORMATION, jsonReader.nextString()); // information value
-                jsonReader.skipValue(); // category key
-                review.put(ReviewKey.CATEGORY, jsonReader.nextString()); // category value
-                jsonReader.skipValue(); // detail category key
-                review.put(ReviewKey.DETAIL_CATEGORY, jsonReader.nextString()); // detail category value
-                jsonReader.skipValue(); // is deleted key
-                jsonReader.skipValue(); // is deleted value
+                        jsonReader.skipValue(); // id key
+                        review.put(ReviewKey.REVIEW_ID, jsonReader.nextString()); // id value
+                        jsonReader.skipValue(); // location key
+                        review.put(ReviewKey.LOCATION, jsonReader.nextString()); // location value
+                        jsonReader.skipValue(); // location x key
+                        review.put(ReviewKey.LOCATION_CORD_X, jsonReader.nextString()); // location x value
+                        jsonReader.skipValue(); // location y key
+                        review.put(ReviewKey.LOCATION_CORD_Y, jsonReader.nextString()); // location y value
+                        jsonReader.skipValue(); // name key
+                        review.put(ReviewKey.NAME, jsonReader.nextString()); // name value
+                        jsonReader.skipValue(); // information key
+                        review.put(ReviewKey.INFORMATION, jsonReader.nextString()); // information value
+                        jsonReader.skipValue(); // category key
+                        review.put(ReviewKey.CATEGORY, jsonReader.nextString()); // category value
+                        jsonReader.skipValue(); // detail category key
+                        review.put(ReviewKey.DETAIL_CATEGORY, jsonReader.nextString()); // detail category value
+                        jsonReader.skipValue(); // is deleted key
+                        jsonReader.skipValue(); // is deleted value
 
-                jsonReader.endObject();
+                        jsonReader.endObject();
 
-                reviewsArray.add(review); // Add a review to review array
+                        reviewsArray.add(review); // Add a review to review array
+                    }
+
+                    // Close JSON
+                    jsonReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
-            // Close JSON
-            jsonReader.close();
 
-        } else {
-            // connection failed.
-            Log.d("IsThereHttpHelper", "getReviews(): Connection Failed");
+            // return the dictionary format
+        });
 
-        }
-
-        // Disconnect connection.
-        gettingReviewsConnection.disconnect();
-
-        // parsing json and make into dictionary format
-
-        // return the dictionary format
-        // this return value will be processed in IsThereReview Class with static method.
         return reviewsArray;
     }
+
 
     /*
         Post a review
      */
-    public boolean postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) throws IOException {
+    public boolean postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) {
         boolean postResult = true;
 
         // Real URL
         String realURLStr = basicURLStr + postingReviewURLStr;
 
-        URL postingReviewURL = new URL(realURLStr);
-
-        HttpURLConnection postingReviewConnection = (HttpURLConnection) postingReviewURL.openConnection();
-        postingReviewConnection.setRequestMethod("POST");
-        postingReviewConnection.setRequestProperty("Content-Type", "application/json");
-        postingReviewConnection.setDoInput(true);
 
             /*
                 location
@@ -191,19 +177,22 @@ public class IsThereHttpHelper {
             e.printStackTrace();
         }
 
-        // write on connection
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(postingReviewConnection.getOutputStream());
-        outputStreamWriter.write(newReview.toString());
-        outputStreamWriter.flush();
+        postResult = postJsonObject(realURLStr, newReview, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
 
-        if (postingReviewConnection.getResponseCode() == 200) {
-            // success
-            postResult = true;
-        } else {
-            // fail
-            postResult = false;
-        }
+            }
 
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
 
         // return success or fail boolean
         return postResult;
@@ -215,15 +204,25 @@ public class IsThereHttpHelper {
 
         String realURLStr = basicURLStr + postingCommentURLStr;
 
-        URL postingCommentURL = new URL(realURLStr);
-
-        HttpURLConnection postingCommentConnection = (HttpURLConnection) postingCommentURL.openConnection();
-        postingCommentConnection.setDoInput(true);
-        postingCommentConnection.setRequestProperty("Content-Type", "application/json");
-
         JSONObject newComment = new JSONObject();
-
         // Implement !!!!!!!!
+
+        postResult = postJsonObject(realURLStr, newComment, 201, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
 
 
         return postResult;
@@ -235,27 +234,24 @@ public class IsThereHttpHelper {
      */
     public ArrayList<HashMap<ReviewKey, String>> getReviewComments(String reviewID) throws IOException {
         String realURLStr = basicURLStr + gettingReviewCommentURLStr + reviewID;
-        ArrayList<HashMap<ReviewKey, String>> commentsArray = null;
+        final ArrayList<HashMap<ReviewKey, String>> commentsArray = new ArrayList<>();
 
-        URL gettingCommentsURL = new URL(realURLStr);
+        getJson(realURLStr, 201, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
 
-        HttpURLConnection gettingReviewsConnection = (HttpURLConnection) gettingCommentsURL.openConnection();
-        gettingReviewsConnection.setRequestMethod("GET");
+            }
 
+            @Override
+            public void onFailed(boolean isIOException) {
 
-        // if connection is succeed.
-        if (gettingReviewsConnection.getResponseCode() == 201) {
-            // Allocation memory for array having comment values.
-            commentsArray = new ArrayList<>();
+            }
 
-            InputStream responseBody = gettingReviewsConnection.getInputStream();
-
-            InputStreamReader responseBodyReader = new InputStreamReader(responseBody, "UTF-8");
-
-            JsonReader jsonReader = new JsonReader(responseBodyReader);
-
-            jsonReader.beginArray();
-            while (jsonReader.hasNext()) {
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+                try {
+                    jsonReader.beginArray();
+                    while (jsonReader.hasNext()) {
                     /*
                         JSON Order
                         id
@@ -268,43 +264,39 @@ public class IsThereHttpHelper {
                         is_deleted
                      */
 
-                HashMap<ReviewKey, String> comment = new HashMap<>();
+                        HashMap<ReviewKey, String> comment = new HashMap<>();
 
-                jsonReader.beginObject();
+                        jsonReader.beginObject();
 
-                jsonReader.skipValue(); // id key
-                comment.put(ReviewKey.COMMENT_ID, jsonReader.nextString()); // id value
-                jsonReader.skipValue(); // review_id key
-                comment.put(ReviewKey.REVIEW_ID, jsonReader.nextString()); // location value
-                jsonReader.skipValue(); // user_id key
-                comment.put(ReviewKey.USER_ID, jsonReader.nextString()); // location x value
-                jsonReader.skipValue(); // comment key
-                comment.put(ReviewKey.COMMENT, jsonReader.nextString()); // location y value
-                jsonReader.skipValue(); // like_point key
-                comment.put(ReviewKey.LIKE_POINT, jsonReader.nextString()); // name value
-                jsonReader.skipValue(); // dislike_point key
-                comment.put(ReviewKey.DISLIKE_POINT, jsonReader.nextString()); // information value
-                jsonReader.skipValue(); // date key
-                comment.put(ReviewKey.DATE, jsonReader.nextString()); // category value
-                jsonReader.skipValue(); // is deleted key
-                jsonReader.skipValue(); // is deleted value
+                        jsonReader.skipValue(); // id key
+                        comment.put(ReviewKey.COMMENT_ID, jsonReader.nextString()); // id value
+                        jsonReader.skipValue(); // review_id key
+                        comment.put(ReviewKey.REVIEW_ID, jsonReader.nextString()); // location value
+                        jsonReader.skipValue(); // user_id key
+                        comment.put(ReviewKey.USER_ID, jsonReader.nextString()); // location x value
+                        jsonReader.skipValue(); // comment key
+                        comment.put(ReviewKey.COMMENT, jsonReader.nextString()); // location y value
+                        jsonReader.skipValue(); // like_point key
+                        comment.put(ReviewKey.LIKE_POINT, jsonReader.nextString()); // name value
+                        jsonReader.skipValue(); // dislike_point key
+                        comment.put(ReviewKey.DISLIKE_POINT, jsonReader.nextString()); // information value
+                        jsonReader.skipValue(); // date key
+                        comment.put(ReviewKey.DATE, jsonReader.nextString()); // category value
+                        jsonReader.skipValue(); // is deleted key
+                        jsonReader.skipValue(); // is deleted value
 
-                jsonReader.endObject();
+                        jsonReader.endObject();
 
-                commentsArray.add(comment); // Add a review to review array
+                        commentsArray.add(comment); // Add a review to review array
+                    }
+
+                    // Close JSON
+                    jsonReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
-            // Close JSON
-            jsonReader.close();
-
-        } else {
-            // connection failed.
-
-
-        }
-
-        // Disconnect connection.
-        gettingReviewsConnection.disconnect();
+        });
 
         // return the dictionary format
         // this return value will be processed in IsThereReview Class with static method.
@@ -316,39 +308,187 @@ public class IsThereHttpHelper {
         Delete a comment of a review depend on reviewID and userID.
         Primary key is the combination of reviewID and userID.
      */
-    public void deleteReviewComment(String reviewID, String userID) {
+    public boolean deleteReviewComment(String reviewID, String userID) {
+        boolean isSucceed = false;
 
+        String urlStr = basicURLStr + deletingCommentURLStr;
 
+        /*
+            review_id
+            user_id
+         */
+        JSONObject commentInfoJson = new JSONObject();
+
+        try {
+            commentInfoJson.put("review_id", reviewID);
+            commentInfoJson.put("user_id", userID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            isSucceed = false;
+            return isSucceed;
+        }
+
+        isSucceed = delete(urlStr, commentInfoJson, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
         // return boolean value
+        return isSucceed;
     }
 
     /*
         Add a like point for a review comment.
      */
-    public void updateReviewCommentLikePoint(String reviewID) {
+    public boolean updateReviewCommentLikePoint(String reviewID) {
+        boolean isSucceed = false;
+
+        String urlStr = basicURLStr + updatingLikePointURLStr + reviewID;
+
+        isSucceed = put(urlStr, null, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
 
         // return boolean value
+        return isSucceed;
     }
 
     /*
-        Add a disliek point for a review comment.
+        Add a dislike point for a review comment.
      */
-    public void updateReviewCommentDisliekPoint(String reviewID) {
+    public boolean updateReviewCommentDisliekPoint(String reviewID) {
+        boolean isSucceed = false;
 
+        String urlStr = basicURLStr + updatingDislikePointURLStr + reviewID;
+
+        isSucceed = put(urlStr, null, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
+
+        return isSucceed;
     }
 
     /*
         Post this review to a user's favorite review.
      */
-    public void postLikeReview(String userID, String reviewID) {
+    public boolean postLikeReview(String userID, String reviewID) {
+        boolean isSucceed = false;
 
+        String urlStr = basicURLStr + postingLikeReviewURLStr;
+
+        JSONObject reviewInfoJson = new JSONObject();
+        /*
+            user_id
+            review_id
+         */
+
+        try {
+            reviewInfoJson.put("user_id", userID);
+            reviewInfoJson.put("review_id", reviewID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            isSucceed = false;
+            return isSucceed;
+        }
+
+        isSucceed = postJsonObject(urlStr, reviewInfoJson, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
+
+        return isSucceed;
     }
 
     /*
         Delete this review fro a user's favorite reviews.
      */
-    public void deleteLikeReview(String userId, String reviewID) {
+    public boolean deleteLikeReview(String userID, String reviewID) {
+        boolean isSucceed = false;
 
+        String urlStr = basicURLStr + deletingLikeReviewURLStr;
+
+        JSONObject reviewInfoJson = new JSONObject();
+        /*
+            user_id
+            review_id
+         */
+
+        try {
+            reviewInfoJson.put("user_id", userID);
+            reviewInfoJson.put("review_id", reviewID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            isSucceed = false;
+            return isSucceed;
+        }
+
+        isSucceed = postJsonObject(urlStr, reviewInfoJson, 200, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+
+            }
+        });
+
+        return isSucceed;
     }
 
     /*
@@ -462,18 +602,6 @@ public class IsThereHttpHelper {
             // success
             isSucced = true;
 
-//            InputStream responseBody = postingCreatNewAccountConnection.getInputStream();
-//
-//            InputStreamReader responseBodyReader = new InputStreamReader(responseBody, "UTF-8");
-//
-//            JsonReader jsonReader = new JsonReader(responseBodyReader);
-//
-//            // Get id token for authorization
-//            // we need this token for adding new posting, adding a comment and so on...
-//            jsonReader.beginObject();
-//            jsonReader.skipValue(); // id_token
-//            idToken = jsonReader.nextString();
-
         } else {
             // fail
             isSucced = false;
@@ -556,45 +684,71 @@ public class IsThereHttpHelper {
 
     //// Callback Interface ////
     private interface OnHttpCallback {
-        void isSucceed(HttpURLConnection connection);
+        void onSucceed(HttpURLConnection connection);
 
-        void isFailed(boolean isIOException);
+        void onFailed(boolean isIOException);
 
         void onGetSucceed(JsonReader jsonReader);
     }
+    private interface AfterHttpCallback {
+        void onSucceed();
+
+        void onFailed();
+    }
 
 
-    public void postJsonObject(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callBack) {
+    public boolean postJsonObject(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callBack) {
+       return post(urlStr, "POST", true, jsonObject, responseCode, callBack);
+    }
+    public boolean delete(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+        return post(urlStr, "DELETE", true, jsonObject, responseCode, callback);
+    }
+    public boolean put(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+        return post(urlStr, "PUT", true, jsonObject, responseCode, callback);
+    }
+
+    public boolean post(String urlStr, String requestMethod, boolean isPrivate, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+        boolean isSucceed = false;
         try {
             URL url = new URL(urlStr);
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(requestMethod);
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoInput(true);
+            if (isPrivate) {
+                connection.setRequestProperty("Authorization", idToken);
+            }
 
             // write on connection
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write(jsonObject.toString());
-            outputStreamWriter.flush();
+            if (jsonObject != null) {
+                OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
+                outputStreamWriter.write(jsonObject.toString());
+                outputStreamWriter.flush();
+            }
 
             if (connection.getResponseCode() == responseCode) {
                 // success
-                callBack.isSucceed(connection);
+                isSucceed = true;
+                callback.onSucceed(connection);
             } else {
                 // fail
-                callBack.isFailed(false);
+                callback.onFailed(false);
+                isSucceed = false;
             }
 
             connection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
-            callBack.isFailed(true);
+            callback.onFailed(true);
+            isSucceed = false;
         }
+        return isSucceed;
     }
 
-    public void getJson(String urlStr, int responseCode, OnHttpCallback callBack) {
+    public boolean getJson(String urlStr, int responseCode, OnHttpCallback callBack) {
+        boolean isSucceed = false;
         try {
             URL url = new URL(urlStr);
 
@@ -602,7 +756,7 @@ public class IsThereHttpHelper {
             connection.setRequestMethod("GET");
 
             if (connection.getResponseCode() == responseCode) {
-                callBack.isSucceed(connection);
+                callBack.onSucceed(connection);
 
                 InputStream responseBody = connection.getInputStream();
 
@@ -612,96 +766,25 @@ public class IsThereHttpHelper {
 
                 // success
                 callBack.onGetSucceed(jsonReader);
+                isSucceed = true;
             } else {
                 // fail
-                callBack.isFailed(false);
+                callBack.onFailed(false);
+                isSucceed = false;
             }
 
             connection.disconnect();
 
         } catch (IOException e) {
             e.printStackTrace();
-            callBack.isFailed(true);
+            callBack.onFailed(true);
+            isSucceed = false;
         }
+
+        return isSucceed;
     }
 
-    public ArrayList<HashMap<ReviewKey, String>> getReviews2(String category, String detailCategory, String loc) throws IOException {
 
-        String realURL = basicURLStr + gettingReviewsURLStr + "/" + URLEncoder.encode(category, "UTF-8") + "?detail=" + detailCategory + "&loc=" + loc;
-
-        final ArrayList<HashMap<ReviewKey, String>> reviewsArray = new ArrayList<>();
-
-        getJson(realURL, 200, new OnHttpCallback() {
-            @Override
-            public void isSucceed(HttpURLConnection connection) {
-
-            }
-
-            @Override
-            public void isFailed(boolean isIOException) {
-                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "getReview2 failed!");
-            }
-
-            @Override
-            public void onGetSucceed(JsonReader jsonReader) {
-                try {
-                    jsonReader.beginArray();
-                    while (jsonReader.hasNext()) {
-                    /*
-                        JSON Order
-                        id
-                        location
-                        location x
-                        location y
-                        name
-                        information
-                        category_1
-                        category_2
-                        is_deleted
-                     */
-
-                        HashMap<ReviewKey, String> review = new HashMap<>();
-
-                        jsonReader.beginObject();
-
-                        jsonReader.skipValue(); // id key
-                        review.put(ReviewKey.REVIEW_ID, jsonReader.nextString()); // id value
-                        jsonReader.skipValue(); // location key
-                        review.put(ReviewKey.LOCATION, jsonReader.nextString()); // location value
-                        jsonReader.skipValue(); // location x key
-                        review.put(ReviewKey.LOCATION_CORD_X, jsonReader.nextString()); // location x value
-                        jsonReader.skipValue(); // location y key
-                        review.put(ReviewKey.LOCATION_CORD_Y, jsonReader.nextString()); // location y value
-                        jsonReader.skipValue(); // name key
-                        review.put(ReviewKey.NAME, jsonReader.nextString()); // name value
-                        jsonReader.skipValue(); // information key
-                        review.put(ReviewKey.INFORMATION, jsonReader.nextString()); // information value
-                        jsonReader.skipValue(); // category key
-                        review.put(ReviewKey.CATEGORY, jsonReader.nextString()); // category value
-                        jsonReader.skipValue(); // detail category key
-                        review.put(ReviewKey.DETAIL_CATEGORY, jsonReader.nextString()); // detail category value
-                        jsonReader.skipValue(); // is deleted key
-                        jsonReader.skipValue(); // is deleted value
-
-                        jsonReader.endObject();
-
-                        reviewsArray.add(review); // Add a review to review array
-                    }
-
-                    // Close JSON
-                    jsonReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-
-            // return the dictionary format
-        });
-
-        return reviewsArray;
-    }
 
 
 }
