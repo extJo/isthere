@@ -37,6 +37,7 @@ public class LoginPage extends Dialog {
     private Context context;
 
     private View.OnClickListener loginClickListener;
+    private OnLoginListener onLoginListener;
 
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public LoginPage(Context context, View.OnClickListener loginClickListener) {
@@ -101,35 +102,53 @@ public class LoginPage extends Dialog {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doLogin(v, userID.getText().toString(), userPassword.getText().toString());
+                doLogin(v, userID.getText().toString(), userPassword.getText().toString(), onLoginListener);
             }
         });
 
     }
 
-    private void doLogin(final View v, String id, String password) {
+    public void setOnLoginListener(OnLoginListener onLoginListener) {
+        this.onLoginListener = onLoginListener;
+    }
+
+
+    private void doLogin(View v, String id, String password, final OnLoginListener onLoginListener) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                System.out.println("로그인 시도...");
+                LogDebuger.debugPrinter(LogDebuger.TagType.LOGIN_PAGE, "Try Login");
                 httpHelper = MainActivity.GetHttpHelper();
-
+                boolean isLoginListener = (onLoginListener != null);
                 try {
                     boolean loginResult = httpHelper.postLogin(userID.getText().toString(), userPassword.getText().toString());
 
 
                     if (loginResult) {
-                        System.out.println("로그인 성공");
-                        System.out.println(httpHelper.getIdToken());
+                        LogDebuger.debugPrinter(LogDebuger.TagType.LOGIN_PAGE, "Login Succeed");
+                        if (isLoginListener) {
+                            onLoginListener.onLoginSucceed();
+                        }
                     } else {
-                        System.out.println("로그인 실패");
+                        LogDebuger.debugPrinter(LogDebuger.TagType.LOGIN_PAGE, "Login Failed by incorrect value");
+                        if (isLoginListener) {
+                            onLoginListener.onLoginFailed(true, false);
+                        }
                     }
                 } catch (IOException e) {
-                    System.out.println("exception occurred at login");
+                    LogDebuger.debugPrinter(LogDebuger.TagType.LOGIN_PAGE, "Login Failed by exception");
+                    if (isLoginListener) {
+                        onLoginListener.onLoginFailed(false, true);
+                    }
                     e.printStackTrace();
                 }
-
             }
         });
+    }
+
+    //// Callback interface ////
+    public interface OnLoginListener {
+        void onLoginSucceed();
+        void onLoginFailed(boolean notMatched, boolean isException);
     }
 }

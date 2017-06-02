@@ -44,12 +44,25 @@ public class Setting extends AppCompatActivity {
 
         // Login
         loginPage = new LoginPage(this, loginClickListener);
+        // We can implement something in here outside of the login diaglog with login result
+        loginPage.setOnLoginListener(new LoginPage.OnLoginListener() {
+            @Override
+            public void onLoginSucceed() {
+
+            }
+
+            @Override
+            public void onLoginFailed(boolean notMatched, boolean isException) {
+
+            }
+        });
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginPage.show();
             }
         });
+
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {

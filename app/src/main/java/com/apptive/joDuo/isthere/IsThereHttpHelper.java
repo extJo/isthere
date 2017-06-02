@@ -697,17 +697,17 @@ public class IsThereHttpHelper {
     }
 
 
-    public boolean postJsonObject(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callBack) {
+    private boolean postJsonObject(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callBack) {
        return post(urlStr, "POST", true, jsonObject, responseCode, callBack);
     }
-    public boolean delete(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+    private boolean delete(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
         return post(urlStr, "DELETE", true, jsonObject, responseCode, callback);
     }
-    public boolean put(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+    private boolean put(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
         return post(urlStr, "PUT", true, jsonObject, responseCode, callback);
     }
 
-    public boolean post(String urlStr, String requestMethod, boolean isPrivate, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
+    private boolean post(String urlStr, String requestMethod, boolean isPrivate, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
         boolean isSucceed = false;
         try {
             URL url = new URL(urlStr);
@@ -747,7 +747,7 @@ public class IsThereHttpHelper {
         return isSucceed;
     }
 
-    public boolean getJson(String urlStr, int responseCode, OnHttpCallback callBack) {
+    private boolean getJson(String urlStr, int responseCode, OnHttpCallback callBack) {
         boolean isSucceed = false;
         try {
             URL url = new URL(urlStr);

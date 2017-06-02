@@ -11,9 +11,10 @@ public class LogDebuger {
     private static boolean isDebugging = false;
 
     private static boolean httpHelper = false;
+    private static boolean loginPage = true;
 
     enum TagType {
-        HTTP_HELPER,
+        HTTP_HELPER, LOGIN_PAGE
     }
 
     public static void debugPrinter(TagType type, String str) {
@@ -27,6 +28,7 @@ public class LogDebuger {
 
         switch (type) {
             case HTTP_HELPER: result = "HttpHelper"; break;
+            case LOGIN_PAGE: result = "LoginPage"; break;
         }
 
         return result;
@@ -37,6 +39,7 @@ public class LogDebuger {
 
         switch (type) {
             case HTTP_HELPER: result = httpHelper; break;
+            case LOGIN_PAGE: result = loginPage; break;
         }
 
         return result;
