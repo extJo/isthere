@@ -49,12 +49,6 @@ public class Setting extends AppCompatActivity {
             }
         });
 
-        // 개인정보 처리방침
-
-
-        // 이용약관
-
-
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {
             @Override
