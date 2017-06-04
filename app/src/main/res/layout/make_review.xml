@@ -41,6 +41,8 @@
                 android:background="@android:color/transparent"
                 android:textColor="@color/black"
                 android:textSize="20dp"
+                android:imeOptions="actionDone"
+                android:singleLine = "true"
                 />
         </LinearLayout>
 
@@ -113,7 +115,9 @@
             android:hint="지나친 비방과 욕설은 상대방의 기분을 나쁘게 만들수 있습니다."
             android:textColor="@color/black"
             android:textColorHint="@color/gray_cus"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:imeOptions="actionDone"
+            />
 
         <ImageView
             android:id="@+id/picture"

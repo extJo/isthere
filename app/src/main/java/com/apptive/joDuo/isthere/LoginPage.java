@@ -2,6 +2,7 @@ package com.apptive.joDuo.isthere;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -66,8 +67,10 @@ public class LoginPage extends Dialog {
         autoLoginBox = (AnimCheckBox) findViewById(R.id.autoLogin_button);
         saveIDLine = (LinearLayout) findViewById(R.id.saveID_line);
         saveIDBox = (AnimCheckBox) findViewById(R.id.saveID_button);
+        registerUser = (Button) findViewById(R.id.register_service);
 
 
+        // login dialog 닫기
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,6 +89,16 @@ public class LoginPage extends Dialog {
             @Override
             public void onClick(View view) {
                 saveIDBox.setChecked(!saveIDBox.isChecked());
+            }
+        });
+
+        // 회원가입으로 넘어가기 위한 clickListener 설
+        registerUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), RegisterLogin.class);
+                getContext().startActivity(intent);
+
             }
         });
 

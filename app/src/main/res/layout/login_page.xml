@@ -18,86 +18,79 @@
             android:id="@+id/login_dismiss_button"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_margin="10dp"
             android:layout_gravity="right"
+            android:layout_margin="10dp"
             android:background="@drawable/ic_close"
             />
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="180dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_width="150dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
             android:src="@drawable/ic_logo"
             />
 
 
         <LinearLayout
             android:id="@+id/login_layout"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
 
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/roundcorner_edge"
-                android:orientation="horizontal">
+            <com.github.florent37.materialtextfield.MaterialTextField
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/roundcorner_fullblue"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_user"/>
+                app:mtf_animationDuration="300"
+                app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_image="@drawable/ic_user"
+                app:mtf_labelColor="@color/white"
+                app:mtf_openKeyboardOnFocus="true">
 
                 <EditText
                     android:id="@+id/userID"
-                    android:layout_width="180dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
-                    android:hint="아이디"
+                    android:hint="이메일"
                     android:imeOptions="actionDone"
-                    android:padding="4dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/half_black"
-                    android:textSize="15dp"/>
-            </LinearLayout>
+                    android:inputType="textWebEmailAddress"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18dp"
+                    />
 
-            <LinearLayout
-                android:layout_width="200dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/roundcorner_edge"
-                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/roundcorner_fullblue"
-                    android:scaleType="center"
-                    android:src="@drawable/ic_key"/>
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+
+                app:mtf_animationDuration="300"
+                app:mtf_cardCollapsedHeight="4dp"
+                app:mtf_image="@drawable/ic_key"
+                app:mtf_labelColor="@color/white"
+                app:mtf_openKeyboardOnFocus="true">
 
                 <EditText
                     android:id="@+id/userPassword"
-                    android:layout_width="180dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="비밀번호"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:padding="4dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/half_black"
-                    android:textSize="15dp"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18dp"
                     />
-            </LinearLayout>
+
+            </com.github.florent37.materialtextfield.MaterialTextField>
 
 
             <LinearLayout

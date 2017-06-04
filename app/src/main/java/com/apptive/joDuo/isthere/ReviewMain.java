@@ -10,16 +10,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
+import net.daum.mf.map.api.CameraPosition;
+import net.daum.mf.map.api.CameraUpdate;
 import net.daum.mf.map.api.CameraUpdateFactory;
-import net.daum.mf.map.api.MapLayout;
+import net.daum.mf.map.api.CancelableCallback;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
@@ -42,16 +46,23 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     MapPoint pnu;
     MapView mapView;
+    RelativeLayout description;
+
+    private View mCalloutBalloon;
+
 
     private static final MapPoint CUSTOM_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.537229, 127.005515);
     private static final MapPoint DEFAULT_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.4020737, 127.1086766);
-    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952,126.97794509999994);
-
+    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952, 126.97794509999994);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_main);
+
+        // 밑에 뜨는 간단한 설명
+        description = (RelativeLayout) findViewById(R.id.review_dsc);
+
 
 
         /* daum map api 부분 */
@@ -63,10 +74,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-
-
-
-
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
@@ -95,7 +102,20 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
         customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
         customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+        customMarker.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
         mapView.addPOIItem(customMarker);
+
+        MapPOIItem customMarker1 = new MapPOIItem();
+        customMarker1.setItemName("Custom Marker1");
+        customMarker1.setTag(1);
+        customMarker1.setMapPoint(CUSTOM_MARKER_POINT);
+        customMarker1.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+        customMarker1.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
+        customMarker1.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+        customMarker1.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
+        mapView.addPOIItem(customMarker1);
+
+
         showAll();
     }
 
@@ -139,17 +159,41 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     }
 
-
+    // pin이 터치 되었을 때 call되는 method
     @Override
-    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {;
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+        // 핀이 선택되었을 떄, 뷰가 이동하는 코드
+        CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 4);
+        mapView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, new CancelableCallback() {
+            @Override
+            public void onFinish() {
+            }
+            @Override
+            public void onCancel() {
+            }
+        });
+
+
+
+        // 여기서 box의 content를 바꾸면 변경가능
+        TextView title = (TextView) findViewById(R.id.review_name);
+
+        title.setText(mapPOIItem.getItemName());
+
+        // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
+        description.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
 
     }
 
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-        ViewGroup reviewD = (ViewGroup) findViewById(R.id.review_dsc);
-
-        reviewD.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -204,7 +248,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
-        switch (position){
+        switch (position) {
             case 1:
                 break;
             case 2:
