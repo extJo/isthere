@@ -52,6 +52,10 @@
             <requestFocus/>
         </EditText>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <EditText
             android:id="@+id/register_email"
             android:layout_width="match_parent"
@@ -67,6 +71,10 @@
             android:inputType="textEmailAddress"
             />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <EditText
             android:id="@+id/register_password"
             android:layout_width="match_parent"
@@ -82,6 +90,10 @@
             android:inputType="textPassword"
             />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <EditText
             android:id="@+id/register_password_confirm"
             android:layout_width="match_parent"
@@ -97,6 +109,23 @@
             android:inputType="textPassword"
             android:imeOptions="actionDone"
             />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/register_finish_button"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/roundcorner_fullblue"
+            android:text="회원가입"
+            android:textColor="@color/white"/>
+
 
 
     </LinearLayout>
