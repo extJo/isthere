@@ -9,7 +9,23 @@ import android.widget.ImageView;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.jaredrummler.android.widget.AnimatedSvgView;
 
+//
+//AsyncTask.execute(new Runnable() {
+//    @Override
+//    public void run() {
+//            // All your network logic
+//            // should be here
+//
+//
+//            }
+//});
+
+
 public class MainActivity extends AppCompatActivity {
+
+    // Allocate IsThereHttpHelper in memory managed by Object.
+    private static IsThereHttpHelper httpHelper = new IsThereHttpHelper();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +46,11 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }, 3000); // 3000ms
+    }
+
+
+    ///// Getter /////
+    public static IsThereHttpHelper GetHttpHelper() {
+        return httpHelper;
     }
 }

@@ -26,8 +26,6 @@ public class Setting extends AppCompatActivity {
     private LoginPage loginPage;
 
     TextView Login;
-    TextView Individual;
-    TextView Clause;
     TextView Error;
     TextView Version;
 
@@ -42,14 +40,20 @@ public class Setting extends AppCompatActivity {
         Version = (TextView) findViewById(R.id.version);
 
 
-        // Login
-        loginPage = new LoginPage(this, loginClickListener);
+        // Login dialog
+        loginPage = new LoginPage(this);
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginPage.show();
             }
         });
+
+        // 개인정보 처리방침
+
+
+        // 이용약관
+
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {
@@ -120,13 +124,6 @@ public class Setting extends AppCompatActivity {
         }
     }
 
-    private View.OnClickListener loginClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            // 콜백으로 로그인 확인 방법 작성
-
-            loginPage.dismiss();
-        }
-    };
 
 
 
