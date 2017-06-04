@@ -38,30 +38,19 @@ public class Setting extends AppCompatActivity {
         setContentView(R.layout.setting);
 
         Login = (TextView) findViewById(R.id.login);
+        Individual = (TextView) findViewById(R.id.individual);
+        Clause = (TextView) findViewById(R.id.clause);
         Error = (TextView) findViewById(R.id.errorCall);
         Version = (TextView) findViewById(R.id.version);
 
 
-        // Login
-        loginPage = new LoginPage(this, loginClickListener);
-        // We can implement something in here outside of the login diaglog with login result
-        loginPage.setOnLoginListener(new LoginPage.OnLoginListener() {
-            @Override
-            public void onLoginSucceed() {
+        // Login dialog
 
-            }
 
-            @Override
-            public void onLoginFailed(boolean notMatched, boolean isException) {
+        // 개인정보 처리방침
 
-            }
-        });
-        Login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginPage.show();
-            }
-        });
+
+        // 이용약관
 
 
         // Error feedback

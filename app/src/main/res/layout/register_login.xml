@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/text_view_toolbar_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bottom_blue"
+        android:gravity="center"
+        android:text="회원가입"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/tool_bar_text_size"
+        android:textStyle="bold"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:weightSum="10">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="사용중인 부산대학교 웹 메일로 편리하게 사용해보세요"
+            android:textColor="@color/half_black"/>
+
+        <EditText
+            android:id="@+id/register_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:hint="닉네임"
+            android:textColorHint="@color/gray_cus"
+            android:textColor="@color/black"
+            android:background="@drawable/roundcorner_edge_gray"
+            android:textSize="15dp"
+            android:inputType="textPersonName"
+            >
+            <requestFocus/>
+        </EditText>
+
+        <EditText
+            android:id="@+id/register_email"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:hint="이메일"
+            android:textColorHint="@color/gray_cus"
+            android:textColor="@color/black"
+            android:background="@drawable/roundcorner_edge_gray"
+            android:textSize="15dp"
+            android:inputType="textEmailAddress"
+            />
+
+        <EditText
+            android:id="@+id/register_password"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:hint="비밀번호 (영문, 숫자조합 6~15자)"
+            android:textColorHint="@color/gray_cus"
+            android:textColor="@color/black"
+            android:background="@drawable/roundcorner_edge_gray"
+            android:textSize="15dp"
+            android:inputType="textPassword"
+            />
+
+        <EditText
+            android:id="@+id/register_password_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:hint="비밀번호 확인"
+            android:textColorHint="@color/gray_cus"
+            android:textColor="@color/black"
+            android:background="@drawable/roundcorner_edge_gray"
+            android:textSize="15dp"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
+            />
+
+
+    </LinearLayout>
+</RelativeLayout>

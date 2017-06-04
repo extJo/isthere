@@ -2,18 +2,15 @@ package com.apptive.joDuo.isthere;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.lguipeng.library.animcheckbox.AnimCheckBox;
-
-import java.io.IOException;
 
 /**
  * Created by joseong-yun on 2017. 5. 22..
@@ -33,16 +30,11 @@ public class LoginPage extends Dialog {
     private AnimCheckBox autoLoginBox;
     private AnimCheckBox saveIDBox;
 
-    private IsThereHttpHelper httpHelper;
-    private Context context;
-
     private View.OnClickListener loginClickListener;
-    private OnLoginListener onLoginListener;
 
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public LoginPage(Context context, View.OnClickListener loginClickListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
-        this.context = context;
         this.loginClickListener = loginClickListener;
     }
 
@@ -75,8 +67,10 @@ public class LoginPage extends Dialog {
         autoLoginBox = (AnimCheckBox) findViewById(R.id.autoLogin_button);
         saveIDLine = (LinearLayout) findViewById(R.id.saveID_line);
         saveIDBox = (AnimCheckBox) findViewById(R.id.saveID_button);
+        registerUser = (Button) findViewById(R.id.register_service);
 
 
+        // login dialog 닫기
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

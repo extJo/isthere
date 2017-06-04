@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -34,6 +35,15 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_review);
+
+
+        ImageView imageView = (ImageView) findViewById(R.id.picture);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
 

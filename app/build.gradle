@@ -44,6 +44,7 @@ dependencies {
     compile 'com.jaredrummler:animated-svg-view:1.0.4'
     compile 'com.jaredrummler:material-spinner:1.1.0'
     compile 'com.github.lguipeng:AnimCheckBox:1.0.1'
+    compile 'com.github.florent37:materialtextfield:1.0.7'
 
     testCompile 'junit:junit:4.12'
 }
