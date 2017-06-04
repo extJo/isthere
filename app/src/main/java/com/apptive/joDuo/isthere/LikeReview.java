@@ -30,7 +30,6 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     private SearchCategory category;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

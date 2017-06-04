@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import com.github.florent37.viewanimator.ViewAnimator;
 import com.jaredrummler.android.widget.AnimatedSvgView;
 
-
+//
 //AsyncTask.execute(new Runnable() {
 //    @Override
 //    public void run() {
@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Allocate IsThereHttpHelper in memory managed by Object.
     private static IsThereHttpHelper httpHelper = new IsThereHttpHelper();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

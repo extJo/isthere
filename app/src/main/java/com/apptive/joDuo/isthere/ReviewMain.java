@@ -107,8 +107,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // Drawing review markers.
         drawReviewMarkers("테스트", "", "2323");
 
-
-
     }
 
     @Override
@@ -342,16 +340,16 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             public void run() {
                 try {
                     reviews = httpHelper.getIsThereReviews(category, detailCategory, userLocation);
-                    httpHelper.postCreateNewAccount("uxooxu@naver.com", "1q2w3e4r", "0ho");
                 } catch (IOException e) {
-                    Log.d("ReviewMain", "ERROR: drawReviewMarkers.IOException");
-                    e.printStackTrace();
+                    LogDebuger.debugPrinter(LogDebuger.TagType.REVIEW_MAIN, "ERROR: drawReviewMarkers.IOException");
+                    Log.e("ReviewMain", "ERROR: drawReviewMarkers.IOException");
+                    // e.printStackTrace();
                 }
 
                 // Error handling.
                 // There is no reviews...
                 if (reviews == null) {
-                    System.out.println("no reviews...");
+                    LogDebuger.debugPrinter(LogDebuger.TagType.REVIEW_MAIN, "ERROR: There is no review");
                     return;
                 }
 
@@ -365,8 +363,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                     mapView.addPOIItem(newMarker);
                     markers.add(newMarker);
                 }
-
-
             }
         });
     }

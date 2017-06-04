@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -45,6 +46,7 @@ public class IsThereHttpHelper {
     private static String updatingDislikePointURLStr = "/comment/dislike-point/";
     private static String postingLoginURLStr = "/users/user/login";
     private static String postingNewAccountURLStr = "/users/user/create";
+    private static String gettingCategories = "/reviews/category/get";
 
 
     /// Authorization ///
@@ -58,9 +60,9 @@ public class IsThereHttpHelper {
 
     ;
 
-    /*
-        Get reviews depending on location and category.
-     */
+    /**
+      *  Get reviews depending on location and category.
+     **/
     public ArrayList<HashMap<ReviewKey, String>> getReviews(String category, String detailCategory, String loc) throws IOException {
 
         String realURL = basicURLStr + gettingReviewsURLStr + "/" + URLEncoder.encode(category, "UTF-8") + "?detail=" + detailCategory + "&loc=" + loc;
@@ -140,9 +142,9 @@ public class IsThereHttpHelper {
     }
 
 
-    /*
-        Post a review
-     */
+    /**
+     *  Post a review
+     **/
     public boolean postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) {
         boolean postResult = true;
 
@@ -198,6 +200,16 @@ public class IsThereHttpHelper {
         return postResult;
     }
 
+    /**
+     *
+     * @param reviewID
+     * @param userId
+     * @param comment
+     * @return postResult
+     * @throws IOException
+     *
+     * Post a review comment using IDs.
+     */
     public boolean postReviewComment(String reviewID, String userId, String comment) throws IOException {
 
         boolean postResult = true;
@@ -229,8 +241,13 @@ public class IsThereHttpHelper {
 
     }
 
-    /*
-        Get comments of a review depend on reviewID.
+
+    /**
+     * Get comments of a review depending on reviewID.
+     *
+     * @param reviewID
+     * @return ArrayList having comment information.
+     * @throws IOException
      */
     public ArrayList<HashMap<ReviewKey, String>> getReviewComments(String reviewID) throws IOException {
         String realURLStr = basicURLStr + gettingReviewCommentURLStr + reviewID;
@@ -253,15 +270,15 @@ public class IsThereHttpHelper {
                     jsonReader.beginArray();
                     while (jsonReader.hasNext()) {
                     /*
-                        JSON Order
-                        id
-                        review_id
-                        user_id
-                        comment
-                        like_point
-                        dislike_point
-                        date
-                        is_deleted
+                     *  JSON Order
+                     *  id
+                     *  review_id
+                     *  user_id
+                     *  comment
+                     *  like_point
+                     *  dislike_point
+                     *  date
+                     *  is_deleted
                      */
 
                         HashMap<ReviewKey, String> comment = new HashMap<>();
@@ -304,9 +321,13 @@ public class IsThereHttpHelper {
         return commentsArray;
     }
 
-    /*
-        Delete a comment of a review depend on reviewID and userID.
-        Primary key is the combination of reviewID and userID.
+    /**
+     * Delete a comment of a review depending on reviewID and userID.
+     * Primary key is the combination of reviewId and userID.
+     *
+     * @param reviewID
+     * @param userID
+     * @return isSucceed in boolean.
      */
     public boolean deleteReviewComment(String reviewID, String userID) {
         boolean isSucceed = false;
@@ -348,8 +369,11 @@ public class IsThereHttpHelper {
         return isSucceed;
     }
 
-    /*
-        Add a like point for a review comment.
+    /**
+     * Add a like point for a review comment.
+     *
+     * @param reviewID
+     * @return isSucceed.
      */
     public boolean updateReviewCommentLikePoint(String reviewID) {
         boolean isSucceed = false;
@@ -380,6 +404,13 @@ public class IsThereHttpHelper {
     /*
         Add a dislike point for a review comment.
      */
+
+    /**
+     * Add a dislike point for areview comment.
+     *
+     * @param reviewID
+     * @return isSucceed.
+     */
     public boolean updateReviewCommentDisliekPoint(String reviewID) {
         boolean isSucceed = false;
 
@@ -405,8 +436,12 @@ public class IsThereHttpHelper {
         return isSucceed;
     }
 
-    /*
-        Post this review to a user's favorite review.
+    /**
+     * Post this review to a user's favorite review.
+     *
+     * @param userID
+     * @param reviewID
+     * @return isSucceed.
      */
     public boolean postLikeReview(String userID, String reviewID) {
         boolean isSucceed = false;
@@ -451,6 +486,14 @@ public class IsThereHttpHelper {
     /*
         Delete this review fro a user's favorite reviews.
      */
+
+    /**
+     * Delete this review for a user's like reviews.
+     *
+     * @param userID
+     * @param reviewID
+     * @return isSucceed.
+     */
     public boolean deleteLikeReview(String userID, String reviewID) {
         boolean isSucceed = false;
 
@@ -493,6 +536,14 @@ public class IsThereHttpHelper {
 
     /*
         Post login information. And receive id_token for authorization.
+     */
+
+    /**
+     * Post a login information. And receive <br>id_token</br> for authorization.
+     * @param id
+     * @param password
+     * @return login has be done in success with boolean value.
+     * @throws IOException
      */
     public boolean postLogin(String id, String password) throws IOException {
         // Login success or not
@@ -557,12 +608,12 @@ public class IsThereHttpHelper {
     }
 
 
-    /*
+    /**
         Post a new account information for creating a new account.
-     */
+     **/
     public boolean postCreateNewAccount(String email, String password, String nickname) throws IOException {
         // Login success or not
-        boolean isSucced = false;
+        boolean isSucceed = false;
 
         // Real URL
         String realURLStr = basicURLStr + postingNewAccountURLStr;
@@ -600,23 +651,88 @@ public class IsThereHttpHelper {
 
         if (postingCreatNewAccountConnection.getResponseCode() == 201) {
             // success
-            isSucced = true;
+            isSucceed = true;
 
         } else {
             // fail
-            isSucced = false;
+            isSucceed = false;
         }
 
 
         // return Success or Fail (boolean)
-        return isSucced;
+        return isSucceed;
+    }
+
+    /**
+     * Get categories from server.
+     * @return ArrayList including categories...
+     */
+    public ArrayList<ArrayList<String>> getCategories() {
+        String urlStr = basicURLStr + gettingCategories;
+
+        final ArrayList<ArrayList<String>> categories = new ArrayList<>();
+
+        getJson(urlStr, 201, new OnHttpCallback() {
+            @Override
+            public void onSucceed(HttpURLConnection connection) {
+
+            }
+
+            @Override
+            public void onFailed(boolean isIOException) {
+
+            }
+
+            @Override
+            public void onGetSucceed(JsonReader jsonReader) {
+                try {
+                    jsonReader.beginObject();
+                    while (jsonReader.hasNext()) {
+                        ArrayList<String> aCategorySet = new ArrayList<>();
+
+                        String bigCategory = jsonReader.nextName();
+                        aCategorySet.add(bigCategory);
+
+                        jsonReader.beginArray();
+                        while (jsonReader.hasNext()) {
+                            aCategorySet.add(jsonReader.nextString());
+                        }
+                        jsonReader.endArray();
+
+                        categories.add(aCategorySet);
+                        // The first item of aCategorySet is the primary category, and the others are detail categories.
+                    }
+
+                    // Close JSON
+                    jsonReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        return categories;
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //// Using IsThereReview Object ////
-    /*
+    /**
         Update Comments using IsThereReview object.
-     */
+     **/
     public void updateComments(IsThereReview review) throws IOException {
         review.setComments(getReviewComments(review.getReviewId()));
     }
@@ -658,7 +774,12 @@ public class IsThereHttpHelper {
     }
     //// Getter - end ////
 
-
+    /**
+     * Encrypt password using SHA-256.
+     *
+     * @param str
+     * @return Encrypted password.
+     */
     private String encryptSHA256(String str) {
         String sha = null;
 
@@ -771,6 +892,7 @@ public class IsThereHttpHelper {
                 // fail
                 callBack.onFailed(false);
                 isSucceed = false;
+                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "ERROR: getJson() Connection Failed: responseCode=" + connection.getResponseCode());
             }
 
             connection.disconnect();
@@ -779,6 +901,7 @@ public class IsThereHttpHelper {
             e.printStackTrace();
             callBack.onFailed(true);
             isSucceed = false;
+            LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "EXCEPTION: getJson().IOException");
         }
 
         return isSucceed;

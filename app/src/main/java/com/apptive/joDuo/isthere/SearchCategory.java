@@ -2,6 +2,7 @@ package com.apptive.joDuo.isthere;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -9,6 +10,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by joseong-yun on 2017. 5. 22..
@@ -22,9 +27,10 @@ public class SearchCategory extends Dialog {
     private Button mRightButton;
 
 
-    private static final String[] Category1 = {"식당", "카페", "술집", "자취방", "뷰티 및 건강"};
-    private static final String[] Category2 = {"식당", "카페", "술집", "자취방", "뷰티 및 건강"};
+    private static final String[] Category1 = {"", "", "", "", "", "", "", "", ""};
+    private static final String[] Category2 = Category1;
 
+    private ArrayList<ArrayList<String>> categories;
 
     private View.OnClickListener mLeftClickListener;
     private View.OnClickListener mRightClickListener;
@@ -67,10 +73,31 @@ public class SearchCategory extends Dialog {
             mLeftButton.setOnClickListener(mLeftClickListener);
             mRightButton.setOnClickListener(mRightClickListener);
         } else if (mLeftClickListener != null
-            && mRightClickListener == null) {
+                && mRightClickListener == null) {
             mLeftButton.setOnClickListener(mLeftClickListener);
         } else {
 
         }
+
+        //// for test ////
+        //// 미완성 !! ////
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                // All your network logic
+                // should be here
+
+                categories = MainActivity.GetHttpHelper().getCategories();
+                for (ArrayList<String> aCategories : categories) {
+                    for (int i = 0; i < aCategories.size(); i++) {
+                        Category1[i] = aCategories.get(i);
+                    }
+                }
+            }
+        });
+
     }
+
+
+
 }

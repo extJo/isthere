@@ -8,13 +8,14 @@ import android.util.Log;
  */
 
 public class LogDebuger {
-    private static boolean isDebugging = false;
+    private static boolean isDebugging = true;
 
-    private static boolean httpHelper = false;
+    private static boolean httpHelper = true;
     private static boolean loginPage = true;
+    private static boolean reviewMain = true;
 
     enum TagType {
-        HTTP_HELPER, LOGIN_PAGE
+        HTTP_HELPER, LOGIN_PAGE, REVIEW_MAIN
     }
 
     public static void debugPrinter(TagType type, String str) {
@@ -29,6 +30,7 @@ public class LogDebuger {
         switch (type) {
             case HTTP_HELPER: result = "HttpHelper"; break;
             case LOGIN_PAGE: result = "LoginPage"; break;
+            case REVIEW_MAIN: result = "ReviewMain"; break;
         }
 
         return result;
@@ -40,7 +42,9 @@ public class LogDebuger {
         switch (type) {
             case HTTP_HELPER: result = httpHelper; break;
             case LOGIN_PAGE: result = loginPage; break;
+            case REVIEW_MAIN: result = reviewMain; break;
         }
+
 
         return result;
     }
