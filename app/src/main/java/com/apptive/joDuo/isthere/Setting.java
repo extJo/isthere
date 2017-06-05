@@ -3,6 +3,8 @@ package com.apptive.joDuo.isthere;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -42,12 +45,38 @@ public class Setting extends AppCompatActivity {
 
         // Login dialog
         loginPage = new LoginPage(this);
+        loginPage.setOnLoginListener(new LoginPage.OnLoginListener() {
+            @Override
+            public void onLoginSucceed() {
+                // 쓰레드 내부에서 UI를 직접 그릴 수 없으므로 handler를 통해서 view와 관련된 일을 처리
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showToastTest("success");
+                        loginPage.dismiss();
+                    }
+                }, 0);
+            }
+
+            @Override
+            public void onLoginFailed(boolean notMatched, boolean isException) {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showToastTest("failed");
+                    }
+                }, 0);
+            }
+        });
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginPage.show();
             }
         });
+
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +146,9 @@ public class Setting extends AppCompatActivity {
             finish();
         }
     }
-
+    private void showToastTest(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    }
 
 
 
