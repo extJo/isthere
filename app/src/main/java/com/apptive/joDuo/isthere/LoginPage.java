@@ -106,6 +106,7 @@ public class LoginPage extends Dialog {
             }
         });
 
+        // Set RegisterUser clickListener
         registerUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
