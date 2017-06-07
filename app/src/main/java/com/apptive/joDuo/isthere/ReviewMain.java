@@ -11,11 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
@@ -23,7 +20,6 @@ import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
 import net.daum.mf.map.api.CameraPosition;
-import net.daum.mf.map.api.CameraUpdate;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.CancelableCallback;
 import net.daum.mf.map.api.MapPOIItem;
@@ -63,6 +59,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_main);
+        httpHelper = MainActivity.GetHttpHelper();
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
@@ -122,6 +119,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         showAll();
 
         // Drawing review markers.
+        drawReviewMarkers("테스트", "", "123");
     }
 
     @Override
