@@ -11,9 +11,7 @@ import android.widget.TextView;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by joseong-yun on 2017. 5. 22..
