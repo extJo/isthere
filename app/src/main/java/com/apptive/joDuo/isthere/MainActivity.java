@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 
-import com.github.florent37.viewanimator.ViewAnimator;
 import com.jaredrummler.android.widget.AnimatedSvgView;
 
 //

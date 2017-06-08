@@ -56,7 +56,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         });
 
 
-
         /* menu button lib */
         fragmentManager = getSupportFragmentManager();
         initToolbar();

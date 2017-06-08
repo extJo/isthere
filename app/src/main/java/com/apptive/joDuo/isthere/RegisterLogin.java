@@ -23,10 +23,9 @@ public class RegisterLogin extends AppCompatActivity {
     EditText password;
     EditText passwordConfirm;
     Button registerFinish;
-
-    IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
-
     Boolean registerFlag;
+
+    private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,25 +78,32 @@ public class RegisterLogin extends AppCompatActivity {
                     public void run() {
                         // register 서버에 등록 시도
                         if (registerFlag) {
-                            String emailStr = email.getText().toString();
-                            emailStr = emailStr.substring(0, emailStr.indexOf('@'));
-                            String passwordStr = password.getText().toString();
-                            String nicknameStr = nickname.getText().toString();
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // All your network logic
+                                    // should be here
+                                    String emailStr = email.getText().toString();
+                                    emailStr = emailStr.substring(0, emailStr.indexOf('@'));
+                                    String passwordStr = password.getText().toString();
+                                    String nicknameStr = nickname.getText().toString();
 
-                            try {
-                                if (httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr)) {
+                                    try {
+                                        if (httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr)) {
 //                                    finish();
+                                        }
+                                    } catch (IOException e) {
+                                    }
                                 }
-                            } catch (IOException e) {
-                            }
+
+                            });
+
                         }
                     }
                 });
 
-
             }
         });
-
     }
 
     // 에러 상황에서 background 변경
