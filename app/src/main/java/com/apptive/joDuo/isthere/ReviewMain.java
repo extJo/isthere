@@ -116,7 +116,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         customMarker1.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
         mapView.addPOIItem(customMarker1);
 
-        showAll();
+        // showAll();
 
         // Drawing review markers.
         drawReviewMarkers("테스트", "", "123");
