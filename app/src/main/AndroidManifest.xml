@@ -27,6 +27,7 @@
         <activity android:name=".Setting"/>
         <activity android:name=".LoginPage"/>
         <activity android:name=".RegisterLogin"/>
+        <activity android:name=".PresentLocation"/>
     </application>
 
 

@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -42,6 +43,15 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void onClick(View view) {
 
+            }
+        });
+
+        LinearLayout location = (LinearLayout) findViewById(R.id.set_location_layout);
+        location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MakeReview.this, PresentLocation.class);
+                startActivity(intent);
             }
         });
 

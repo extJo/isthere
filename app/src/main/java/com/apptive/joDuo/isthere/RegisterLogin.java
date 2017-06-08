@@ -1,13 +1,14 @@
 package com.apptive.joDuo.isthere;
 
-import android.graphics.PorterDuff;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.io.IOException;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -17,14 +18,15 @@ import static java.lang.Boolean.TRUE;
  */
 
 public class RegisterLogin extends AppCompatActivity {
-
     EditText nickname;
     EditText email;
     EditText password;
     EditText passwordConfirm;
     Button registerFinish;
 
-    Boolean registerFlag = TRUE;
+    IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
+
+    Boolean registerFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,8 @@ public class RegisterLogin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                registerFlag = TRUE;
+
                 // edit text 의 에러 검증 부분
                 if (password.getText().toString().trim().length() < 2
                     || password.getText().toString().trim().length() > 10) {
@@ -50,30 +54,46 @@ public class RegisterLogin extends AppCompatActivity {
                     registerFlag = FALSE;
                 }
 
-                if (!email.getText().toString().trim().matches("[a-zA-Z0-9._-]+@pusan.ac.kr")){
+                if (!email.getText().toString().trim().matches("[a-zA-Z0-9._-]+@pusan.ac.kr")) {
                     email.setError("이메일을 정확하게 입력 해 주새요");
                     changeBackground(email);
                     registerFlag = FALSE;
                 }
 
-                if(password.getText().toString().trim().length() < 5
-                    || password.getText().toString().trim().length() > 16){
+                if (password.getText().toString().trim().length() < 5
+                    || password.getText().toString().trim().length() > 16) {
                     password.setError("비밀번호를 올바르게 입력 해 주세요");
                     changeBackground(password);
                     registerFlag = FALSE;
-                }
-                else {
-                    if(password.getText().toString().trim().equals(passwordConfirm.getText().toString().trim())){
+                } else {
+                    if (!password.getText().toString().trim().equals(passwordConfirm.getText().toString().trim())) {
                         passwordConfirm.setError("입력하신 비밀번호가 동일하지 않습니다");
                         changeBackground(passwordConfirm);
                         registerFlag = FALSE;
                     }
                 }
 
-                // register 서버에 등록 시도
-                if(registerFlag){
 
-                }
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // register 서버에 등록 시도
+                        if (registerFlag) {
+                            String emailStr = email.getText().toString();
+                            emailStr = emailStr.substring(0, emailStr.indexOf('@'));
+                            String passwordStr = password.getText().toString();
+                            String nicknameStr = nickname.getText().toString();
+
+                            try {
+                                if (httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr)) {
+//                                    finish();
+                                }
+                            } catch (IOException e) {
+                            }
+                        }
+                    }
+                });
+
 
             }
         });

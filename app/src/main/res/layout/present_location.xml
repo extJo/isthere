@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/location_map_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="170dp">
+
+        <net.daum.mf.map.api.MapView
+            android:id="@+id/location_map_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_pin"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/current_location"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
+        android:background="@drawable/roundcorner_fullblue"
+        android:padding="7dp"
+        android:src="@drawable/ic_gps"
+        />
+
+    <TextView
+        android:id="@+id/location_alert_text"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_above="@+id/location_text_layout"
+        android:background="#3c000000"
+        android:textColor="@color/white"
+        android:text="지도를 움직여 원하는 위치를 지정하세요."
+        android:textSize="15dp"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:id="@+id/location_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_above="@+id/set_location_button"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:background="@color/white"
+        >
+
+        <TextView
+            android:id="@+id/location_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="부산대학교 정문"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:textAlignment="gravity"
+            android:gravity="bottom"/>
+
+
+        <TextView
+            android:id="@+id/location_address"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:text="부산광역시 금정구 장전동 400-51"
+            android:textSize="15dp"
+            android:textColor="@color/half_black"
+            android:textAlignment="gravity"
+            android:gravity="top"/>
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/set_location_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:text="이 위치로 설정하기"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="22dp"/>
+
+
+</RelativeLayout>
