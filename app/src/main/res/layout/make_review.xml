@@ -13,6 +13,7 @@
         android:layout_below="@+id/toolbar"
         android:orientation="vertical"
         android:padding="10dp"
+        android:layout_marginBottom="60dp"
         android:weightSum="10">
 
         <LinearLayout
@@ -114,11 +115,12 @@
             android:layout_weight="3.5"
             android:background="@android:color/transparent"
             android:gravity="start"
-            android:hint="지나친 비방과 욕설은 상대방의 기분을 나쁘게 만들수 있습니다."
+            android:hint="최대 300자 까지 리뷰 작성가능합니다."
             android:textColor="@color/black"
             android:textColorHint="@color/gray_cus"
             android:textSize="15dp"
             android:imeOptions="actionDone"
+            android:maxLength="300"
             />
 
         <ImageView
@@ -128,6 +130,16 @@
             android:layout_weight="2"
             android:src="@drawable/ic_picture"/>
 
-
     </LinearLayout>
+
+    <Button
+        android:id="@+id/make_review_finish"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:text="리뷰 작성 완료!"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="22dp"/>
 </RelativeLayout>

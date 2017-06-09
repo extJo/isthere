@@ -73,7 +73,7 @@
             android:id="@+id/location_address"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:text="부산광역시 금정구 장전동 400-51"
+            android:text="부산광역시 금정구 장전동 399-10"
             android:textSize="15dp"
             android:textColor="@color/half_black"
             android:textAlignment="gravity"

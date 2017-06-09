@@ -2,15 +2,22 @@ package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -27,15 +34,29 @@ import java.util.List;
 
 public class MakeReview extends AppCompatActivity implements OnMenuItemClickListener {
 
+    private static final int LAUNCHED_ACTIVITY = 1;
+
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
+    private Boolean finishFlag = false;
 
+    private EditText title;
+    private RatingBar grade;
+    private TextView location;
+    private EditText content;
+    private Button makeFinishButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.make_review);
+
+        title = (EditText) findViewById(R.id.title_review);
+        grade = (RatingBar) findViewById(R.id.rating_review);
+        location = (TextView) findViewById(R.id.set_location_text);
+        content = (EditText) findViewById(R.id.text_review);
+        makeFinishButton = (Button) findViewById(R.id.make_review_finish);
 
 
         ImageView imageView = (ImageView) findViewById(R.id.picture);
@@ -46,14 +67,44 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
-        LinearLayout location = (LinearLayout) findViewById(R.id.set_location_layout);
-        location.setOnClickListener(new View.OnClickListener() {
+        LinearLayout locationLayout = (LinearLayout) findViewById(R.id.set_location_layout);
+        locationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MakeReview.this, PresentLocation.class);
-                startActivity(intent);
+                startActivityForResult(intent, LAUNCHED_ACTIVITY);
             }
         });
+
+        title.addTextChangedListener(textWatcher);
+        content.addTextChangedListener(textWatcher);
+        location.addTextChangedListener(textWatcher);
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("콜은 하냐?");
+                if (finishFlag) {
+                    makeFinishButton.setEnabled(false);
+                    makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
+                    makeFinishButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            finish();
+                        }
+                    });
+                } else {
+                    makeFinishButton.setEnabled(true);
+                    makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+                }
+            }
+        }, 500);
+
+
+
 
 
         /* menu button lib */
@@ -62,6 +113,28 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         initMenuFragment();
 
     }
+
+    // intent로 결과값을 넘겨받기 위한 method
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        TextView locationText = (TextView) findViewById(R.id.set_location_text);
+
+        if (requestCode == LAUNCHED_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
+                String result = data.getExtras().getString("addressName");
+                locationText.setText(result);
+                locationText.setTextColor(getResources().getColor(R.color.background));
+            } else {
+                locationText.setText("위치가 설정되어있지 않습니다");
+                locationText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+
+
+    }
+
 
     /* menu button lib method */
 
@@ -88,12 +161,10 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     }
 
 
-
-
     @Override
     public void onMenuItemClick(View clickedView, int position) {
 
-        switch (position){
+        switch (position) {
             case 1:
                 finish();
                 break;
@@ -193,17 +264,38 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     }
 
     // dialog event listener
-
     private View.OnClickListener leftListener = new View.OnClickListener() {
         public void onClick(View v) {
             category.dismiss();
         }
     };
-
     private View.OnClickListener rightListener = new View.OnClickListener() {
         public void onClick(View v) {
             category.dismiss();
         }
     };
 
+    TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() == 0) {
+                finishFlag = false;
+            } else if (charSequence.equals("위치가 설정되어있지 않습니다")) {
+                finishFlag = false;
+            } else {
+                finishFlag = true;
+            }
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 }

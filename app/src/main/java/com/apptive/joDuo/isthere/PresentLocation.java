@@ -1,5 +1,6 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -16,9 +17,6 @@ import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 /**
  * Created by joseong-yun on 2017. 6. 7..
@@ -44,7 +42,7 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.present_location);
 
-        apikey = getString(R.string.daum_map_key);
+        apikey = getString(R.string.daum_search_key);
 
         currentLocation = (ImageView) findViewById(R.id.current_location);
         setLocationBtn = (Button) findViewById(R.id.set_location_button);
@@ -59,10 +57,26 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         currentLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                locationMapView.getCurrentLocationTrackingMode();
+//                locationMapView.getCurrentLocationTrackingMode();
             }
         });
 
+        setLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("addressName", locationName.getText());
+
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
     }
 
     private void showAll() {
@@ -112,21 +126,22 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     @Override
     public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
         // button disable
-        setLocationBtn.setEnabled(TRUE);
+        setLocationBtn.setEnabled(false);
         setLocationBtn.setBackgroundColor(getResources().getColor(R.color.gray_cus));
     }
 
     @Override
     public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
         // button reset
-        setLocationBtn.setEnabled(FALSE);
+        setLocationBtn.setEnabled(true);
         setLocationBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-        doSearch();
     }
 
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+        doSearch();
+
         locationName.setText(addressItem.old_name);
 
         if (addressItem.new_name.equals("")) {
@@ -162,8 +177,9 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         search.searchDetailAddress(getApplicationContext(), latitude, longitude, apikey, new OnFinishSearchListener() {
             @Override
             public void onSuccess(AddressItem itemList) {
-                // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저
+                // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저장
                 addressItem = itemList;
+
             }
 
             @Override
