@@ -51,9 +51,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     MapView mapView;
     RelativeLayout description;
 
-    private static final MapPoint CUSTOM_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.537229, 127.005515);
-    private static final MapPoint DEFAULT_MARKER_POINT = MapPoint.mapPointWithGeoCoord(37.4020737, 127.1086766);
-    private static final MapPoint Soeul_city_hall = MapPoint.mapPointWithGeoCoord(37.5662952, 126.97794509999994);
+    private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659,129.08421629999998);
+    private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979,129.089385);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +85,10 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     /* map 관련 method */
 
     private void showAll() {
-        int padding = 20;
-        float minZoomLevel = 7;
-        float maxZoomLevel = 10;
-        MapPointBounds bounds = new MapPointBounds(CUSTOM_MARKER_POINT, DEFAULT_MARKER_POINT);
+        int padding = 10;
+        float minZoomLevel = 2;
+        float maxZoomLevel = 5;
+        MapPointBounds bounds = new MapPointBounds(PUSAN_UNI_DOOR, PUSAN_UNI_STATION);
         mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(bounds, padding, minZoomLevel, maxZoomLevel));
     }
 
@@ -99,7 +99,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         MapPOIItem customMarker = new MapPOIItem();
         customMarker.setItemName("Custom Marker");
         customMarker.setTag(0);
-        customMarker.setMapPoint(Soeul_city_hall);
+        customMarker.setMapPoint(PUSAN_UNI_DOOR);
         customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
         customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
         customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
@@ -109,7 +109,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         MapPOIItem customMarker1 = new MapPOIItem();
         customMarker1.setItemName("Custom Marker1");
         customMarker1.setTag(1);
-        customMarker1.setMapPoint(CUSTOM_MARKER_POINT);
+        customMarker1.setMapPoint(PUSAN_UNI_STATION);
         customMarker1.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
         customMarker1.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
         customMarker1.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
@@ -167,7 +167,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
 
         // 핀이 선택되었을 떄, 뷰가 이동하는 코드
-        CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 4);
+        CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 2);
         mapView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, new CancelableCallback() {
             @Override
             public void onFinish() {

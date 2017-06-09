@@ -18,14 +18,12 @@ import static java.lang.Boolean.TRUE;
  */
 
 public class RegisterLogin extends AppCompatActivity {
-
     EditText nickname;
     EditText email;
     EditText password;
     EditText passwordConfirm;
     Button registerFinish;
-
-    Boolean registerFlag = TRUE;
+    Boolean registerFlag;
 
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
 
@@ -45,9 +43,11 @@ public class RegisterLogin extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                registerFlag = TRUE;
+
                 // edit text 의 에러 검증 부분
                 if (password.getText().toString().trim().length() < 2
-                        || password.getText().toString().trim().length() > 10) {
+                    || password.getText().toString().trim().length() > 10) {
                     nickname.setError("닉네임을 입력 해 주세요");
                     changeBackground(nickname);
                     registerFlag = FALSE;
@@ -60,43 +60,50 @@ public class RegisterLogin extends AppCompatActivity {
                 }
 
                 if (password.getText().toString().trim().length() < 5
-                        || password.getText().toString().trim().length() > 16) {
+                    || password.getText().toString().trim().length() > 16) {
                     password.setError("비밀번호를 올바르게 입력 해 주세요");
                     changeBackground(password);
                     registerFlag = FALSE;
                 } else {
-                    if (password.getText().toString().trim().equals(passwordConfirm.getText().toString().trim())) {
+                    if (!password.getText().toString().trim().equals(passwordConfirm.getText().toString().trim())) {
                         passwordConfirm.setError("입력하신 비밀번호가 동일하지 않습니다");
                         changeBackground(passwordConfirm);
                         registerFlag = FALSE;
                     }
                 }
 
-                // register 서버에 등록 시도
-                if (registerFlag) {
-                    AsyncTask.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            // All your network logic
-                            // should be here
 
-                            String emailStr = email.getText().toString();
-                            emailStr = emailStr.substring(0, emailStr.indexOf('@'));
-                            String passwordStr = password.getText().toString();
-                            String nicknameStr = nickname.getText().toString();
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // register 서버에 등록 시도
+                        if (registerFlag) {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // All your network logic
+                                    // should be here
+                                    String emailStr = email.getText().toString();
+                                    emailStr = emailStr.substring(0, emailStr.indexOf('@'));
+                                    String passwordStr = password.getText().toString();
+                                    String nicknameStr = nickname.getText().toString();
 
-                            try {
-                                httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr);
-                            } catch (IOException e) {
+                                    try {
+                                        if (httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr)) {
+//                                    finish();
+                                        }
+                                    } catch (IOException e) {
+                                    }
+                                }
 
-                            }
+                            });
+
                         }
-                    });
-                }
+                    }
+                });
 
             }
         });
-
     }
 
     // 에러 상황에서 background 변경
