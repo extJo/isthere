@@ -1,8 +1,12 @@
 package com.apptive.joDuo.isthere;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -30,6 +34,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
 
+    private static int PICK_IMAGE_REQUEST = 1;
+    private static int STORAGE_PERMISSION_CODE = 123;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +48,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                showImageChooser();
 
+                // Need additional implementations.
             }
         });
 
@@ -181,6 +190,19 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             finish();
         }
     }
+
+
+    /**
+     * Show image chooser.
+     *
+     */
+    private void showImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "사진을 선택해 주세요"), PICK_IMAGE_REQUEST);
+    }
+
 
     // dialog event listener
 

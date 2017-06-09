@@ -1,5 +1,6 @@
 package com.apptive.joDuo.isthere;
 
+import android.media.Image;
 import android.util.JsonReader;
 import android.util.Log;
 
@@ -46,6 +47,7 @@ public class IsThereHttpHelper {
     private static String postingLoginURLStr = "/users/user/login";
     private static String postingNewAccountURLStr = "/users/user/create";
     private static String gettingCategories = "/reviews/category/get";
+    private static String postingImage = "/reviews/image/upload/";
 
 
     /// Authorization ///
@@ -197,6 +199,19 @@ public class IsThereHttpHelper {
 
         // return success or fail boolean
         return postResult;
+    }
+
+    /**
+     * Post a image for a review.
+     */
+    public boolean postImage(String reviewId, Image image) {
+        boolean isSucceed = false;
+
+        // Real URL
+        String urlStr = basicURLStr + postingImage + reviewId;
+
+
+        return isSucceed;
     }
 
     /**
