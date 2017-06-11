@@ -1,7 +1,11 @@
 package com.apptive.joDuo.isthere;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +32,7 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     String apikey;
     double latitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().latitude;
     double longitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().longitude;
+    int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
 
@@ -54,12 +59,23 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         locationMapView.setMapViewEventListener(this);
         locationMapView.setPOIItemEventListener(this);
 
-        currentLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                locationMapView.getCurrentLocationTrackingMode();
-            }
-        });
+
+        // permission value check
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // permission check
+        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            // 권한 없음
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        } else {
+            // 권한 있음
+
+        }
+
+
+        currentLocation.setOnClickListener(findMyLocation);
 
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,5 +204,12 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         });
     }
 
+    private View.OnClickListener findMyLocation = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // 지도화면 중심을 단말의 현재 위치로 이동시켜줌
+            locationMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+        }
+    };
 
 }

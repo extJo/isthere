@@ -2,8 +2,6 @@ package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,7 +37,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
-    private Boolean finishFlag = false;
+    private Boolean titleFlag = false;
+    private Boolean locationFlag = false;
+    private Boolean contentFlag = false;
 
     private EditText title;
     private RatingBar grade;
@@ -67,6 +67,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
+        // location 설정
         LinearLayout locationLayout = (LinearLayout) findViewById(R.id.set_location_layout);
         locationLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,35 +77,22 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
-        title.addTextChangedListener(textWatcher);
-        content.addTextChangedListener(textWatcher);
-        location.addTextChangedListener(textWatcher);
-
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        // 리뷰작성 완료
+        makeFinishButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                System.out.println("콜은 하냐?");
-                if (finishFlag) {
-                    makeFinishButton.setEnabled(false);
-                    makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-                    makeFinishButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            finish();
-                        }
-                    });
-                } else {
-                    makeFinishButton.setEnabled(true);
-                    makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-                }
+            public void onClick(View view) {
+                finish();
             }
-        }, 500);
+        });
 
+        // 버튼 비 활성화
+        makeFinishButton.setEnabled(false);
+        makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
 
-
+        // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
+        title.addTextChangedListener(titleWatcher);
+        location.addTextChangedListener(locationWatcher);
+        content.addTextChangedListener(contentWatcher);
 
 
         /* menu button lib */
@@ -275,7 +263,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         }
     };
 
-    TextWatcher textWatcher = new TextWatcher() {
+    private TextWatcher titleWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -283,14 +271,19 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() == 0) {
-                finishFlag = false;
-            } else if (charSequence.equals("위치가 설정되어있지 않습니다")) {
-                finishFlag = false;
+            if (charSequence.length() != 0) {
+                titleFlag = true;
             } else {
-                finishFlag = true;
+                titleFlag = false;
             }
 
+            if (titleFlag && locationFlag && contentFlag) {
+                makeFinishButton.setEnabled(true);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                makeFinishButton.setEnabled(false);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+            }
         }
 
         @Override
@@ -298,4 +291,63 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         }
     };
+
+    private TextWatcher locationWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() != 0) {
+                locationFlag = true;
+            } else {
+                locationFlag = false;
+            }
+
+            if (titleFlag && locationFlag && contentFlag) {
+                makeFinishButton.setEnabled(true);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                makeFinishButton.setEnabled(false);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    private TextWatcher contentWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() != 0) {
+                contentFlag = true;
+            } else {
+                contentFlag = false;
+            }
+
+            if (titleFlag && locationFlag && contentFlag) {
+                makeFinishButton.setEnabled(true);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                makeFinishButton.setEnabled(false);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
 }
