@@ -1,12 +1,18 @@
 package com.apptive.joDuo.isthere;
 
+import android.graphics.Bitmap;
 import android.media.Image;
+import android.renderscript.ScriptGroup;
 import android.util.JsonReader;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -151,8 +157,6 @@ public class IsThereHttpHelper {
 
         // Real URL
         String realURLStr = basicURLStr + postingReviewURLStr;
-
-
             /*
                 location
                 location_x
@@ -204,11 +208,80 @@ public class IsThereHttpHelper {
     /**
      * Post a image for a review.
      */
-    public boolean postImage(String reviewId, Image image) {
+    public boolean postImage(String reviewId, Bitmap bitmap) {
         boolean isSucceed = false;
 
         // Real URL
         String urlStr = basicURLStr + postingImage + reviewId;
+
+        String attachmentName = reviewId;
+        String attachmentFileName = reviewId + ".bmp";
+        String crlf = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "*****";
+
+        try {
+            URL url = new URL(urlStr);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setUseCaches(false);
+            connection.setDoOutput(true);
+
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Connection", "Keep-Alive");
+            connection.setRequestProperty("Cache-Control", "no-cache");
+            connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+
+
+
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes(twoHyphens + boundary + crlf);
+            outputStream.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + crlf);
+            outputStream.writeBytes(crlf);
+
+            // I want to send only 8 bit black & white bitmaps
+            byte[] pixels = new byte[bitmap.getWidth() * bitmap.getHeight()];
+            for (int i = 0; i < bitmap.getWidth(); i++) {
+                for (int j = 0; j < bitmap.getHeight(); j++) {
+                    // we're interested only in the MSB of the first byte.
+                    // since the other 3 bytes are identical for B&W images
+                    pixels[i + j] = (byte) ((bitmap.getPixel(i, j) & 0x80) >> 7);
+                }
+            }
+
+            outputStream.write(pixels);
+
+            // End content wrapper
+            outputStream.writeBytes(crlf);
+            outputStream.writeBytes(twoHyphens + boundary + twoHyphens + crlf);
+
+            // Flush output buffer
+            outputStream.flush();
+            outputStream.close();
+
+            // Get response
+            InputStream responseStream = new BufferedInputStream(connection.getInputStream());
+            BufferedReader responseStreamReader = new BufferedReader(new InputStreamReader(responseStream));
+
+            String line = "";
+            StringBuilder stringBuilder = new StringBuilder();
+
+            while ((line = responseStreamReader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+            responseStreamReader.close();
+
+            String response = stringBuilder.toString();
+
+            responseStream.close();
+            connection.disconnect();
+
+            isSucceed = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            isSucceed = false;
+        }
+
 
 
         return isSucceed;

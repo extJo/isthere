@@ -44,7 +44,7 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.present_location);
 
-        apikey = getString(R.string.daum_map_key);
+        apikey = getString(R.string.daum_search_key);
 
         currentLocation = (ImageView) findViewById(R.id.current_location);
         setLocationBtn = (Button) findViewById(R.id.set_location_button);
@@ -63,6 +63,12 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
             }
         });
 
+        setLocationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Need implementation
+            }
+        });
     }
 
     private void showAll() {

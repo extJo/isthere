@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">거가 거가</string>
     <string name="daum_map_key">eedffea59c43155857e759e93f5e9302</string>
+    <string name="daum_search_key">2992df3a55444958f33dbf0e46b945fa</string>
 
 
     <string-array name="logo_strings">

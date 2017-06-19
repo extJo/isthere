@@ -1,12 +1,13 @@
 package com.apptive.joDuo.isthere;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -22,8 +23,10 @@ import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 /**
  * Created by joseong-yun on 2017. 5. 15..
@@ -34,9 +37,15 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
+    private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
+
+    ImageView imageView;
 
     private static int PICK_IMAGE_REQUEST = 1;
-    private static int STORAGE_PERMISSION_CODE = 123;
+    private Uri imageFilePath;
+    private Bitmap imageBitmap;
+
+    TextView locationTVButton;
 
 
     @Override
@@ -45,7 +54,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         setContentView(R.layout.make_review);
 
 
-        ImageView imageView = (ImageView) findViewById(R.id.picture);
+        imageView = (ImageView) findViewById(R.id.picture);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,6 +78,12 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
+
+
+
+
+        // for upload testing
+
 
     }
 
@@ -212,6 +227,59 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "사진을 선택해 주세요"), PICK_IMAGE_REQUEST);
     }
+
+    //handling the image chooser activity result
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageFilePath = data.getData();
+            try {
+                imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
+                imageView.setImageBitmap(imageBitmap);
+
+                // for testing
+                uploadImage();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //method to get the file path from uri
+    public String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
+    }
+
+    // upload image
+    public void uploadImage() {
+        String name = "";
+
+        String path = getPath(imageFilePath);
+
+        AsyncTask.execute(new TimerTask() {
+            @Override
+            public void run() {
+                httpHelper.postImage("1", imageBitmap);
+            }
+        });
+    }
+
 
 
     // dialog event listener
