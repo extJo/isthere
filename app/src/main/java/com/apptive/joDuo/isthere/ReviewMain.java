@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -49,7 +48,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private IsThereHttpHelper httpHelper = null;
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
-    private AQuery aQuery = new AQuery(this);
 
     MapPoint pnu;
     MapView mapView;
@@ -104,7 +102,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     }
 
     /* map 관련 method */
-
     private void showAll() {
         int padding = 10;
         float minZoomLevel = 2;
@@ -202,12 +199,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
-        ImageView reviewIV = (ImageView) findViewById(R.id.review_image);
 
         title.setText(mapPOIItem.getItemName());
-        // Get image with ReviewID
-        aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + mapPOIItem.getTag());
-
 
         // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
         description.setOnClickListener(new View.OnClickListener() {
@@ -402,7 +395,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     /*
     Draw markers on Map using Thread.
-    */
+ */
     public void drawReviewMarkers(final String category, final String detailCategory, final String userLocation) {
         AsyncTask.execute(new Runnable() {
             @Override
