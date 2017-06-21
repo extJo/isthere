@@ -11,9 +11,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -46,6 +48,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private IsThereHttpHelper httpHelper = null;
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
+    private AQuery aQuery = new AQuery(this);
 
     MapPoint pnu;
     MapView mapView;
@@ -63,8 +66,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
-
-
 
         /* daum map api 부분 */
 
@@ -181,8 +182,12 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
+        ImageView reviewIV = (ImageView) findViewById(R.id.review_image);
 
         title.setText(mapPOIItem.getItemName());
+        // Get image with ReviewID
+        aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + mapPOIItem.getTag());
+
 
         // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
         description.setOnClickListener(new View.OnClickListener() {
@@ -394,7 +399,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                     review.printValues();
 
                     // 커스텀 마커 추가
-                    MapPOIItem newMarker = makeIsThereReviewMarker(review, reviews.indexOf(review));
+                    MapPOIItem newMarker = makeIsThereReviewMarker(review, Integer.parseInt(review.getReviewId()));
                     mapView.addPOIItem(newMarker);
                     markers.add(newMarker);
                 }

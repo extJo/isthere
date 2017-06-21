@@ -45,6 +45,15 @@ dependencies {
     compile 'com.jaredrummler:material-spinner:1.1.0'
     compile 'com.github.lguipeng:AnimCheckBox:1.0.1'
     compile 'com.github.florent37:materialtextfield:1.0.7'
+    compile 'net.gotev:uploadservice:2.1'
+    compile 'com.googlecode.android-query:android-query:0.25.9'
+
+    allprojects {
+        repositories {
+            jcenter()
+            maven { url "https://jitpack.io" }
+        }
+    }
 
     testCompile 'junit:junit:4.12'
 }

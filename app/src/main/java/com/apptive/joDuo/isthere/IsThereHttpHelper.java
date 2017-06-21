@@ -40,20 +40,21 @@ import java.util.HashMap;
     postCreateNewAccount
  */
 public class IsThereHttpHelper {
-    private static String basicURLStr = "http://52.78.33.177:9000";
-    private static String gettingReviewsURLStr = "/reviews/";
-    private static String postingReviewURLStr = "/reviews/review";
-    private static String postingLikeReviewURLStr = "/review/like";
-    private static String deletingLikeReviewURLStr = "/review/dislike";
-    private static String gettingReviewCommentURLStr = "/comments/";
-    private static String postingCommentURLStr = "/comment";
-    private static String deletingCommentURLStr = "/comment";
-    private static String updatingLikePointURLStr = "/comment/like-point/";
-    private static String updatingDislikePointURLStr = "/comment/dislike-point/";
-    private static String postingLoginURLStr = "/users/user/login";
-    private static String postingNewAccountURLStr = "/users/user/create";
-    private static String gettingCategories = "/reviews/category/get";
-    private static String postingImage = "/reviews/image/upload/";
+    public static String basicURLStr = "http://52.78.33.177:9000";
+    public static String gettingReviewsURLStr = "/reviews/";
+    public static String postingReviewURLStr = "/reviews/review";
+    public static String postingLikeReviewURLStr = "/review/like";
+    public static String deletingLikeReviewURLStr = "/review/dislike";
+    public static String gettingReviewCommentURLStr = "/comments/";
+    public static String postingCommentURLStr = "/comment";
+    public static String deletingCommentURLStr = "/comment";
+    public static String updatingLikePointURLStr = "/comment/like-point/";
+    public static String updatingDislikePointURLStr = "/comment/dislike-point/";
+    public static String postingLoginURLStr = "/users/user/login";
+    public static String postingNewAccountURLStr = "/users/user/create";
+    public static String gettingCategories = "/reviews/category/get";
+    public static String postingImage = "/reviews/image/upload/";
+    public static String gettingImage = "/reviews/image/get/";
 
 
     /// Authorization ///
@@ -151,9 +152,13 @@ public class IsThereHttpHelper {
 
     /**
      *  Post a review
+     *  If succeed, return the registered reviewId not -1
+     *  If failed, return -1
      **/
-    public boolean postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) {
+    public long postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) {
         boolean postResult = true;
+        final long[] reviewID = new long[1];
+        reviewID[0] = -1;
 
         // Real URL
         String realURLStr = basicURLStr + postingReviewURLStr;
@@ -187,7 +192,19 @@ public class IsThereHttpHelper {
         postResult = postJsonObject(realURLStr, newReview, 200, new OnHttpCallback() {
             @Override
             public void onSucceed(HttpURLConnection connection) {
+                try {
+                    InputStream responseBody = connection.getInputStream();
 
+                    InputStreamReader responseBodyReader = new InputStreamReader(responseBody, "UTF-8");
+
+                    JsonReader jsonReader = new JsonReader(responseBodyReader);
+
+                    jsonReader.beginObject();
+                    jsonReader.skipValue(); // reviewID
+                    reviewID[0] = jsonReader.nextLong();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -201,8 +218,8 @@ public class IsThereHttpHelper {
             }
         });
 
-        // return success or fail boolean
-        return postResult;
+        // return success or fail reviewID
+        return reviewID[0];
     }
 
     /**

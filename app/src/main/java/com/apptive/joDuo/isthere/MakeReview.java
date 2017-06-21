@@ -22,16 +22,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
+import java.util.UUID;
 
 /**
  * Created by joseong-yun on 2017. 5. 15..
@@ -58,6 +62,10 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
     ImageView imageView;
 
+    private static int PICK_IMAGE_REQUEST = 1;
+    private Uri imageFilePath;
+    private Bitmap imageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,8 +83,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void onClick(View view) {
                 showImageChooser();
-
-                // Need additional implementations.
             }
         });
 
@@ -101,12 +107,33 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         // 버튼 비 활성화
         makeFinishButton.setEnabled(false);
         makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+        makeFinishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(makeFinishButton.isEnabled()) {
+                    final String titleValue = title.getText().toString();
+                    final String locationValue = location.getText().toString();
+                    final String contentValue = content.getText().toString();
+
+                    AsyncTask.execute(new TimerTask() {
+                        @Override
+                        public void run() {
+                            double[] dummyPoint = {1, 1};
+                            long registeredReviewID = httpHelper.postReview(locationValue, dummyPoint, titleValue, contentValue, "test", "detailTest");
+                            if(registeredReviewID != -1) {
+                                uploadMultipart(String.valueOf(registeredReviewID));
+                            }
+                        }
+                    });
+
+                }
+            }
+        });
 
         // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
         title.addTextChangedListener(titleWatcher);
         location.addTextChangedListener(locationWatcher);
         content.addTextChangedListener(contentWatcher);
-
 
         /* menu button lib */
         fragmentManager = getSupportFragmentManager();
@@ -118,6 +145,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     // intent로 결과값을 넘겨받기 위한 method
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         TextView locationText = (TextView) findViewById(R.id.set_location_text);
 
         if (requestCode == LAUNCHED_ACTIVITY) {
@@ -134,7 +162,22 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         }
 
 
+        // for image
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            imageFilePath = data.getData();
+            try {
+                imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
+                imageView.setImageBitmap(imageBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
+
+
+
 
 
     /* menu button lib method */
@@ -278,25 +321,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         startActivityForResult(Intent.createChooser(intent, "사진을 선택해 주세요"), PICK_IMAGE_REQUEST);
     }
 
-    //handling the image chooser activity result
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageFilePath = data.getData();
-            try {
-                imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
-                imageView.setImageBitmap(imageBitmap);
-
-                // for testing
-                uploadImage();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     //method to get the file path from uri
     public String getPath(Uri uri) {
@@ -315,21 +339,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         return path;
     }
-
-    // upload image
-    public void uploadImage() {
-        String name = "";
-
-        String path = getPath(imageFilePath);
-
-        AsyncTask.execute(new TimerTask() {
-            @Override
-            public void run() {
-                httpHelper.postImage("1", imageBitmap);
-            }
-        });
-    }
-
 
 
     // dialog event listener
@@ -430,5 +439,32 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         }
     };
+
+
+    /*
+  * This is the method responsible for image upload
+  * We need the full image path and the name for the image in this method
+  * */
+    public void uploadMultipart(String fileName) {
+
+        //getting the actual path of the image
+        String path = getPath(imageFilePath);
+
+        //Uploading code
+        try {
+            String uploadId = UUID.randomUUID().toString();
+
+            //Creating a multi part request
+            new MultipartUploadRequest(this, uploadId, IsThereHttpHelper.basicURLStr + IsThereHttpHelper.postingImage + fileName)
+                    .addFileToUpload(path, "image") //Adding file
+                    .addParameter("name", fileName) //Adding text parameter to the request
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setMaxRetries(2)
+                    .startUpload(); //Starting the upload
+
+        } catch (Exception exc) {
+            Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }
