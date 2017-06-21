@@ -34,6 +34,8 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     double longitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().longitude;
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
+    private boolean isSearchingSucceed = false;
+
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
 
     ImageView currentLocation;
@@ -81,7 +83,10 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
+                intent.putExtra("isSucceed", isSearchingSucceed);
                 intent.putExtra("addressName", locationName.getText());
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
 
                 setResult(RESULT_OK, intent);
                 finish();
@@ -156,15 +161,20 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
 
-        doSearch();
+        if(doSearch()) {
+            locationName.setText(addressItem.old_name);
 
-        locationName.setText(addressItem.old_name);
-
-        if (addressItem.new_name.equals("")) {
-            locationAddress.setText("");
+            if (addressItem.new_name.equals("")) {
+                locationAddress.setText("");
+            } else {
+                locationAddress.setText("[새 주소] " + addressItem.new_name);
+            }
         } else {
-            locationAddress.setText("[새 주소] " + addressItem.new_name);
+            locationName.setText("검색에 실패하였습니다.");
+            locationAddress.setText("검색에 실패하였습니다.");
         }
+
+
     }
 
     @Override
@@ -187,7 +197,7 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
 
     }
 
-    public void doSearch() {
+    public boolean doSearch() {
         // 맵의 중앙지점을 이용하여 search 함
         Search search = new Search();
         search.searchDetailAddress(getApplicationContext(), latitude, longitude, apikey, new OnFinishSearchListener() {
@@ -195,13 +205,15 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
             public void onSuccess(AddressItem itemList) {
                 // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저장
                 addressItem = itemList;
-
+                isSearchingSucceed = true;
             }
-
             @Override
             public void onFail() {
+                isSearchingSucceed = false;
             }
         });
+
+        return isSearchingSucceed;
     }
 
     private View.OnClickListener findMyLocation = new View.OnClickListener() {

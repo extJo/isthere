@@ -198,6 +198,7 @@ public class IsThereHttpHelper {
                     InputStreamReader responseBodyReader = new InputStreamReader(responseBody, "UTF-8");
 
                     JsonReader jsonReader = new JsonReader(responseBodyReader);
+                    jsonReader.setLenient(true);
 
                     jsonReader.beginObject();
                     jsonReader.skipValue(); // reviewID
@@ -939,11 +940,12 @@ public class IsThereHttpHelper {
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(requestMethod);
+            if (isPrivate) {
+                connection.setRequestProperty("Authorization", "Bearer " + idToken);
+            }
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoInput(true);
-            if (isPrivate) {
-                connection.setRequestProperty("Authorization", idToken);
-            }
+
 
             // write on connection
             if (jsonObject != null) {

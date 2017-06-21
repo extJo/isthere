@@ -1,11 +1,13 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * Created by joseong-yun on 2017. 5. 15..
@@ -51,12 +55,15 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private Boolean titleFlag = false;
     private Boolean locationFlag = false;
     private Boolean contentFlag = false;
+    private boolean isUploadSucceed = false;
 
     private EditText title;
     private RatingBar grade;
     private TextView location;
     private EditText content;
     private Button makeFinishButton;
+    private double[] coord = {-1, -1};
+    private String currentLocation = "위치가 설정되어있지 않습니다";
 
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
 
@@ -109,22 +116,47 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
         makeFinishButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final
+                                View v) {
                 if(makeFinishButton.isEnabled()) {
                     final String titleValue = title.getText().toString();
                     final String locationValue = location.getText().toString();
                     final String contentValue = content.getText().toString();
 
+
+
                     AsyncTask.execute(new TimerTask() {
                         @Override
                         public void run() {
-                            double[] dummyPoint = {1, 1};
-                            long registeredReviewID = httpHelper.postReview(locationValue, dummyPoint, titleValue, contentValue, "test", "detailTest");
+
+                            long registeredReviewID = httpHelper.postReview(locationValue, coord, titleValue, contentValue, "테스트", "테스트2");
                             if(registeredReviewID != -1) {
                                 uploadMultipart(String.valueOf(registeredReviewID));
+                                isUploadSucceed = true;
                             }
+
+                            // control Activity
+                            if (isUploadSucceed) {
+                                runOnUiThread(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(v.getContext(), "Success", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                });
+                            } else {
+                                runOnUiThread(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(v.getContext(), "fail", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+
                         }
                     });
+
+
 
                 }
             }
@@ -149,12 +181,19 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         TextView locationText = (TextView) findViewById(R.id.set_location_text);
 
         if (requestCode == LAUNCHED_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == RESULT_OK && data.getExtras().getBoolean("isSucceed")) {
                 String result = data.getExtras().getString("addressName");
-                locationText.setText(result);
+                double latitude = data.getExtras().getDouble("latitude");
+                double longitude = data.getExtras().getDouble("longitude");
+                coord[0] = latitude;
+                coord[1] = longitude;
+
+                currentLocation = result;
+                locationText.setText(currentLocation);
                 locationText.setTextColor(getResources().getColor(R.color.background));
             } else {
-                locationText.setText("위치가 설정되어있지 않습니다");
+                currentLocation = "위치가 설정되어있지 않습니다";
+                locationText.setText(currentLocation);
                 locationText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             }
         } else {
@@ -171,6 +210,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            locationText.setText(currentLocation);
+
         }
 
 

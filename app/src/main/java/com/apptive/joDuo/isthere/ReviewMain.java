@@ -397,6 +397,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         @Override
         public void onClick(View view) {
             Intent intent = new Intent(ReviewMain.this, ReviewList.class);
+
+            //// 넘겨줄 정보 필요 ////
+
             startActivity(intent);
         }
     };
