@@ -11,6 +11,7 @@ public class ReviewItem {
     private Drawable pictureDrawable;
     private String title;
     private String description;
+    private Boolean like;
 
     public void setPicture(Drawable picture){
         pictureDrawable = picture;
@@ -24,6 +25,8 @@ public class ReviewItem {
         this.description = description;
     }
 
+    public void setLike(Boolean like) {this.like = like;}
+
     public Drawable getPicture(){
         return pictureDrawable;
     }
@@ -36,6 +39,7 @@ public class ReviewItem {
         return description;
     }
 
+    public Boolean getLike() {return like;}
 
 
 }

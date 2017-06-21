@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.apptive.joDuo.isthere.R;
 
@@ -48,14 +49,23 @@ public class ReviewItemAdaptor extends BaseAdapter {
         ImageView iconImageView = (ImageView) convertView.findViewById(R.id.item_picture) ;
         TextView titleTextView = (TextView) convertView.findViewById(R.id.item_title) ;
         TextView descTextView = (TextView) convertView.findViewById(R.id.item_description) ;
+        final ToggleButton likeToogleBtn = (ToggleButton) convertView.findViewById(R.id.item_like);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        ReviewItem reviewItem = listViewItemList.get(position);
+        final ReviewItem reviewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
         iconImageView.setImageDrawable(reviewItem.getPicture());
         titleTextView.setText(reviewItem.getTitle());
         descTextView.setText(reviewItem.getDescription());
+        likeToogleBtn.setChecked(reviewItem.getLike());
+
+        likeToogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reviewItem.setLike(likeToogleBtn.isChecked());
+            }
+        });
 
         return convertView;
     }
@@ -73,12 +83,13 @@ public class ReviewItemAdaptor extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(Drawable icon, String title, String desc) {
+    public void addItem(Drawable icon, String title, String desc, Boolean like) {
         ReviewItem item = new ReviewItem();
 
         item.setPicture(icon);
         item.setTitle(title);
         item.setDescription(desc);
+        item.setLike(like);
 
         listViewItemList.add(item);
     }

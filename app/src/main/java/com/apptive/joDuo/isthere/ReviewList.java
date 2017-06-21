@@ -38,11 +38,9 @@ public class ReviewList extends AppCompatActivity {
         listview = (ListView) findViewById(R.id.review_listview);
         listview.setAdapter(adapter);
 
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다라 마바사", "아자차카타바파");
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다asdd", "아Asdads바파");
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가adsd바사", "아asdsaddadasaddas");
-
-
+        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다라 마바사", "아자차카타바파", false);
+        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다asdd", "아Asdads바파", false);
+        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가adsd바사", "아asdsaddadasaddas", false);
 
 
 
