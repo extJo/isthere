@@ -1,6 +1,7 @@
 package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -12,9 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -48,6 +51,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private IsThereHttpHelper httpHelper = null;
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
+    private AQuery aQuery = new AQuery(this);
 
     MapPoint pnu;
     MapView mapView;
@@ -199,8 +203,12 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
+        ImageView reviewIV = (ImageView) findViewById(R.id.review_image);
 
         title.setText(mapPOIItem.getItemName());
+        // Set review image
+        aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + String.valueOf(mapPOIItem.getTag()));
+
 
         // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
         description.setOnClickListener(new View.OnClickListener() {
