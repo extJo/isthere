@@ -6,16 +6,12 @@
 
     <include layout="@layout/toolbar"/>
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/map_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="?attr/actionBarSize">
-        <net.daum.mf.map.api.MapView
-            android:id="@+id/map_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/review_dsc"
