@@ -51,8 +51,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     MapView mapView;
     RelativeLayout description;
 
-    private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659,129.08421629999998);
-    private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979,129.089385);
+    private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
+    private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
 
     @Override
@@ -172,11 +172,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void onFinish() {
             }
+
             @Override
             public void onCancel() {
             }
         });
-
 
 
         // 여기서 box의 content를 바꾸면 변경가능
@@ -390,7 +390,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
                 // Actual drawing markers.
                 markers = new ArrayList<MapPOIItem>();
-                for(IsThereReview review: reviews) {
+                for (IsThereReview review : reviews) {
                     review.printValues();
 
                     // 커스텀 마커 추가
@@ -401,7 +401,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             }
         });
     }
-
 
 
     /*

@@ -10,16 +10,23 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="170dp">
 
-        <net.daum.mf.map.api.MapView
+        <RelativeLayout
             android:id="@+id/location_map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <ImageView
+        <LinearLayout
             android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_pin"
-            android:layout_centerInParent="true"/>
+            android:layout_height="45dp"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_pin"
+                />
+
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -73,7 +80,7 @@
             android:id="@+id/location_address"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:text="부산광역시 금정구 장전동 400-51"
+            android:text="부산광역시 금정구 장전동 399-10"
             android:textSize="15dp"
             android:textColor="@color/half_black"
             android:textAlignment="gravity"

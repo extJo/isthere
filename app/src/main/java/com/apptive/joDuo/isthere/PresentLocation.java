@@ -1,6 +1,11 @@
 package com.apptive.joDuo.isthere;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,9 +22,6 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
 /**
  * Created by joseong-yun on 2017. 6. 7..
  */
@@ -30,6 +32,7 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     String apikey;
     double latitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().latitude;
     double longitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().longitude;
+    int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
 
@@ -56,10 +59,32 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         locationMapView.setMapViewEventListener(this);
         locationMapView.setPOIItemEventListener(this);
 
-        currentLocation.setOnClickListener(new View.OnClickListener() {
+
+        // permission value check
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // permission check
+        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            // 권한 없음
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        } else {
+            // 권한 있음
+
+        }
+
+
+        currentLocation.setOnClickListener(findMyLocation);
+
+        setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                locationMapView.getCurrentLocationTrackingMode();
+                Intent intent = new Intent();
+                intent.putExtra("addressName", locationName.getText());
+
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 
@@ -69,6 +94,11 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
                 // Need implementation
             }
         });
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
     }
 
     private void showAll() {
@@ -118,21 +148,22 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     @Override
     public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
         // button disable
-        setLocationBtn.setEnabled(TRUE);
+        setLocationBtn.setEnabled(false);
         setLocationBtn.setBackgroundColor(getResources().getColor(R.color.gray_cus));
     }
 
     @Override
     public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
         // button reset
-        setLocationBtn.setEnabled(FALSE);
+        setLocationBtn.setEnabled(true);
         setLocationBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-
-        doSearch();
     }
 
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+        doSearch();
+
         locationName.setText(addressItem.old_name);
 
         if (addressItem.new_name.equals("")) {
@@ -168,8 +199,9 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         search.searchDetailAddress(getApplicationContext(), latitude, longitude, apikey, new OnFinishSearchListener() {
             @Override
             public void onSuccess(AddressItem itemList) {
-                // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저
+                // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저장
                 addressItem = itemList;
+
             }
 
             @Override
@@ -178,5 +210,12 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         });
     }
 
+    private View.OnClickListener findMyLocation = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // 지도화면 중심을 단말의 현재 위치로 이동시켜줌
+            locationMapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+        }
+    };
 
 }
