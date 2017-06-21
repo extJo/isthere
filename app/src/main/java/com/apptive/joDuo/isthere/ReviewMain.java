@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 import net.daum.mf.map.api.CameraPosition;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.CancelableCallback;
+import net.daum.mf.map.api.MapLayout;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
@@ -50,6 +52,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     MapPoint pnu;
     MapView mapView;
     RelativeLayout description;
+    ViewGroup mapViewContainer;
 
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
@@ -65,21 +68,35 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         description = (RelativeLayout) findViewById(R.id.review_dsc);
 
 
-
-        /* daum map api 부분 */
-
-        pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
-
-
-        mapView = (MapView) findViewById(R.id.map_view);
-        mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
-        mapView.setMapViewEventListener(this);
-        mapView.setPOIItemEventListener(this);
-
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /* daum map api 부분 */
+
+        pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
+
+        MapLayout mapLayout = new MapLayout(this);
+        mapView = mapLayout.getMapView();
+
+
+        mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
+        mapView.setMapViewEventListener(this);
+        mapView.setPOIItemEventListener(this);
+
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_layout);
+        mapViewContainer.addView(mapLayout);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapViewContainer.removeAllViews();
     }
 
     /* map 관련 method */
@@ -351,7 +368,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         }
     }
 
-
     // dialog event listener
 
     private View.OnClickListener leftListener = new View.OnClickListener() {
@@ -368,7 +384,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     /*
     Draw markers on Map using Thread.
- */
+    */
     public void drawReviewMarkers(final String category, final String detailCategory, final String userLocation) {
         AsyncTask.execute(new Runnable() {
             @Override
