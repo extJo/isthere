@@ -28,6 +28,7 @@
         <activity android:name=".LoginPage"/>
         <activity android:name=".RegisterLogin"/>
         <activity android:name=".PresentLocation"/>
+        <activity android:name=".ReviewList"/>
     </application>
 
 

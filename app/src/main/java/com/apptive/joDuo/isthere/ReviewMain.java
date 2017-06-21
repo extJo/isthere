@@ -66,6 +66,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
+        description.setOnClickListener(moveReviewList);
 
 
         /* menu button lib 부분 */
@@ -74,6 +75,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         initMenuFragment();
     }
 
+    // 다음맵이 한 앱에서 2개 이상 부를 수 없기때문에 view cycle을 통해서 map view를 동적으로 추가
     @Override
     protected void onResume() {
         super.onResume();
@@ -379,6 +381,15 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private View.OnClickListener rightListener = new View.OnClickListener() {
         public void onClick(View v) {
             category.dismiss();
+        }
+    };
+
+    // description에 대한 click listener
+    private View.OnClickListener moveReviewList = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(ReviewMain.this, ReviewList.class);
+            startActivity(intent);
         }
     };
 
