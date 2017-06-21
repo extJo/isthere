@@ -11,11 +11,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androidquery.AQuery;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -24,6 +23,7 @@ import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
 import net.daum.mf.map.api.CameraPosition;
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.CancelableCallback;
+import net.daum.mf.map.api.MapLayout;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapPointBounds;
@@ -48,11 +48,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private IsThereHttpHelper httpHelper = null;
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
-    private AQuery aQuery = new AQuery(this);
 
     MapPoint pnu;
     MapView mapView;
     RelativeLayout description;
+    ViewGroup mapViewContainer;
 
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
@@ -67,20 +67,36 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
 
-        /* daum map api 부분 */
-
-        pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
-
-
-        mapView = (MapView) findViewById(R.id.map_view);
-        mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
-        mapView.setMapViewEventListener(this);
-        mapView.setPOIItemEventListener(this);
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /* daum map api 부분 */
+
+        pnu = MapPoint.mapPointWithGeoCoord(35.23, 129.07);
+
+        MapLayout mapLayout = new MapLayout(this);
+        mapView = mapLayout.getMapView();
+
+
+        mapView.setDaumMapApiKey(getString(R.string.daum_map_key));
+        mapView.setMapViewEventListener(this);
+        mapView.setPOIItemEventListener(this);
+
+        mapViewContainer = (ViewGroup) findViewById(R.id.map_layout);
+        mapViewContainer.addView(mapLayout);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapViewContainer.removeAllViews();
     }
 
     /* map 관련 method */
@@ -182,12 +198,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
-        ImageView reviewIV = (ImageView) findViewById(R.id.review_image);
 
         title.setText(mapPOIItem.getItemName());
-        // Get image with ReviewID
-        aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + mapPOIItem.getTag());
-
 
         // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
         description.setOnClickListener(new View.OnClickListener() {
