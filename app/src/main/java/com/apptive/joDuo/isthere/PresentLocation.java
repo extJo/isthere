@@ -88,12 +88,6 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
             }
         });
 
-        setLocationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Need implementation
-            }
-        });
     }
 
     @Override

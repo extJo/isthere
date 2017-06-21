@@ -100,7 +100,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     }
 
     /* map 관련 method */
-
     private void showAll() {
         int padding = 10;
         float minZoomLevel = 2;

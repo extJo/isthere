@@ -94,10 +94,7 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp"
                 android:textStyle="bold"
-
-
-                android:clickable="true"
-                /><!--for testing-->
+                />
 
             <TextView
                 android:id="@+id/set_location_text"
