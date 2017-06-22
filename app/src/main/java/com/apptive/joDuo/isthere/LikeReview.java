@@ -29,12 +29,13 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
 
+    private ArrayList<IsThereReview> likeReviews = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.like_review);
-
 
 
         /* menu button lib */

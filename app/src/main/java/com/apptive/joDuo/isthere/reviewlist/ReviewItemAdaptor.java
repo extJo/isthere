@@ -2,6 +2,7 @@ package com.apptive.joDuo.isthere.reviewlist;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,12 @@ import android.widget.ToggleButton;
 import com.androidquery.AQuery;
 import com.apptive.joDuo.isthere.IsThereHttpHelper;
 import com.apptive.joDuo.isthere.IsThereReview;
+import com.apptive.joDuo.isthere.MainActivity;
 import com.apptive.joDuo.isthere.R;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.TimerTask;
 
 /**
  * Created by joseong-yun on 2017. 6. 21..
@@ -24,14 +27,19 @@ import java.util.ArrayList;
 
 public class ReviewItemAdaptor extends BaseAdapter {
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
-//    private ArrayList<ReviewItem> listViewItemList = new ArrayList<ReviewItem>() ;
-    private ArrayList<IsThereReview> listViewItemList = null;
+    private ArrayList<IsThereReviewHolder> listViewItemList = new ArrayList<>();
+    private ArrayList<IsThereReview> likeReviews = null;
+    private ArrayList<IsThereReview> selectedReviews = null;
+    private ArrayList<String> likeReviewIDs = null;
+    private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
     private AQuery aQuery = null;
 
 
     // ListViewAdapter의 생성자
     public ReviewItemAdaptor(Context context) {
         aQuery = new AQuery(context);
+
+
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
@@ -56,23 +64,24 @@ public class ReviewItemAdaptor extends BaseAdapter {
         ImageView iconImageView = (ImageView) convertView.findViewById(R.id.item_picture);
         TextView titleTextView = (TextView) convertView.findViewById(R.id.item_title);
         TextView descTextView = (TextView) convertView.findViewById(R.id.item_description);
-//        final ToggleButton likeToogleBtn = (ToggleButton) convertView.findViewById(R.id.item_like);
+        final ToggleButton likeToogleBtn = (ToggleButton) convertView.findViewById(R.id.item_like);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        final IsThereReview reviewItem = listViewItemList.get(position);
+        final IsThereReviewHolder item = listViewItemList.get(pos);
 
         // 아이템 내 각 위젯에 데이터 반영
-        aQuery.id(iconImageView).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + reviewItem.getReviewId());
-        titleTextView.setText(reviewItem.getName());
-        descTextView.setText(reviewItem.getInformation());
-//        likeToogleBtn.setChecked(reviewItem.get());
+        aQuery.id(iconImageView).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + item.review.getReviewId());
+        titleTextView.setText(item.review.getName());
+        descTextView.setText(item.review.getInformation());
 
-//        likeToogleBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                reviewItem.setLike(likeToogleBtn.isChecked());
-//            }
-//        });
+        likeToogleBtn.setChecked(item.isLiked);
+
+        likeToogleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                item.isLiked = !item.isLiked;
+            }
+        });
 
         return convertView;
     }
@@ -90,25 +99,50 @@ public class ReviewItemAdaptor extends BaseAdapter {
     }
 
     public void setListViewItemList(ArrayList<IsThereReview> reviews) {
-        listViewItemList = reviews;
+
+        selectedReviews = reviews;
+
+        AsyncTask.execute(new TimerTask() {
+            @Override
+            public void run() {
+                if (httpHelper.getIdToken() != null) { // if in login
+                    likeReviews = httpHelper.getLikeReviews(httpHelper.getUserId());
+
+                    // Make the like Review IDs array
+                    ArrayList<String> likeReviewIDs = new ArrayList<String>();
+                    for (IsThereReview aReview : likeReviews) {
+                        likeReviewIDs.add(aReview.getReviewId());
+                    }
+
+                    // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
+                    for(IsThereReview aReview: selectedReviews) {
+                        boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());
+                        listViewItemList.add(new IsThereReviewHolder(aReview, isLiked));
+                    }
+                }
+            }
+        });
     }
 
-    // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    public void addItem(Drawable icon, String title, String desc, Boolean like) {
-        ReviewItem item = new ReviewItem();
-
-        item.setPicture(icon);
-        item.setTitle(title);
-        item.setDescription(desc);
-        item.setLike(like);
-
-//        listViewItemList.add(item);
-    }
-
-    public ArrayList<IsThereReview> getItems() {
+    public ArrayList<IsThereReviewHolder> getItems() {
         return listViewItemList;
     }
 
 
+    public static class IsThereReviewHolder {
+        public IsThereReview review;
+        public boolean isLiked = false;
+
+        public IsThereReviewHolder(IsThereReview review, boolean isLiked) {
+            this.review = review;
+            this.isLiked = isLiked;
+        }
+
+        public IsThereReviewHolder(IsThereReview review) {
+            this.review = review;
+        }
+
+
+    }
 
 }

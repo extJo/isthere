@@ -40,8 +40,9 @@ public class IsThereHttpHelper {
     public static String basicURLStr = "http://52.78.33.177:9000";
     public static String gettingReviewsURLStr = "/reviews/";
     public static String postingReviewURLStr = "/reviews/review";
-    public static String postingLikeReviewURLStr = "/review/like";
-    public static String deletingLikeReviewURLStr = "/review/dislike";
+    public static String gettingLikeReviews = "/reviews/likes/";
+    public static String postingLikeReviewURLStr = "/reviews/review/like";
+    public static String deletingLikeReviewURLStr = "/reviews/review/dislike";
     public static String gettingReviewCommentURLStr = "/comments/";
     public static String postingCommentURLStr = "/comment";
     public static String deletingCommentURLStr = "/comment";
@@ -54,8 +55,10 @@ public class IsThereHttpHelper {
     public static String gettingImage = "/reviews/image/get/";
 
 
+
     /// Authorization ///
     private String idToken = null;
+    private String userId = null;
 
 
     public enum ReviewKey {
@@ -63,18 +66,10 @@ public class IsThereHttpHelper {
         COMMENT_ID, COMMENT, LIKE_POINT, DISLIKE_POINT, DATE
     }
 
-    ;
-
-    /**
-      *  Get reviews depending on location and category.
-     **/
-    public ArrayList<HashMap<ReviewKey, String>> getReviews(String category, String detailCategory, String loc) throws IOException {
-
-        String realURL = basicURLStr + gettingReviewsURLStr + URLEncoder.encode(category, "UTF-8") + "?detail=" +
-                URLEncoder.encode(detailCategory, "UTF-8") + "&loc=" +
-                URLEncoder.encode(loc, "UTF-8");
+    public ArrayList<HashMap<ReviewKey, String>> getBasicReviews(String realURL) throws IOException {
 
         final ArrayList<HashMap<ReviewKey, String>> reviewsArray = new ArrayList<>();
+
 
         getJson(realURL, 200, new OnHttpCallback() {
             @Override
@@ -146,6 +141,17 @@ public class IsThereHttpHelper {
         });
 
         return reviewsArray;
+    }
+
+    /**
+      *  Get reviews depending on location and category.
+     **/
+    public ArrayList<HashMap<ReviewKey, String>> getReviews(String category, String detailCategory, String loc) throws IOException {
+        String realURL = basicURLStr + gettingReviewsURLStr + URLEncoder.encode(category, "UTF-8") + "?detail=" +
+                URLEncoder.encode(detailCategory, "UTF-8") + "&loc=" +
+                URLEncoder.encode(loc, "UTF-8");
+
+        return getBasicReviews(realURL);
     }
 
 
@@ -540,6 +546,47 @@ public class IsThereHttpHelper {
         return isSucceed;
     }
 
+
+    public ArrayList<IsThereReview> getLikeReviews(String userID) {
+
+        String urlStr = basicURLStr + gettingLikeReviews + userID;
+        ArrayList<HashMap<ReviewKey, String>> reviewsArray = null;
+
+
+        try {
+            reviewsArray = getBasicReviews(urlStr);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(reviewsArray == null) {
+            return null;
+        }
+
+        // Allocating reviews.
+        ArrayList<IsThereReview> reviews = new ArrayList<>();
+
+        for (HashMap<ReviewKey, String> value : reviewsArray) {
+            IsThereReview newReview = new IsThereReview(
+                    value.get(ReviewKey.REVIEW_ID),
+                    value.get(ReviewKey.NAME),
+                    value.get(ReviewKey.INFORMATION),
+                    value.get(ReviewKey.LOCATION),
+                    value.get(ReviewKey.LOCATION_CORD_X),
+                    value.get(ReviewKey.LOCATION_CORD_Y),
+                    value.get(ReviewKey.CATEGORY),
+                    value.get(ReviewKey.DETAIL_CATEGORY)
+            );
+
+            // Add a new review object into IsThereReview[].
+            reviews.add(newReview);
+        }
+
+
+        return reviews;
+    }
+
+
     /**
      * Post this review to a user's favorite review.
      *
@@ -700,7 +747,8 @@ public class IsThereHttpHelper {
             jsonReader.beginObject();
             jsonReader.skipValue(); // id_token
             idToken = jsonReader.nextString();
-
+            jsonReader.skipValue(); // id
+            userId = jsonReader.nextString();
         } else {
             // fail
             loginResult = false;
@@ -876,6 +924,7 @@ public class IsThereHttpHelper {
     public String getIdToken() {
         return idToken;
     }
+    public String getUserId() { return userId; }
     //// Getter - end ////
 
     /**

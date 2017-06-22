@@ -64,7 +64,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
-    ImageView tempIV = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,11 +72,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
-//        description.setOnClickListener(moveReviewList);
         description.setVisibility(View.INVISIBLE);
 
-        /////// for testing
-        tempIV = (ImageView) findViewById(R.id.review_image);
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
@@ -86,7 +82,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // Auto login
         SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("AUTO", false)) {
+        if (sharedPreferences.getBoolean("AUTO", false)) { // if AUTO LOGIN is checked then,
             final String userID = sharedPreferences.getString("ID", "");
             final String userPW = sharedPreferences.getString("PW", "");
             AsyncTask.execute(new TimerTask() {
@@ -95,7 +91,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                     if(httpHelper.getIdToken() == null) {
                         try {
                             final boolean isLoginSucceed = httpHelper.postLogin(userID, userPW);
-
                             runOnUiThread(new TimerTask() {
                                 @Override
                                 public void run() {
@@ -104,7 +99,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                                     } else {
                                         Toast.makeText(getBaseContext(), "자동로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                     }
-
                                 }
                             });
 
@@ -241,8 +235,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // show
         description.setVisibility(View.VISIBLE);
         description.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
-        tempIV.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
-
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);

@@ -34,7 +34,6 @@ public class ReviewList extends AppCompatActivity {
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
     private ListView listview;
     private ReviewItemAdaptor adapter;
-    private AQuery aQuery = new AQuery(this);
 
     private String address = null;
     private String category = null;
@@ -80,10 +79,6 @@ public class ReviewList extends AppCompatActivity {
                 }
             }
         });
-
-//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다라 마바사", "아자차카타바파", false);
-//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다asdd", "아Asdads바파", false);
-//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가adsd바사", "아asdsaddadasaddas", false);
 
 
 
@@ -145,17 +140,4 @@ public class ReviewList extends AppCompatActivity {
         }
     }
 
-    private void getSelectedReviews() {
-        AsyncTask.execute(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    selectedReviews = httpHelper.getIsThereReviews(category, detailCategory, address);
-                } catch (IOException e) {
-                    selectedReviews = null;
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 }
