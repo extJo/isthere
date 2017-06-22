@@ -52,6 +52,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
     private AQuery aQuery = new AQuery(this);
+    private boolean isReviewSelected = false;
 
     MapPoint pnu;
     MapView mapView;
@@ -61,7 +62,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
-
+    ImageView tempIV = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +71,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
-        description.setOnClickListener(moveReviewList);
+//        description.setOnClickListener(moveReviewList);
+        description.setVisibility(View.INVISIBLE);
 
+        /////// for testing
+        tempIV = (ImageView) findViewById(R.id.review_image);
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
@@ -118,30 +122,30 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     // 맵이 초기화 된 이후에 마커가 지도에 떠야 오류가 나지 않음
     public void onMapViewInitialized(MapView mapView) {
         // 커스텀 마커 추가
-        MapPOIItem customMarker = new MapPOIItem();
-        customMarker.setItemName("Custom Marker");
-        customMarker.setTag(0);
-        customMarker.setMapPoint(PUSAN_UNI_DOOR);
-        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-        customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
-        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
-        customMarker.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
-        mapView.addPOIItem(customMarker);
-
-        MapPOIItem customMarker1 = new MapPOIItem();
-        customMarker1.setItemName("Custom Marker1");
-        customMarker1.setTag(1);
-        customMarker1.setMapPoint(PUSAN_UNI_STATION);
-        customMarker1.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-        customMarker1.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
-        customMarker1.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
-        customMarker1.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
-        mapView.addPOIItem(customMarker1);
+//        MapPOIItem customMarker = new MapPOIItem();
+//        customMarker.setItemName("Custom Marker");
+//        customMarker.setTag(0);
+//        customMarker.setMapPoint(PUSAN_UNI_DOOR);
+//        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+//        customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
+//        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+//        customMarker.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
+//        mapView.addPOIItem(customMarker);
+//
+//        MapPOIItem customMarker1 = new MapPOIItem();
+//        customMarker1.setItemName("Custom Marker1");
+//        customMarker1.setTag(1);
+//        customMarker1.setMapPoint(PUSAN_UNI_STATION);
+//        customMarker1.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+//        customMarker1.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
+//        customMarker1.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+//        customMarker1.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
+//        mapView.addPOIItem(customMarker1);
 
         // showAll();
 
         // Drawing review markers.
-        drawReviewMarkers("테스트", "", "123");
+        drawReviewMarkers("테스트", "", "");
     }
 
     @Override
@@ -200,6 +204,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
+        // show
+        description.setVisibility(View.VISIBLE);
+        description.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
+        tempIV.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
+
 
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
@@ -208,7 +217,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         title.setText(mapPOIItem.getItemName());
         // Set review image
         aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + String.valueOf(mapPOIItem.getTag()));
-
 
         // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
         description.setOnClickListener(new View.OnClickListener() {
@@ -398,11 +406,31 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         public void onClick(View view) {
             Intent intent = new Intent(ReviewMain.this, ReviewList.class);
 
-            //// 넘겨줄 정보 필요 ////
-
             startActivity(intent);
         }
     };
+
+    private View.OnClickListener makeDescriptionClickListener(final MapPOIItem poiItem) {
+        return (new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReviewMain.this, ReviewList.class);
+
+                String markerAddress = ((IsThereReview) poiItem.getUserObject()).getLocation();
+                String category = ((IsThereReview) poiItem.getUserObject()).getCategory();
+                String detailCategory = ((IsThereReview) poiItem.getUserObject()).getDetailCategory();
+                intent.putExtra("address", markerAddress);
+                intent.putExtra("category", category);
+                intent.putExtra("detailCategory", detailCategory);
+
+                startActivity(intent);
+            }
+        });
+    }
+
+    public ArrayList<IsThereReview> getReviews() {
+        return reviews;
+    }
 
     /*
     Draw markers on Map using Thread.
@@ -451,6 +479,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // Make MapMarker
         MapPOIItem newMarker = new MapPOIItem();
         newMarker.setItemName(review.getName());
+        newMarker.setUserObject(review);
         newMarker.setTag(tag);
         newMarker.setMapPoint(newPoint);
         newMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);

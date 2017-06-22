@@ -1,5 +1,10 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +15,14 @@ import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.androidquery.AQuery;
 import com.apptive.joDuo.isthere.reviewlist.ReviewItemAdaptor;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuParams;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.TimerTask;
 
 /**
  * Created by joseong-yun on 2017. 6. 21..
@@ -21,27 +31,59 @@ import com.yalantis.contextmenu.lib.MenuParams;
 public class ReviewList extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
+    private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
+    private ListView listview;
+    private ReviewItemAdaptor adapter;
+    private AQuery aQuery = new AQuery(this);
 
+    private String address = null;
+    private String category = null;
+    private String detailCategory = null;
+    private ArrayList<IsThereReview> selectedReviews;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.review_list);
 
-        ListView listview ;
-        ReviewItemAdaptor adapter;
+        Intent intent = getIntent(); // from ReviewMain
+        address = intent.getStringExtra("address");
+        category = intent.getStringExtra("category");
+        detailCategory = intent.getStringExtra("detailCategory");
 
         // Adapter 생성
-        adapter = new ReviewItemAdaptor() ;
+        adapter = new ReviewItemAdaptor(this) ;
 
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.review_listview);
-        listview.setAdapter(adapter);
+        AsyncTask.execute(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    selectedReviews = httpHelper.getIsThereReviews(category, detailCategory, address);
+                    adapter.setListViewItemList(selectedReviews);
 
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다라 마바사", "아자차카타바파", false);
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다asdd", "아Asdads바파", false);
-        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가adsd바사", "아asdsaddadasaddas", false);
+                    runOnUiThread(new TimerTask() {
+                        @Override
+                        public void run() {
+                            listview.setAdapter(adapter);
+                        }
+                    });
+                } catch (IOException e) {
+                    selectedReviews = null;
+                    e.printStackTrace();
+                }
+            }
+        });
 
+//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다라 마바사", "아자차카타바파", false);
+//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가나다asdd", "아Asdads바파", false);
+//        adapter.addItem(getResources().getDrawable(R.drawable.ic_picture), "가adsd바사", "아asdsaddadasaddas", false);
 
 
 
@@ -51,7 +93,14 @@ public class ReviewList extends AppCompatActivity {
         initMenuFragment();
     }
 
-        /* menu button lib method */
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+    }
+
+    /* menu button lib method */
 
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
@@ -70,7 +119,7 @@ public class ReviewList extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        mToolBarTextView.setText("주소 블라블라");
+        mToolBarTextView.setText(address);
     }
 
     @Override
@@ -94,5 +143,19 @@ public class ReviewList extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    private void getSelectedReviews() {
+        AsyncTask.execute(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    selectedReviews = httpHelper.getIsThereReviews(category, detailCategory, address);
+                } catch (IOException e) {
+                    selectedReviews = null;
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

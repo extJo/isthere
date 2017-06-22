@@ -13,6 +13,7 @@
         android:layout_marginTop="?attr/actionBarSize">
     </FrameLayout>
 
+
     <RelativeLayout
         android:id="@+id/review_dsc"
         android:layout_width="match_parent"
@@ -20,7 +21,9 @@
         android:layout_alignParentBottom="true"
         android:layout_margin="20dp"
         android:background="@drawable/roundcorner_edge"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:clickable="true"
+        android:focusableInTouchMode="true">
 
         <ImageView
             android:id="@+id/review_image"
@@ -31,7 +34,7 @@
             android:layout_margin="20dp"
             android:background="@drawable/roundcorner_fullblue"
             android:padding="10dp"
-            android:src="@drawable/ic_gps"/>
+            android:src="@drawable/ic_gps" />
 
         <TextView
             android:id="@+id/review_name"

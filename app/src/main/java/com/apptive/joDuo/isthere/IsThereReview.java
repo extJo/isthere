@@ -89,6 +89,8 @@ public class IsThereReview {
     }
 
 
+
+
     // ----------------------------------------------- //
     /*
         Getter
@@ -124,6 +126,7 @@ public class IsThereReview {
     public String getReviewId() {
         return reviewId;
     }
+
     // ----------------------------------------------- //
 
     public static class Comment {

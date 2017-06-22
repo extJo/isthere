@@ -1,11 +1,8 @@
 package com.apptive.joDuo.isthere;
 
 import android.graphics.Bitmap;
-import android.media.Image;
-import android.renderscript.ScriptGroup;
 import android.util.JsonReader;
 import android.util.Log;
-import android.util.StringBuilderPrinter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,19 +70,21 @@ public class IsThereHttpHelper {
      **/
     public ArrayList<HashMap<ReviewKey, String>> getReviews(String category, String detailCategory, String loc) throws IOException {
 
-        String realURL = basicURLStr + gettingReviewsURLStr + "/" + URLEncoder.encode(category, "UTF-8") + "?detail=" + detailCategory + "&loc=" + loc;
+        String realURL = basicURLStr + gettingReviewsURLStr + URLEncoder.encode(category, "UTF-8") + "?detail=" +
+                URLEncoder.encode(detailCategory, "UTF-8") + "&loc=" +
+                URLEncoder.encode(loc, "UTF-8");
 
         final ArrayList<HashMap<ReviewKey, String>> reviewsArray = new ArrayList<>();
 
         getJson(realURL, 200, new OnHttpCallback() {
             @Override
             public void onSucceed(HttpURLConnection connection) {
-
+                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "getReviews succeed!");
             }
 
             @Override
             public void onFailed(boolean isIOException) {
-                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "getReview2 failed!");
+                LogDebuger.debugPrinter(LogDebuger.TagType.HTTP_HELPER, "getReviews failed!");
             }
 
             @Override
