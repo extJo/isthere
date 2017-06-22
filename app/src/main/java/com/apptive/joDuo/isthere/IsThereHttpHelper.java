@@ -66,13 +66,13 @@ public class IsThereHttpHelper {
     ;
 
     /**
-      *  Get reviews depending on location and category.
+     * Get reviews depending on location and category.
      **/
     public ArrayList<HashMap<ReviewKey, String>> getReviews(String category, String detailCategory, String loc) throws IOException {
 
         String realURL = basicURLStr + gettingReviewsURLStr + URLEncoder.encode(category, "UTF-8") + "?detail=" +
-                URLEncoder.encode(detailCategory, "UTF-8") + "&loc=" +
-                URLEncoder.encode(loc, "UTF-8");
+            URLEncoder.encode(detailCategory, "UTF-8") + "&loc=" +
+            URLEncoder.encode(loc, "UTF-8");
 
         final ArrayList<HashMap<ReviewKey, String>> reviewsArray = new ArrayList<>();
 
@@ -150,9 +150,9 @@ public class IsThereHttpHelper {
 
 
     /**
-     *  Post a review
-     *  If succeed, return the registered reviewId not -1
-     *  If failed, return -1
+     * Post a review
+     * If succeed, return the registered reviewId not -1
+     * If failed, return -1
      **/
     public long postReview(String location, double[] locationPoint, String name, String information, String category, String detailCategory) {
         boolean postResult = true;
@@ -249,8 +249,6 @@ public class IsThereHttpHelper {
             connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
 
-
-
             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
             outputStream.writeBytes(twoHyphens + boundary + crlf);
             outputStream.writeBytes("Content-Disposition: form-data; name=\"" + attachmentName + "\";filename=\"" + attachmentFileName + "\"" + crlf);
@@ -300,19 +298,15 @@ public class IsThereHttpHelper {
         }
 
 
-
         return isSucceed;
     }
 
     /**
-     *
      * @param reviewID
      * @param userId
      * @param comment
      * @return postResult
-     * @throws IOException
-     *
-     * Post a review comment using IDs.
+     * @throws IOException Post a review comment using IDs.
      */
     public boolean postReviewComment(String reviewID, String userId, String comment) throws IOException {
 
@@ -644,6 +638,7 @@ public class IsThereHttpHelper {
 
     /**
      * Post a login information. And receive <br>id_token</br> for authorization.
+     *
      * @param id
      * @param password
      * @return login has be done in success with boolean value.
@@ -713,7 +708,7 @@ public class IsThereHttpHelper {
 
 
     /**
-        Post a new account information for creating a new account.
+     * Post a new account information for creating a new account.
      **/
     public boolean postCreateNewAccount(String email, String password, String nickname) throws IOException {
         // Login success or not
@@ -769,6 +764,7 @@ public class IsThereHttpHelper {
 
     /**
      * Get categories from server.
+     *
      * @return ArrayList including categories...
      */
     public ArrayList<ArrayList<String>> getCategories() {
@@ -819,23 +815,10 @@ public class IsThereHttpHelper {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //// Using IsThereReview Object ////
+
     /**
-        Update Comments using IsThereReview object.
+     * Update Comments using IsThereReview object.
      **/
     public void updateComments(IsThereReview review) throws IOException {
         review.setComments(getReviewComments(review.getReviewId()));
@@ -845,21 +828,21 @@ public class IsThereHttpHelper {
 
         ArrayList<IsThereReview> reviews = null;
 
-         ArrayList<HashMap<ReviewKey, String>> reviewsArray = getReviews(category, detailCategory, location);
+        ArrayList<HashMap<ReviewKey, String>> reviewsArray = getReviews(category, detailCategory, location);
         if (reviewsArray != null) {
             // Allocating reviews.
             reviews = new ArrayList<>();
 
             for (HashMap<ReviewKey, String> value : reviewsArray) {
                 IsThereReview newReview = new IsThereReview(
-                        value.get(ReviewKey.REVIEW_ID),
-                        value.get(ReviewKey.NAME),
-                        value.get(ReviewKey.INFORMATION),
-                        value.get(ReviewKey.LOCATION),
-                        value.get(ReviewKey.LOCATION_CORD_X),
-                        value.get(ReviewKey.LOCATION_CORD_Y),
-                        value.get(ReviewKey.CATEGORY),
-                        value.get(ReviewKey.DETAIL_CATEGORY)
+                    value.get(ReviewKey.REVIEW_ID),
+                    value.get(ReviewKey.NAME),
+                    value.get(ReviewKey.INFORMATION),
+                    value.get(ReviewKey.LOCATION),
+                    value.get(ReviewKey.LOCATION_CORD_X),
+                    value.get(ReviewKey.LOCATION_CORD_Y),
+                    value.get(ReviewKey.CATEGORY),
+                    value.get(ReviewKey.DETAIL_CATEGORY)
                 );
 
                 // Add a new review object into IsThereReview[].
@@ -877,6 +860,11 @@ public class IsThereHttpHelper {
         return idToken;
     }
     //// Getter - end ////
+
+    //// Setter ////
+    public void setIdToken() {
+        idToken = null;
+    }
 
     /**
      * Encrypt password using SHA-256.
@@ -915,6 +903,7 @@ public class IsThereHttpHelper {
 
         void onGetSucceed(JsonReader jsonReader);
     }
+
     private interface AfterHttpCallback {
         void onSucceed();
 
@@ -923,11 +912,13 @@ public class IsThereHttpHelper {
 
 
     private boolean postJsonObject(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callBack) {
-       return post(urlStr, "POST", true, jsonObject, responseCode, callBack);
+        return post(urlStr, "POST", true, jsonObject, responseCode, callBack);
     }
+
     private boolean delete(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
         return post(urlStr, "DELETE", true, jsonObject, responseCode, callback);
     }
+
     private boolean put(String urlStr, JSONObject jsonObject, int responseCode, OnHttpCallback callback) {
         return post(urlStr, "PUT", true, jsonObject, responseCode, callback);
     }
@@ -1011,8 +1002,6 @@ public class IsThereHttpHelper {
 
         return isSucceed;
     }
-
-
 
 
 }

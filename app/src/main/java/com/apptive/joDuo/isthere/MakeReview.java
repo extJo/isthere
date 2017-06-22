@@ -1,13 +1,11 @@
 package com.apptive.joDuo.isthere;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +28,7 @@ import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
 import com.yalantis.contextmenu.lib.interfaces.OnMenuItemClickListener;
+
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
@@ -39,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by joseong-yun on 2017. 5. 15..
@@ -70,6 +66,11 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private String currentLocation = "위치가 설정되어있지 않습니다";
 
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
+
+    private static final String[] Category1 = {"", "", "", "", "", "", "", "", ""};
+    private static final String[] Category2 = Category1;
+
+    private ArrayList<ArrayList<String>> categories;
 
     ImageView imageView;
 
@@ -123,19 +124,16 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void onClick(final
                                 View v) {
-                if(makeFinishButton.isEnabled()) {
+                if (makeFinishButton.isEnabled()) {
                     final String titleValue = title.getText().toString();
                     final String locationValue = location.getText().toString();
                     final String contentValue = content.getText().toString();
 
-
-
                     AsyncTask.execute(new TimerTask() {
                         @Override
                         public void run() {
-
                             long registeredReviewID = httpHelper.postReview(locationValue, coord, titleValue, contentValue, "테스트", "테스트2");
-                            if(registeredReviewID != -1) {
+                            if (registeredReviewID != -1) {
                                 uploadMultipart(String.valueOf(registeredReviewID));
                                 isUploadSucceed = true;
                             }
@@ -157,15 +155,27 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                                     }
                                 });
                             }
-
                         }
                     });
-
-
-
                 }
             }
         });
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                // All your network logic
+                // should be here
+
+                categories = MainActivity.GetHttpHelper().getCategories();
+                for (ArrayList<String> aCategories : categories) {
+                    for (int i = 0; i < aCategories.size(); i++) {
+                        Category1[i] = aCategories.get(i);
+                    }
+                }
+            }
+        });
+
 
         // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
         title.addTextChangedListener(titleWatcher);
@@ -251,8 +261,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         mToolBarTextView.setText("리뷰 작성");
     }
-
-
 
 
     @Override
@@ -360,7 +368,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
     /**
      * Show image chooser.
-     *
      */
     private void showImageChooser() {
         Intent intent = new Intent();
@@ -379,8 +386,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         cursor.close();
 
         cursor = getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
         cursor.moveToFirst();
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
         cursor.close();
@@ -548,8 +555,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     };
 
 
-
-
     /*
   * This is the method responsible for image upload
   * We need the full image path and the name for the image in this method
@@ -565,11 +570,11 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
             //Creating a multi part request
             new MultipartUploadRequest(this, uploadId, IsThereHttpHelper.basicURLStr + IsThereHttpHelper.postingImage + fileName)
-                    .addFileToUpload(path, "image") //Adding file
-                    .addParameter("name", fileName) //Adding text parameter to the request
-                    .setNotificationConfig(new UploadNotificationConfig())
-                    .setMaxRetries(2)
-                    .startUpload(); //Starting the upload
+                .addFileToUpload(path, "image") //Adding file
+                .addParameter("name", fileName) //Adding text parameter to the request
+                .setNotificationConfig(new UploadNotificationConfig())
+                .setMaxRetries(2)
+                .startUpload(); //Starting the upload
 
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();

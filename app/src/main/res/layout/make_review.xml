@@ -75,8 +75,8 @@
                 android:layout_weight="1"
                 app:ms_dropdown_max_height="350dp"
                 app:ms_dropdown_height="wrap_content"
-                app:ms_text_color="@color/white"
-                app:ms_background_color="@color/colorPrimary"
+                app:ms_text_color="@color/colorPrimary"
+                app:ms_background_color="@color/white"
                 />
 
             <com.jaredrummler.materialspinner.MaterialSpinner
@@ -87,8 +87,8 @@
                 android:layout_weight="1"
                 app:ms_dropdown_max_height="350dp"
                 app:ms_dropdown_height="wrap_content"
-                app:ms_text_color="@color/white"
-                app:ms_background_color="@color/colorPrimary"
+                app:ms_text_color="@color/colorPrimary"
+                app:ms_background_color="@color/white"
                 />
         </LinearLayout>
 
