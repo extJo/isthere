@@ -1,8 +1,9 @@
 package com.apptive.joDuo.isthere.reviewlist;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import com.apptive.joDuo.isthere.IsThereReview;
 import com.apptive.joDuo.isthere.MainActivity;
 import com.apptive.joDuo.isthere.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.TimerTask;
 
@@ -39,6 +39,7 @@ public class ReviewItemAdaptor extends BaseAdapter {
     public ReviewItemAdaptor(Context context) {
         aQuery = new AQuery(context);
     }
+
     public ReviewItemAdaptor(Context context, boolean like) {
         this(context);
         likeReview = like;
@@ -117,7 +118,7 @@ public class ReviewItemAdaptor extends BaseAdapter {
                         likeReviewIDs.add(aReview.getReviewId());
                     }
 
-                    if(selectedReviews == null) {
+                    if (selectedReviews == null) {
                         for (IsThereReview aReview : likeReviews) {
                             listViewItemList.add(new IsThereReviewHolder(aReview, true));
                         }
@@ -125,11 +126,18 @@ public class ReviewItemAdaptor extends BaseAdapter {
                     }
 
                     // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
-                    for(IsThereReview aReview: selectedReviews) {
+                    for (IsThereReview aReview : selectedReviews) {
                         boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());
                         listViewItemList.add(new IsThereReviewHolder(aReview, isLiked));
                     }
-                    thisAdapter.notifyDataSetChanged();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            thisAdapter.notifyDataSetChanged();
+
+                        }
+                    }, 0);
                 }
             }
         });

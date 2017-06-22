@@ -481,7 +481,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                     MapPOIItem newMarker = makeIsThereReviewMarker(review, Integer.parseInt(review.getReviewId()));
                     mapView.addPOIItem(newMarker);
                     markers.add(newMarker);
-                    System.out.println("=============================");
                 }
             }
         });

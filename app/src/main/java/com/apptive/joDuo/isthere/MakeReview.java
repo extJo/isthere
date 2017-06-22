@@ -1,13 +1,17 @@
 package com.apptive.joDuo.isthere;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -82,6 +86,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private static final int PICK_IMAGE_REQUEST = 2;
     private Uri imageFilePath;
     private Bitmap imageBitmap;
+
+    int MY_READ_EXTERNAL_STORAGE_PERMISSION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -388,10 +394,24 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
      * Show image chooser.
      */
     private void showImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "사진을 선택해 주세요"), PICK_IMAGE_REQUEST);
+
+        // permission value check
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        // permission check
+        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            // 권한 없음
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_READ_EXTERNAL_STORAGE_PERMISSION);
+
+        } else {
+            // 권한 있음
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "사진을 선택해 주세요"), PICK_IMAGE_REQUEST);
+        }
+
     }
 
 
