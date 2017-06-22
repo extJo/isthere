@@ -44,17 +44,18 @@ import java.util.UUID;
 
 public class MakeReview extends AppCompatActivity implements OnMenuItemClickListener {
 
-    private static final int LAUNCHED_ACTIVITY = 1;
+
 
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
-    private Boolean titleFlag = false;
-    private Boolean locationFlag = false;
-    private Boolean contentFlag = false;
-    private Boolean firstCat = false;
-    private Boolean secondCat = false;
-    private boolean isUploadSucceed = false;
+    private boolean titleFlag = false;
+    private boolean locationFlag = false;
+    private boolean contentFlag = false;
+    private boolean firstCat = false;
+    private boolean secondCat = false;
+    private boolean isImageUploaded = false;
+    private boolean isImageSelected = false;
 
     private EditText title;
     private TextView location;
@@ -74,7 +75,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
     ImageView imageView;
 
-    private static int PICK_IMAGE_REQUEST = 1;
+
+    private static final int GET_LOCATION = 1;
+    private static final int PICK_IMAGE_REQUEST = 2;
     private Uri imageFilePath;
     private Bitmap imageBitmap;
 
@@ -105,7 +108,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MakeReview.this, PresentLocation.class);
-                startActivityForResult(intent, LAUNCHED_ACTIVITY);
+                startActivityForResult(intent, GET_LOCATION);
             }
         });
 
@@ -132,14 +135,16 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                     AsyncTask.execute(new TimerTask() {
                         @Override
                         public void run() {
+                            // First, Upload some text of the review
                             long registeredReviewID = httpHelper.postReview(locationValue, coord, titleValue, contentValue, "테스트", "테스트2");
                             if (registeredReviewID != -1) {
+                                // Second, Upload the image.
                                 uploadMultipart(String.valueOf(registeredReviewID));
-                                isUploadSucceed = true;
+                                isImageUploaded = true;
                             }
 
                             // control Activity
-                            if (isUploadSucceed) {
+                            if (isImageUploaded) {
                                 runOnUiThread(new TimerTask() {
                                     @Override
                                     public void run() {
@@ -195,10 +200,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        TextView locationText = (TextView) findViewById(R.id.set_location_text);
-
-        if (requestCode == LAUNCHED_ACTIVITY) {
-            if (resultCode == RESULT_OK && data.getExtras().getBoolean("isSucceed")) {
+        if (requestCode == GET_LOCATION && resultCode == RESULT_OK) {
+            if (data.getExtras().getBoolean("isSucceed")) {
+                LogDebuger.debugPrinter(LogDebuger.TagType.MAKE_REVIEW, "Getting location succeed");
                 String result = data.getExtras().getString("addressName");
                 double latitude = data.getExtras().getDouble("latitude");
                 double longitude = data.getExtras().getDouble("longitude");
@@ -206,36 +210,33 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 coord[1] = longitude;
 
                 currentLocation = result;
-                locationText.setText(currentLocation);
-                locationText.setTextColor(getResources().getColor(R.color.background));
+                location.setText(currentLocation);
+                location.setTextColor(getResources().getColor(R.color.background));
+                locationFlag = true;
+                setEnableConfirmBT();
             } else {
                 currentLocation = "위치가 설정되어있지 않습니다";
-                locationText.setText(currentLocation);
-                locationText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                location.setText(currentLocation);
+                location.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                locationFlag = false;
+                setEnableConfirmBT();
             }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
         }
-
-
         // for image
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             imageFilePath = data.getData();
             try {
                 imageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageFilePath);
                 imageView.setImageBitmap(imageBitmap);
+                isImageSelected = true;
+                setEnableConfirmBT();
             } catch (IOException e) {
+                isImageSelected = false;
+                setEnableConfirmBT();
                 e.printStackTrace();
             }
-            locationText.setText(currentLocation);
-
         }
-
-
     }
-
-
-
 
 
     /* menu button lib method */
@@ -417,19 +418,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() != 0) {
-                titleFlag = true;
-            } else {
-                titleFlag = false;
-            }
-
-            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
-                makeFinishButton.setEnabled(true);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            } else {
-                makeFinishButton.setEnabled(false);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-            }
+            titleFlag = (charSequence.length() != 0) ? true : false;
+            setEnableConfirmBT();
         }
 
         @Override
@@ -446,19 +436,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() != 0) {
-                locationFlag = true;
-            } else {
-                locationFlag = false;
-            }
-
-            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
-                makeFinishButton.setEnabled(true);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            } else {
-                makeFinishButton.setEnabled(false);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-            }
+            locationFlag = (charSequence.length() != 0) ? true : false;
+            setEnableConfirmBT();
         }
 
         @Override
@@ -475,19 +454,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() != 0) {
-                contentFlag = true;
-            } else {
-                contentFlag = false;
-            }
-
-            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
-                makeFinishButton.setEnabled(true);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            } else {
-                makeFinishButton.setEnabled(false);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-            }
+            contentFlag = (charSequence.length() != 0) ? true : false;
+            setEnableConfirmBT();
         }
 
         @Override
@@ -504,19 +472,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() != 0) {
-                firstCat = true;
-            } else {
-                firstCat = false;
-            }
-
-            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
-                makeFinishButton.setEnabled(true);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            } else {
-                makeFinishButton.setEnabled(false);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-            }
+            firstCat = (charSequence.length() != 0) ? true : false;
+            setEnableConfirmBT();
         }
 
         @Override
@@ -533,19 +490,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            if (charSequence.length() != 0) {
-                secondCat = true;
-            } else {
-                secondCat = false;
-            }
-
-            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
-                makeFinishButton.setEnabled(true);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-            } else {
-                makeFinishButton.setEnabled(false);
-                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
-            }
+            secondCat = (charSequence.length() != 0) ? true : false;
+            setEnableConfirmBT();
         }
 
         @Override
@@ -581,4 +527,14 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         }
     }
 
+
+    private void setEnableConfirmBT() {
+        if (titleFlag && locationFlag && contentFlag && firstCat && secondCat && isImageSelected) {
+            makeFinishButton.setEnabled(true);
+            makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        } else {
+            makeFinishButton.setEnabled(false);
+            makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+        }
+    }
 }

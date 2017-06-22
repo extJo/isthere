@@ -13,9 +13,10 @@ public class LogDebuger {
     private static boolean httpHelper = true;
     private static boolean loginPage = true;
     private static boolean reviewMain = true;
+    private static boolean makeReview = true;
 
     enum TagType {
-        HTTP_HELPER, LOGIN_PAGE, REVIEW_MAIN
+        HTTP_HELPER, LOGIN_PAGE, REVIEW_MAIN, MAKE_REVIEW
     }
 
     public static void debugPrinter(TagType type, String str) {
@@ -31,6 +32,7 @@ public class LogDebuger {
             case HTTP_HELPER: result = "HttpHelper"; break;
             case LOGIN_PAGE: result = "LoginPage"; break;
             case REVIEW_MAIN: result = "ReviewMain"; break;
+            case MAKE_REVIEW: result = "MakeReview"; break;
         }
 
         return result;
@@ -43,6 +45,7 @@ public class LogDebuger {
             case HTTP_HELPER: result = httpHelper; break;
             case LOGIN_PAGE: result = loginPage; break;
             case REVIEW_MAIN: result = reviewMain; break;
+            case MAKE_REVIEW: result = makeReview; break;
         }
 
 
