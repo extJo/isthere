@@ -26,6 +26,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -55,11 +56,14 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private Boolean titleFlag = false;
     private Boolean locationFlag = false;
     private Boolean contentFlag = false;
+    private Boolean firstCat = false;
+    private Boolean secondCat = false;
     private boolean isUploadSucceed = false;
 
     private EditText title;
-    private RatingBar grade;
     private TextView location;
+    private MaterialSpinner firstSpinner;
+    private MaterialSpinner secondSpinner;
     private EditText content;
     private Button makeFinishButton;
     private double[] coord = {-1, -1};
@@ -79,10 +83,11 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         setContentView(R.layout.make_review);
 
         title = (EditText) findViewById(R.id.title_review);
-        grade = (RatingBar) findViewById(R.id.rating_review);
         location = (TextView) findViewById(R.id.set_location_text);
         content = (EditText) findViewById(R.id.text_review);
         makeFinishButton = (Button) findViewById(R.id.make_review_finish);
+        firstSpinner = (MaterialSpinner) findViewById(R.id.make_firstSpinner);
+        secondSpinner = (MaterialSpinner) findViewById(R.id.make_secondSpinner);
 
 
         imageView = (ImageView) findViewById(R.id.picture);
@@ -166,6 +171,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         title.addTextChangedListener(titleWatcher);
         location.addTextChangedListener(locationWatcher);
         content.addTextChangedListener(contentWatcher);
+        firstSpinner.addTextChangedListener(firstWatcher);
+        secondSpinner.addTextChangedListener(secondWatcher);
 
         /* menu button lib */
         fragmentManager = getSupportFragmentManager();
@@ -394,6 +401,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         }
     };
 
+    // textWatcher 부분
     private TextWatcher titleWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -408,7 +416,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 titleFlag = false;
             }
 
-            if (titleFlag && locationFlag && contentFlag) {
+            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
                 makeFinishButton.setEnabled(true);
                 makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             } else {
@@ -437,7 +445,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 locationFlag = false;
             }
 
-            if (titleFlag && locationFlag && contentFlag) {
+            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
                 makeFinishButton.setEnabled(true);
                 makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             } else {
@@ -466,7 +474,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 contentFlag = false;
             }
 
-            if (titleFlag && locationFlag && contentFlag) {
+            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
                 makeFinishButton.setEnabled(true);
                 makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             } else {
@@ -480,6 +488,66 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         }
     };
+
+    private TextWatcher firstWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() != 0) {
+                firstCat = true;
+            } else {
+                firstCat = false;
+            }
+
+            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
+                makeFinishButton.setEnabled(true);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                makeFinishButton.setEnabled(false);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+    private TextWatcher secondWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (charSequence.length() != 0) {
+                secondCat = true;
+            } else {
+                secondCat = false;
+            }
+
+            if (titleFlag && locationFlag && contentFlag && firstCat && secondCat) {
+                makeFinishButton.setEnabled(true);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            } else {
+                makeFinishButton.setEnabled(false);
+                makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
+
 
 
     /*

@@ -63,8 +63,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
-    ImageView tempIV = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,9 +72,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
         description.setVisibility(View.INVISIBLE);
-
-        /////// for testing
-        tempIV = (ImageView) findViewById(R.id.review_image);
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
@@ -144,9 +139,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     /* map 관련 method */
     private void showAll() {
-        int padding = 10;
-        float minZoomLevel = 2;
-        float maxZoomLevel = 5;
+        int padding = 1;
+        float minZoomLevel = 1;
+        float maxZoomLevel = 4;
         MapPointBounds bounds = new MapPointBounds(PUSAN_UNI_DOOR, PUSAN_UNI_STATION);
         mapView.moveCamera(CameraUpdateFactory.newMapPointBounds(bounds, padding, minZoomLevel, maxZoomLevel));
     }
@@ -179,6 +174,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // Drawing review markers.
         drawReviewMarkers("테스트", "", "");
+        showAll();
     }
 
     @Override
@@ -226,7 +222,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     public void onPOIItemSelected(MapView mapView, final MapPOIItem mapPOIItem) {
 
         // 핀이 선택되었을 떄, 뷰가 이동하는 코드
-        CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 2);
+        CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 0);
         mapView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, new CancelableCallback() {
             @Override
             public void onFinish() {
