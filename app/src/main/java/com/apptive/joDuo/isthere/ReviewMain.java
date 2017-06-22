@@ -2,7 +2,6 @@ package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -65,6 +64,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
     ImageView tempIV = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +73,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
-//        description.setOnClickListener(moveReviewList);
         description.setVisibility(View.INVISIBLE);
 
         /////// for testing
@@ -92,7 +91,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             AsyncTask.execute(new TimerTask() {
                 @Override
                 public void run() {
-                    if(httpHelper.getIdToken() == null) {
+                    if (httpHelper.getIdToken() == null) {
                         try {
                             final boolean isLoginSucceed = httpHelper.postLogin(userID, userPW);
 
@@ -224,7 +223,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     // pin이 터치 되었을 때 call되는 method
     @Override
-    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+    public void onPOIItemSelected(MapView mapView, final MapPOIItem mapPOIItem) {
 
         // 핀이 선택되었을 떄, 뷰가 이동하는 코드
         CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 2);
@@ -238,10 +237,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
-        // show
+        // show description
         description.setVisibility(View.VISIBLE);
-        description.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
-        tempIV.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
 
 
         // 여기서 box의 content를 바꾸면 변경가능
@@ -256,7 +253,16 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(ReviewMain.this, ReviewList.class);
 
+                String markerAddress = ((IsThereReview) mapPOIItem.getUserObject()).getLocation();
+                String category = ((IsThereReview) mapPOIItem.getUserObject()).getCategory();
+                String detailCategory = ((IsThereReview) mapPOIItem.getUserObject()).getDetailCategory();
+                intent.putExtra("address", markerAddress);
+                intent.putExtra("category", category);
+                intent.putExtra("detailCategory", detailCategory);
+
+                startActivity(intent);
             }
         });
 
@@ -434,34 +440,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         }
     };
 
-    // description에 대한 click listener
-    private View.OnClickListener moveReviewList = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent intent = new Intent(ReviewMain.this, ReviewList.class);
-
-            startActivity(intent);
-        }
-    };
-
-    private View.OnClickListener makeDescriptionClickListener(final MapPOIItem poiItem) {
-        return (new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ReviewMain.this, ReviewList.class);
-
-                String markerAddress = ((IsThereReview) poiItem.getUserObject()).getLocation();
-                String category = ((IsThereReview) poiItem.getUserObject()).getCategory();
-                String detailCategory = ((IsThereReview) poiItem.getUserObject()).getDetailCategory();
-                intent.putExtra("address", markerAddress);
-                intent.putExtra("category", category);
-                intent.putExtra("detailCategory", detailCategory);
-
-                startActivity(intent);
-            }
-        });
-    }
-
     public ArrayList<IsThereReview> getReviews() {
         return reviews;
     }
@@ -516,6 +494,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         newMarker.setMapPoint(newPoint);
         newMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
         newMarker.setCustomImageResourceId(R.drawable.custom_pin_blue);
+        newMarker.setShowCalloutBalloonOnTouch(false);
         newMarker.setCustomImageAnchor(0.5f, 0.5f);
 
         return newMarker;
