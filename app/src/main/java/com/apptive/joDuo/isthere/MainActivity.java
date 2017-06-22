@@ -1,11 +1,17 @@
 package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.jaredrummler.android.widget.AnimatedSvgView;
+
+import java.io.IOException;
+import java.util.TimerTask;
 
 //
 //AsyncTask.execute(new Runnable() {
@@ -44,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }, 3000); // 3000ms
+
+
+
     }
 
 

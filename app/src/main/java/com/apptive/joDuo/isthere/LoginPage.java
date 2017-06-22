@@ -3,6 +3,7 @@ package com.apptive.joDuo.isthere;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -43,14 +44,14 @@ public class LoginPage extends Dialog {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.context = context;
     }
-
-    private boolean loginEvent(String id, String password) {
-        return true;
-    }
-
-    public LoginPage() {
-        super(null);
-    }
+//
+//    private boolean loginEvent(String id, String password) {
+//        return true;
+//    }
+//
+//    public LoginPage() {
+//        super(null);
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,14 +88,33 @@ public class LoginPage extends Dialog {
         // checkbox 와 text를 한꺼번에 묶기위해서 clickListener 설정
         autoLoginLine.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 autoLoginBox.setChecked(!autoLoginBox.isChecked());
+            }
+        });
+        autoLoginBox.setOnCheckedChangeListener(new AnimCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onChange(AnimCheckBox animCheckBox, boolean b) {
+
+                // Auto login needs the user ID and Password
+                // So, we have to save two things in same time.
+                saveIDAndPW(b, false);
+                setAutoLogin(b);
+                saveIDBox.setChecked(b);
+
             }
         });
         saveIDLine.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 saveIDBox.setChecked(!saveIDBox.isChecked());
+            }
+        });
+        saveIDBox.setOnCheckedChangeListener(new AnimCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onChange(AnimCheckBox animCheckBox, boolean b) {
+                // Just saving the user ID, so boolean onlyID is true
+                saveIDAndPW(b, true);
             }
         });
 
@@ -103,6 +123,10 @@ public class LoginPage extends Dialog {
             @Override
             public void onClick(View v) {
                 doLogin(v, userID.getText().toString(), userPassword.getText().toString(), onLoginListener);
+                saveIDAndPW(autoLoginBox.isChecked() || saveIDBox.isChecked(), !autoLoginBox.isChecked());
+                setAutoLogin(autoLoginBox.isChecked());
+                System.out.println(autoLoginBox.isChecked() || saveIDBox.isChecked());
+                System.out.println(userPassword.getText().toString());
             }
         });
 
@@ -115,10 +139,52 @@ public class LoginPage extends Dialog {
             }
         });
 
+        fillID_PW();
+        fillCheckBox();
+
     }
 
     public void setOnLoginListener(OnLoginListener onLoginListener) {
         this.onLoginListener = onLoginListener;
+    }
+
+    private void saveIDAndPW(boolean saving, boolean onlyID) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        if (saving) {
+            editor.putBoolean("SAVING", true);
+            editor.putString("ID", userID.getText().toString());
+            if (!onlyID) {
+                editor.putString("PW", userPassword.getText().toString());
+            }
+        } else {
+            editor.putBoolean("SAVING", false);
+            editor.putString("ID", "");
+            editor.putString("PW", "");
+        }
+
+        editor.apply();
+    }
+
+    private void fillID_PW() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("SAVING", false)) { // default: false
+            userID.setText(sharedPreferences.getString("ID", ""));
+            userPassword.setText(sharedPreferences.getString("PW", ""));
+        }
+    }
+
+    private void setAutoLogin(boolean autoLogin) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("AUTO", autoLogin);
+        editor.apply();
+    }
+
+    private void fillCheckBox() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("login", Context.MODE_PRIVATE);
+        saveIDBox.setChecked(sharedPreferences.getBoolean("SAVING", false), true);
+        autoLoginBox.setChecked(sharedPreferences.getBoolean("AUTO", false), true);
     }
 
 
@@ -158,6 +224,7 @@ public class LoginPage extends Dialog {
     //// Callback interface ////
     public interface OnLoginListener {
         void onLoginSucceed();
+
         void onLoginFailed(boolean notMatched, boolean isException);
     }
 }

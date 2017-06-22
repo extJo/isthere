@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.TimerTask;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -90,7 +92,13 @@ public class RegisterLogin extends AppCompatActivity {
 
                                     try {
                                         if (httpHelper.postCreateNewAccount(emailStr, passwordStr, nicknameStr)) {
-//                                    finish();
+                                            runOnUiThread(new TimerTask() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(getBaseContext(), "이메일 인증을 통해 가입을 완료해주세요.", Toast.LENGTH_LONG).show();
+                                                    finish();
+                                                }
+                                            });
                                         }
                                     } catch (IOException e) {
                                     }

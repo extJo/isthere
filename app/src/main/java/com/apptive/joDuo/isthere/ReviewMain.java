@@ -1,6 +1,7 @@
 package com.apptive.joDuo.isthere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidquery.AQuery;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
@@ -35,6 +37,7 @@ import net.daum.mf.map.api.MapView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimerTask;
 
 
 /**
@@ -52,7 +55,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
     private AQuery aQuery = new AQuery(this);
-    private boolean isReviewSelected = false;
 
     MapPoint pnu;
     MapView mapView;
@@ -81,6 +83,38 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
+
+        // Auto login
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("AUTO", false)) {
+            final String userID = sharedPreferences.getString("ID", "");
+            final String userPW = sharedPreferences.getString("PW", "");
+            AsyncTask.execute(new TimerTask() {
+                @Override
+                public void run() {
+                    if(httpHelper.getIdToken() == null) {
+                        try {
+                            final boolean isLoginSucceed = httpHelper.postLogin(userID, userPW);
+
+                            runOnUiThread(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    if (isLoginSucceed) {
+                                        Toast.makeText(getBaseContext(), "자동로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(getBaseContext(), "자동로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // 다음맵이 한 앱에서 2개 이상 부를 수 없기때문에 view cycle을 통해서 map view를 동적으로 추가
@@ -457,8 +491,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                 // Actual drawing markers.
                 markers = new ArrayList<MapPOIItem>();
                 for (IsThereReview review : reviews) {
-                    review.printValues();
-
                     // 커스텀 마커 추가
                     MapPOIItem newMarker = makeIsThereReviewMarker(review, Integer.parseInt(review.getReviewId()));
                     mapView.addPOIItem(newMarker);
