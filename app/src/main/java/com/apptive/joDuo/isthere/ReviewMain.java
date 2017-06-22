@@ -1,10 +1,12 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -54,6 +56,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     private ArrayList<IsThereReview> reviews = null;
     private ArrayList<MapPOIItem> markers = null;
     private AQuery aQuery = new AQuery(this);
+    private String currentCategory = "전체";
+    private String currentDetailCategory = "전체";
 
     MapPoint pnu;
     MapView mapView;
@@ -194,7 +198,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // showAll();
 
         // Drawing review markers.
-        drawReviewMarkers("테스트", "", "");
+        drawReviewMarkers();
         showAll();
     }
 
@@ -333,6 +337,19 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             case 2:
                 category = new SearchCategory(this, leftListener, rightListener);
                 category.show();
+
+                category.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        SearchCategory searchCategory = (SearchCategory) dialog;
+
+                        // Update current categories
+                        currentCategory = searchCategory.getSelectedCategory();
+                        currentDetailCategory = searchCategory.getSelectedDetailCateogry();
+
+                        drawReviewMarkers();
+                    }
+                });
                 break;
             case 3:
                 if(httpHelper.getIdToken() != null) {
@@ -457,12 +474,15 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     /*
     Draw markers on Map using Thread.
  */
-    public void drawReviewMarkers(final String category, final String detailCategory, final String userLocation) {
+    public void drawReviewMarkers() {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    reviews = httpHelper.getIsThereReviews(category, detailCategory, userLocation);
+                    String searchingCategory = currentCategory.equals("전체") ? "" : currentCategory;
+                    String searchingDetailCategory = currentDetailCategory.equals("전체") ? "" : currentDetailCategory;
+                    reviews = httpHelper.getIsThereReviews(searchingCategory, searchingDetailCategory, "");
+
                 } catch (IOException e) {
                     LogDebuger.debugPrinter(LogDebuger.TagType.REVIEW_MAIN, "ERROR: drawReviewMarkers.IOException");
                     Log.e("ReviewMain", "ERROR: drawReviewMarkers.IOException");

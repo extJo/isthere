@@ -133,12 +133,14 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                     final String titleValue = title.getText().toString();
                     final String locationValue = location.getText().toString();
                     final String contentValue = content.getText().toString();
+                    final String selectedCategory = firstSpinner.getText().toString();
+                    final String selectedDetailCategory = secondSpinner.getText().toString();
 
                     AsyncTask.execute(new TimerTask() {
                         @Override
                         public void run() {
                             // First, Upload some text of the review
-                            long registeredReviewID = httpHelper.postReview(locationValue, coord, titleValue, contentValue, "테스트", "테스트2");
+                            long registeredReviewID = httpHelper.postReview(locationValue, coord, titleValue, contentValue, selectedCategory, selectedDetailCategory);
                             if (registeredReviewID != -1) {
                                 // Second, Upload the image.
                                 uploadMultipart(String.valueOf(registeredReviewID));
@@ -180,8 +182,12 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                     CategoryHolder aHolder = new CategoryHolder(aCategories.get(0), aCategories.subList(1, aCategories.size()));
                     categoryHolders.add(aHolder);
                 }
-                firstSpinner.setItems(Category1);
-
+                runOnUiThread(new TimerTask() {
+                    @Override
+                    public void run() {
+                        firstSpinner.setItems(Category1);
+                    }
+                });
             }
         });
         firstSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {

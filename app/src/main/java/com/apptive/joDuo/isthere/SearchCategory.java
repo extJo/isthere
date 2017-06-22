@@ -36,11 +36,9 @@ public class SearchCategory extends Dialog {
     private View.OnClickListener mLeftClickListener;
     private View.OnClickListener mRightClickListener;
 
-    Context context;
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
     public SearchCategory(Context context, View.OnClickListener leftListener, View.OnClickListener rightListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
-        this.context = context;
         this.mLeftClickListener = leftListener;
         this.mRightClickListener = rightListener;
     }
@@ -80,7 +78,7 @@ public class SearchCategory extends Dialog {
         }
 
         // Get Categories
-        AsyncTask.execute(new TimerTask() {
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 categories = MainActivity.GetHttpHelper().getCategories();
@@ -117,6 +115,11 @@ public class SearchCategory extends Dialog {
         secondSpinner.setEnabled(false);
     }
 
-
+    public String getSelectedCategory() {
+        return firstSpinner.getText().toString();
+    }
+    public String getSelectedDetailCateogry() {
+        return secondSpinner.getText().toString();
+    }
 
 }
