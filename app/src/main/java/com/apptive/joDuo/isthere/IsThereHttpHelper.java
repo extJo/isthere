@@ -924,8 +924,12 @@ public class IsThereHttpHelper {
     public String getIdToken() {
         return idToken;
     }
-    public String getUserId() { return userId; }
     //// Getter - end ////
+
+    //// Setter ////
+    public void setIdToken() {
+        idToken = null;
+    }
 
     /**
      * Encrypt password using SHA-256.

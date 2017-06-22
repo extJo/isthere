@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white">
 
     <include layout="@layout/toolbar"/>
@@ -52,29 +53,42 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.5"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:gravity="center_vertical"
-                android:text="점수"
+                android:text="제목"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 />
 
-            <RatingBar
-                android:id="@+id/rating_review"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:numStars="5"
-                android:progressBackgroundTint="@color/gray_cus"
-                android:progressTint="@color/background"
-                android:rating="2.5"
-                android:stepSize="0.5"
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/make_firstSpinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                app:ms_dropdown_max_height="350dp"
+                app:ms_dropdown_height="wrap_content"
+                app:ms_text_color="@color/colorPrimary"
+                app:ms_background_color="@color/white"
+                />
+
+            <com.jaredrummler.materialspinner.MaterialSpinner
+                android:id="@+id/make_secondSpinner"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                app:ms_dropdown_max_height="350dp"
+                app:ms_dropdown_height="wrap_content"
+                app:ms_text_color="@color/colorPrimary"
+                app:ms_background_color="@color/white"
                 />
         </LinearLayout>
 

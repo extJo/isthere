@@ -1,6 +1,8 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +10,8 @@ import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ public class Setting extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private LoginPage loginPage;
+    private LogoutPage logoutPage;
 
     TextView Login;
     TextView Error;
@@ -70,13 +75,29 @@ public class Setting extends AppCompatActivity {
                 }, 0);
             }
         });
-        Login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginPage.show();
-            }
-        });
 
+        // Logout dialog
+        logoutPage = new LogoutPage(this);
+
+        // auto login이 성공 한 경우 뷰 변화
+        final SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        if(sharedPreferences.getBoolean("AUTO", false)){
+            Login.setText(sharedPreferences.getString("ID", ""));
+            Login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    logoutPage.show();
+                }
+            });
+        } else {
+            Login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    loginPage.show();
+                }
+            });
+        }
+        MainActivity.GetHttpHelper().getIdToken();
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {
@@ -99,6 +120,13 @@ public class Setting extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         initToolbar();
         initMenuFragment();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
 
     }
 
