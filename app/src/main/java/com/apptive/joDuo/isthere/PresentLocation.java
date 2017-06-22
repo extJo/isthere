@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.apptive.joDuo.isthere.search.AddressItem;
-import com.apptive.joDuo.isthere.search.OnFinishSearchListener;
-import com.apptive.joDuo.isthere.search.Search;
+import com.apptive.joDuo.isthere.searchAdd.AddressItem;
+import com.apptive.joDuo.isthere.searchAdd.OnFinishSearchListener;
+import com.apptive.joDuo.isthere.searchAdd.Search;
+import com.apptive.joDuo.isthere.searchXY.Location;
+import com.apptive.joDuo.isthere.searchXY.OnFinishSearchLocationListener;
+import com.apptive.joDuo.isthere.searchXY.SearchLocation;
 
 import net.daum.mf.map.api.CameraUpdateFactory;
 import net.daum.mf.map.api.MapPOIItem;
@@ -82,6 +85,8 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                System.out.println("=====" + longitude + "-------" + latitude);
+
                 Intent intent = new Intent();
                 intent.putExtra("isSucceed", isSearchingSucceed);
                 intent.putExtra("addressName", locationName.getText());
@@ -212,6 +217,23 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
                 isSearchingSucceed = false;
             }
         });
+        
+        if(addressItem != null){
+            SearchLocation searchLocation = new SearchLocation();
+            searchLocation.searchDetailAddress(getApplicationContext(), addressItem.old_name, apikey, new OnFinishSearchLocationListener() {
+                @Override
+                public void onSuccess(Location itemList) {
+                    longitude = itemList.logitutde;
+                    latitude = itemList.lattitude;
+                }
+
+                @Override
+                public void onFail() {
+
+                }
+            });
+        }
+
 
         return isSearchingSucceed;
     }

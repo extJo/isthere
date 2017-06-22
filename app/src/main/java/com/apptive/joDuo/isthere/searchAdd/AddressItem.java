@@ -1,4 +1,4 @@
-package com.apptive.joDuo.isthere.search;
+package com.apptive.joDuo.isthere.searchAdd;
 
 /**
  * Created by joseong-yun on 2017. 6. 8..
