@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -68,10 +69,11 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
 
-    private static final String[] Category1 = {"", "", "", "", "", "", "", "", ""};
-    private static final String[] Category2 = Category1;
+    private ArrayList<String> Category1 = null;
+    private ArrayList<String> Category2 = null;
 
     private ArrayList<ArrayList<String>> categories;
+    private ArrayList<CategoryHolder> categoryHolders = new ArrayList<>();
 
     ImageView imageView;
 
@@ -148,7 +150,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                                 runOnUiThread(new TimerTask() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(v.getContext(), "Success", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(v.getContext(), "등록에 성공하였습니다.", Toast.LENGTH_LONG).show();
                                         finish();
                                     }
                                 });
@@ -156,7 +158,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                                 runOnUiThread(new TimerTask() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(v.getContext(), "fail", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(v.getContext(), "등록에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -171,17 +173,37 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             @Override
             public void run() {
                 categories = MainActivity.GetHttpHelper().getCategories();
-                for (ArrayList<String> aCategories : categories) {
-                    for (int i = 0; i < aCategories.size(); i++) {
-                        Category1[i] = aCategories.get(i);
-                    }
+                Category1 = new ArrayList<String>();
+                for(int i = 0; i < categories.size(); i++) {
+                    ArrayList<String> aCategories = categories.get(i);
+                    Category1.add(categories.get(i).get(0)); // primary category
+                    CategoryHolder aHolder = new CategoryHolder(aCategories.get(0), aCategories.subList(1, aCategories.size()));
+                    categoryHolders.add(aHolder);
                 }
+                firstSpinner.setItems(Category1);
+
             }
         });
+        firstSpinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                List<String> detailCategories = categoryHolders.get(position).detailCategories;
+                secondSpinner.setItems(detailCategories);
+                secondSpinner.expand();
+            }
+        });
+        firstSpinner.setOnNothingSelectedListener(new MaterialSpinner.OnNothingSelectedListener() {
+            @Override
+            public void onNothingSelected(MaterialSpinner spinner) {
 
-        firstSpinner.setItems(Category1);
-        secondSpinner.setItems(Category2);
+            }
+        });
+        secondSpinner.setOnNothingSelectedListener(new MaterialSpinner.OnNothingSelectedListener() {
+            @Override
+            public void onNothingSelected(MaterialSpinner spinner) {
 
+            }
+        });
 
         // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
         title.addTextChangedListener(titleWatcher);
@@ -536,6 +558,16 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         } else {
             makeFinishButton.setEnabled(false);
             makeFinishButton.setBackgroundColor(getResources().getColor(R.color.gray_cus));
+        }
+    }
+
+    private static class CategoryHolder {
+        public String category;
+        public List<String> detailCategories;
+
+        public CategoryHolder(String category, List<String> detailCategories) {
+            this.category = category;
+            this.detailCategories = detailCategories;
         }
     }
 }

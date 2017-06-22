@@ -59,11 +59,11 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     MapView mapView;
     RelativeLayout description;
     ViewGroup mapViewContainer;
+    TextView numberOfReviewsTV;
 
     private static final MapPoint PUSAN_UNI_DOOR = MapPoint.mapPointWithGeoCoord(35.2315659, 129.08421629999998);
     private static final MapPoint PUSAN_UNI_STATION = MapPoint.mapPointWithGeoCoord(35.22979, 129.089385);
 
-    ImageView tempIV = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,11 +72,10 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
         // 밑에 뜨는 간단한 설명
         description = (RelativeLayout) findViewById(R.id.review_dsc);
-//        description.setOnClickListener(moveReviewList);
         description.setVisibility(View.INVISIBLE);
 
-        /////// for testing
-        tempIV = (ImageView) findViewById(R.id.review_image);
+        // Showing number of reviews that the marker has
+        numberOfReviewsTV = (TextView) findViewById(R.id.review_review);
 
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
@@ -259,9 +258,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
-
-
-
         // 여기서 box의 content를 바꾸면 변경가능
         TextView title = (TextView) findViewById(R.id.review_name);
         ImageView reviewIV = (ImageView) findViewById(R.id.review_image);
@@ -269,23 +265,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         title.setText(mapPOIItem.getItemName());
         // Set review image
         aQuery.id(reviewIV).image(IsThereHttpHelper.basicURLStr + IsThereHttpHelper.gettingImage + String.valueOf(mapPOIItem.getTag()));
-
-        // box를 클릭했을 때, 메인 리뷰로 넘어가는 부분
-        description.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(ReviewMain.this, ReviewList.class);
-
-                String markerAddress = ((IsThereReview) mapPOIItem.getUserObject()).getLocation();
-                String category = ((IsThereReview) mapPOIItem.getUserObject()).getCategory();
-                String detailCategory = ((IsThereReview) mapPOIItem.getUserObject()).getDetailCategory();
-                intent.putExtra("address", markerAddress);
-                intent.putExtra("category", category);
-                intent.putExtra("detailCategory", detailCategory);
-
-                startActivity(intent);
-            }
-        });
 
 
     }

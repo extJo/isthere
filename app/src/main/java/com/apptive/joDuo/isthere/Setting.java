@@ -59,7 +59,7 @@ public class Setting extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        showToastTest("success");
+                        showToastTest("로그인에 성공하였습니다.");
                         loginPage.dismiss();
                         Login.setText(sharedPreferences.getString("ID", ""));
                     }
@@ -72,7 +72,7 @@ public class Setting extends AppCompatActivity {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        showToastTest("failed");
+                        showToastTest("로그인에 실패하였습니다.");
                     }
                 }, 0);
             }
