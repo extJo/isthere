@@ -192,18 +192,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 secondSpinner.expand();
             }
         });
-        firstSpinner.setOnNothingSelectedListener(new MaterialSpinner.OnNothingSelectedListener() {
-            @Override
-            public void onNothingSelected(MaterialSpinner spinner) {
-
-            }
-        });
-        secondSpinner.setOnNothingSelectedListener(new MaterialSpinner.OnNothingSelectedListener() {
-            @Override
-            public void onNothingSelected(MaterialSpinner spinner) {
-
-            }
-        });
 
         // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
         title.addTextChangedListener(titleWatcher);
@@ -561,7 +549,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         }
     }
 
-    private static class CategoryHolder {
+    public static class CategoryHolder {
         public String category;
         public List<String> detailCategories;
 
