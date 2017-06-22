@@ -9,8 +9,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.apptive.joDuo.isthere.reviewlist.ReviewItemAdaptor;
 import com.yalantis.contextmenu.lib.ContextMenuDialogFragment;
 import com.yalantis.contextmenu.lib.MenuObject;
 import com.yalantis.contextmenu.lib.MenuParams;
@@ -28,6 +30,8 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     private FragmentManager fragmentManager;
     private ContextMenuDialogFragment mMenuDialogFragment;
     private SearchCategory category;
+    private ReviewItemAdaptor adapter = null;
+    private ListView listview;
 
     private ArrayList<IsThereReview> likeReviews = null;
 
@@ -36,6 +40,14 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.like_review);
+
+        listview = (ListView) findViewById(R.id.review_likeList);
+        // Adapter 생성
+        adapter = new ReviewItemAdaptor(this);
+        listview.setAdapter(adapter);
+        adapter.setListViewItemList(null);
+
+
 
 
         /* menu button lib */

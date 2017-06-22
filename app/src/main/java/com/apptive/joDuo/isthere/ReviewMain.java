@@ -243,6 +243,10 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     @Override
     public void onPOIItemSelected(MapView mapView, final MapPOIItem mapPOIItem) {
 
+        // show description
+        description.setVisibility(View.VISIBLE);
+        description.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
+
         // 핀이 선택되었을 떄, 뷰가 이동하는 코드
         CameraPosition cameraPosition = new CameraPosition(mapPOIItem.getMapPoint(), 0);
         mapView.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 1000, new CancelableCallback() {
@@ -255,10 +259,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
-        // show description
-        description.setVisibility(View.VISIBLE);
-        description.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
-        tempIV.setOnClickListener(makeDescriptionClickListener(mapPOIItem));
+
 
 
         // 여기서 box의 content를 바꾸면 변경가능

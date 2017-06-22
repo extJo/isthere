@@ -33,13 +33,15 @@ public class ReviewItemAdaptor extends BaseAdapter {
     private ArrayList<String> likeReviewIDs = null;
     private IsThereHttpHelper httpHelper = MainActivity.GetHttpHelper();
     private AQuery aQuery = null;
-
+    private boolean likeReview = false;
 
     // ListViewAdapter의 생성자
     public ReviewItemAdaptor(Context context) {
         aQuery = new AQuery(context);
-
-
+    }
+    public ReviewItemAdaptor(Context context, boolean like) {
+        this(context);
+        likeReview = like;
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
@@ -114,6 +116,12 @@ public class ReviewItemAdaptor extends BaseAdapter {
                         likeReviewIDs.add(aReview.getReviewId());
                     }
 
+                    if(selectedReviews == null) {
+                        for (IsThereReview aReview : likeReviews) {
+                            listViewItemList.add(new IsThereReviewHolder(aReview, true));
+                        }
+                        return;
+                    }
                     // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
                     for(IsThereReview aReview: selectedReviews) {
                         boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());

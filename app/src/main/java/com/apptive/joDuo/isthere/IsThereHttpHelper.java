@@ -924,6 +924,9 @@ public class IsThereHttpHelper {
     public String getIdToken() {
         return idToken;
     }
+    public String getUserId() {
+        return userId;
+    }
     //// Getter - end ////
 
     //// Setter ////

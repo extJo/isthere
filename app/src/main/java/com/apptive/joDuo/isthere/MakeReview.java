@@ -164,9 +164,6 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                // All your network logic
-                // should be here
-
                 categories = MainActivity.GetHttpHelper().getCategories();
                 for (ArrayList<String> aCategories : categories) {
                     for (int i = 0; i < aCategories.size(); i++) {
@@ -175,6 +172,9 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 }
             }
         });
+
+        firstSpinner.setItems(Category1);
+        secondSpinner.setItems(Category2);
 
 
         // textwatcher를 통해서, 텍스트 인풋이 있는경우에만, 버튼이 활성화 됨
