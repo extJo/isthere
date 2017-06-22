@@ -48,8 +48,6 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
         adapter.setListViewItemList(null);
 
 
-
-
         /* menu button lib */
         fragmentManager = getSupportFragmentManager();
         initToolbar();

@@ -104,6 +104,7 @@ public class ReviewItemAdaptor extends BaseAdapter {
 
         selectedReviews = reviews;
 
+        final BaseAdapter thisAdapter = this;
         AsyncTask.execute(new TimerTask() {
             @Override
             public void run() {
@@ -122,11 +123,13 @@ public class ReviewItemAdaptor extends BaseAdapter {
                         }
                         return;
                     }
+
                     // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
                     for(IsThereReview aReview: selectedReviews) {
                         boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());
                         listViewItemList.add(new IsThereReviewHolder(aReview, isLiked));
                     }
+                    thisAdapter.notifyDataSetChanged();
                 }
             }
         });

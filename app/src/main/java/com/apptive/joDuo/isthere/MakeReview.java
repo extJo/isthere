@@ -166,6 +166,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
             }
         });
 
+        // Get Categories
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
