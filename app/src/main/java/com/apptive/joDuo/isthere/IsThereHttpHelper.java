@@ -930,8 +930,8 @@ public class IsThereHttpHelper {
     //// Getter - end ////
 
     //// Setter ////
-    public void setIdToken() {
-        idToken = null;
+    public void setIdTokenNull() {
+        idToken = null; // this means logout
     }
 
     /**

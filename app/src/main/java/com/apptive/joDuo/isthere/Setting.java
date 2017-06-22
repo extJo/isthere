@@ -78,6 +78,21 @@ public class Setting extends AppCompatActivity {
 
         // Logout dialog
         logoutPage = new LogoutPage(this);
+        logoutPage.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(MainActivity.GetHttpHelper().getIdToken() == null) { // logout succeed
+                    Login.setText("로그인 정보");
+
+                    Login.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loginPage.show();
+                        }
+                    });
+                }
+            }
+        });
 
         // auto login이 성공 한 경우 뷰 변화
         final SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
@@ -97,7 +112,6 @@ public class Setting extends AppCompatActivity {
                 }
             });
         }
-        MainActivity.GetHttpHelper().getIdToken();
 
         // Error feedback
         Error.setOnClickListener(new View.OnClickListener() {

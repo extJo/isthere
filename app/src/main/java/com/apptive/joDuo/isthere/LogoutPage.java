@@ -3,9 +3,7 @@ package com.apptive.joDuo.isthere;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -21,6 +19,8 @@ public class LogoutPage extends Dialog {
     private ImageView mContentView;
     private TextView mLeftButton;
     private TextView mRightButton;
+
+
 
     public LogoutPage(Context context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -54,7 +54,7 @@ public class LogoutPage extends Dialog {
                 editor.putString("PW", "");
                 editor.apply();
 
-                MainActivity.GetHttpHelper().setIdToken();
+                MainActivity.GetHttpHelper().setIdTokenNull();
 
                 dismiss();
             }
