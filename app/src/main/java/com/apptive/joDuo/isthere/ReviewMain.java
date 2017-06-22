@@ -114,6 +114,25 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         }
     }
 
+    private View.OnClickListener makeDescriptionClickListener(final MapPOIItem poiItem) {
+        return (new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReviewMain.this, ReviewList.class);
+
+                String markerAddress = ((IsThereReview) poiItem.getUserObject()).getLocation();
+                String category = ((IsThereReview) poiItem.getUserObject()).getCategory();
+                String detailCategory = ((IsThereReview) poiItem.getUserObject()).getDetailCategory();
+                intent.putExtra("address", markerAddress);
+                intent.putExtra("category", category);
+                intent.putExtra("detailCategory", detailCategory);
+
+                startActivity(intent);
+            }
+        });
+    }
+
+
     // 다음맵이 한 앱에서 2개 이상 부를 수 없기때문에 view cycle을 통해서 map view를 동적으로 추가
     @Override
     protected void onResume() {
