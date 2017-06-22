@@ -346,6 +346,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     @Override
     public void onMenuItemClick(View clickedView, int position) {
+
+        Toast pleaseLoginMsg = Toast.makeText(this, "로그인이 필요한 서비스입니다.", Toast.LENGTH_SHORT);
         switch (position) {
             case 1:
                 break;
@@ -354,12 +356,20 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                 category.show();
                 break;
             case 3:
-                Intent intent1 = new Intent(ReviewMain.this, MakeReview.class);
-                startActivity(intent1);
+                if(httpHelper.getIdToken() != null) {
+                    Intent intent1 = new Intent(ReviewMain.this, MakeReview.class);
+                    startActivity(intent1);
+                } else {
+                    pleaseLoginMsg.show();
+                }
                 break;
             case 4:
-                Intent intent2 = new Intent(ReviewMain.this, LikeReview.class);
-                startActivity(intent2);
+                if(httpHelper.getIdToken() != null) {
+                    Intent intent2 = new Intent(ReviewMain.this, LikeReview.class);
+                    startActivity(intent2);
+                } else {
+                    pleaseLoginMsg.show();
+                }
                 break;
             case 5:
                 Intent intent3 = new Intent(ReviewMain.this, Setting.class);

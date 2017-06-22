@@ -47,6 +47,7 @@ public class Setting extends AppCompatActivity {
         Error = (TextView) findViewById(R.id.errorCall);
         Version = (TextView) findViewById(R.id.version);
 
+        final SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
         // Login dialog
         loginPage = new LoginPage(this);
@@ -60,6 +61,7 @@ public class Setting extends AppCompatActivity {
                     public void run() {
                         showToastTest("success");
                         loginPage.dismiss();
+                        Login.setText(sharedPreferences.getString("ID", ""));
                     }
                 }, 0);
             }
@@ -95,7 +97,7 @@ public class Setting extends AppCompatActivity {
         });
 
         // auto login이 성공 한 경우 뷰 변화
-        final SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+
         if(sharedPreferences.getBoolean("AUTO", false)){
             Login.setText(sharedPreferences.getString("ID", ""));
             Login.setOnClickListener(new View.OnClickListener() {
