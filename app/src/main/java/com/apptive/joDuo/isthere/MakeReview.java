@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -49,7 +50,6 @@ import java.util.UUID;
  */
 
 public class MakeReview extends AppCompatActivity {
-
 
 
     private FragmentManager fragmentManager;
@@ -101,6 +101,8 @@ public class MakeReview extends AppCompatActivity {
         makeFinishButton = (Button) findViewById(R.id.make_review_finish);
         firstSpinner = (MaterialSpinner) findViewById(R.id.make_firstSpinner);
         secondSpinner = (MaterialSpinner) findViewById(R.id.make_secondSpinner);
+        secondSpinner.setEnabled(false);
+        firstSpinner.setText("선택");
 
 
         imageView = (ImageView) findViewById(R.id.picture);
@@ -118,14 +120,6 @@ public class MakeReview extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MakeReview.this, PresentLocation.class);
                 startActivityForResult(intent, GET_LOCATION);
-            }
-        });
-
-        // 리뷰작성 완료
-        makeFinishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
             }
         });
 
@@ -183,7 +177,7 @@ public class MakeReview extends AppCompatActivity {
             public void run() {
                 categories = MainActivity.GetHttpHelper().getCategories();
                 Category1 = new ArrayList<String>();
-                for(int i = 0; i < categories.size(); i++) {
+                for (int i = 0; i < categories.size(); i++) {
                     ArrayList<String> aCategories = categories.get(i);
                     Category1.add(categories.get(i).get(0)); // primary category
                     CategoryHolder aHolder = new CategoryHolder(aCategories.get(0), aCategories.subList(1, aCategories.size()));
@@ -201,8 +195,16 @@ public class MakeReview extends AppCompatActivity {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
                 List<String> detailCategories = categoryHolders.get(position).detailCategories;
+                secondSpinner.setEnabled(true);
                 secondSpinner.setItems(detailCategories);
-                secondSpinner.expand();
+                Handler mHandler = new Handler();
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        secondSpinner.expand();
+                    }
+                }, 100); // 3000ms
+
             }
         });
 
@@ -284,7 +286,7 @@ public class MakeReview extends AppCompatActivity {
 
         mToolBarTextView.setText("리뷰 작성");
     }
-    
+
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -344,8 +346,8 @@ public class MakeReview extends AppCompatActivity {
         cursor.close();
 
         cursor = getContentResolver().query(
-            android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
         cursor.moveToFirst();
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
         cursor.close();
@@ -473,11 +475,11 @@ public class MakeReview extends AppCompatActivity {
 
             //Creating a multi part request
             new MultipartUploadRequest(this, uploadId, IsThereHttpHelper.basicURLStr + IsThereHttpHelper.postingImage + fileName)
-                .addFileToUpload(path, "image") //Adding file
-                .addParameter("name", fileName) //Adding text parameter to the request
-                .setNotificationConfig(new UploadNotificationConfig())
-                .setMaxRetries(2)
-                .startUpload(); //Starting the upload
+                    .addFileToUpload(path, "image") //Adding file
+                    .addParameter("name", fileName) //Adding text parameter to the request
+                    .setNotificationConfig(new UploadNotificationConfig())
+                    .setMaxRetries(2)
+                    .startUpload(); //Starting the upload
 
         } catch (Exception exc) {
             Toast.makeText(this, exc.getMessage(), Toast.LENGTH_SHORT).show();

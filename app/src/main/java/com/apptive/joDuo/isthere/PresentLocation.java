@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +38,8 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     double latitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().latitude;
     double longitude = PUSAN_UNI_DOOR.getMapPointGeoCoord().longitude;
     int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+    Search search = new Search();
+    SearchLocation searchLocation = new SearchLocation();
 
     private boolean isSearchingSucceed = false;
 
@@ -85,16 +89,22 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
         setLocationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("=====" + longitude + "-------" + latitude);
 
-                Intent intent = new Intent();
-                intent.putExtra("isSucceed", isSearchingSucceed);
-                intent.putExtra("addressName", locationName.getText());
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
+                if (addressItem != null) {
 
-                setResult(RESULT_OK, intent);
-                finish();
+                    System.out.println("=====" + longitude + "-------" + latitude);
+
+                    Intent intent = new Intent();
+                    intent.putExtra("isSucceed", isSearchingSucceed);
+                    intent.putExtra("addressName", locationName.getText());
+                    intent.putExtra("latitude", latitude);
+                    intent.putExtra("longitude", longitude);
+
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+
+
             }
         });
 
@@ -159,25 +169,50 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
     @Override
     public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
         // button reset
-        setLocationBtn.setEnabled(true);
-        setLocationBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        if (isSearchingSucceed) {
+            setLocationBtn.setEnabled(true);
+            setLocationBtn.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        }
     }
 
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
 
-        if(doSearch()) {
-            locationName.setText(addressItem.old_name);
+//        if(doSearch()) {
+//            locationName.setText(addressItem.old_name);
+//
+//            if (addressItem.new_name.equals("")) {
+//                locationAddress.setText("");
+//            } else {
+//                locationAddress.setText("[새 주소] " + addressItem.new_name);
+//            }
+//
+//            System.out.println(isSearchingSucceed);
+//        } else {
+//            locationName.setText("검색에 실패하였습니다.");
+//            locationAddress.setText("검색에 실패하였습니다.");
+//        }
 
-            if (addressItem.new_name.equals("")) {
-                locationAddress.setText("");
-            } else {
-                locationAddress.setText("[새 주소] " + addressItem.new_name);
+        doSearch();
+
+        // 쓰레드 내부에서 UI를 직접 그릴 수 없으므로 handler를 통해서 view와 관련된 일을 처리
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (isSearchingSucceed) {
+
+                    locationName.setText(addressItem.old_name);
+
+                    if (addressItem.new_name.equals("")) {
+                        locationAddress.setText("");
+                    } else {
+                        locationAddress.setText("[새 주소] " + addressItem.new_name);
+                    }
+
+                }
             }
-        } else {
-            locationName.setText("검색에 실패하였습니다.");
-            locationAddress.setText("검색에 실패하였습니다.");
-        }
+        }, 200);
 
 
     }
@@ -204,36 +239,34 @@ public class PresentLocation extends AppCompatActivity implements MapView.MapVie
 
     public boolean doSearch() {
         // 맵의 중앙지점을 이용하여 search 함
-        Search search = new Search();
+
         search.searchDetailAddress(getApplicationContext(), latitude, longitude, apikey, new OnFinishSearchListener() {
             @Override
             public void onSuccess(AddressItem itemList) {
                 // 성공하면 JSON을 토큰단위로 쪼갠것을 로컬 변수에 저장
                 addressItem = itemList;
                 isSearchingSucceed = true;
+
+                searchLocation.searchDetailAddress(getApplicationContext(), addressItem.old_name, apikey, new OnFinishSearchLocationListener() {
+                    @Override
+                    public void onSuccess(Location itemList) {
+                        longitude = itemList.logitutde;
+                        latitude = itemList.lattitude;
+                    }
+
+                    @Override
+                    public void onFail() {
+
+                    }
+                });
             }
+
             @Override
             public void onFail() {
+                addressItem = null;
                 isSearchingSucceed = false;
             }
         });
-        
-        if(addressItem != null){
-            SearchLocation searchLocation = new SearchLocation();
-            searchLocation.searchDetailAddress(getApplicationContext(), addressItem.old_name, apikey, new OnFinishSearchLocationListener() {
-                @Override
-                public void onSuccess(Location itemList) {
-                    longitude = itemList.logitutde;
-                    latitude = itemList.lattitude;
-                }
-
-                @Override
-                public void onFail() {
-
-                }
-            });
-        }
-
 
         return isSearchingSucceed;
     }
