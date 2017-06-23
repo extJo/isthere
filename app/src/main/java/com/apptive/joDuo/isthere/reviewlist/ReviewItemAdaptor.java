@@ -134,6 +134,13 @@ public class ReviewItemAdaptor extends BaseAdapter {
                         for (IsThereReview aReview : likeReviews) {
                             listViewItemList.add(new IsThereReviewHolder(aReview, true));
                         }
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                thisAdapter.notifyDataSetChanged();
+                            }
+                        }, 200);
                         return;
                     }
 
@@ -147,9 +154,8 @@ public class ReviewItemAdaptor extends BaseAdapter {
                         @Override
                         public void run() {
                             thisAdapter.notifyDataSetChanged();
-
                         }
-                    }, 0);
+                    }, 200);
                 }
             }
         });
