@@ -48,7 +48,7 @@ import java.util.UUID;
  * Created by joseong-yun on 2017. 5. 15..
  */
 
-public class MakeReview extends AppCompatActivity implements OnMenuItemClickListener {
+public class MakeReview extends AppCompatActivity {
 
 
 
@@ -268,10 +268,8 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
     private void initMenuFragment() {
         MenuParams menuParams = new MenuParams();
         menuParams.setActionBarSize((int) getResources().getDimension(R.dimen.tool_bar_height));
-        menuParams.setMenuObjects(getMenuObjects());
         menuParams.setClosableOutside(true);
         mMenuDialogFragment = ContextMenuDialogFragment.newInstance(menuParams);
-        mMenuDialogFragment.setItemClickListener(this);
     }
 
     private void initToolbar() {
@@ -286,98 +284,19 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
 
         mToolBarTextView.setText("리뷰 작성");
     }
-
-
-    @Override
-    public void onMenuItemClick(View clickedView, int position) {
-
-        switch (position) {
-            case 1:
-                finish();
-                break;
-            case 2:
-                category = new SearchCategory(this);
-                category.show();
-                break;
-            case 3:
-                break;
-            case 4:
-                Intent intent1 = new Intent(MakeReview.this, LikeReview.class);
-                startActivity(intent1);
-                finish();
-                break;
-            case 5:
-                Intent intent3 = new Intent(MakeReview.this, Setting.class);
-                startActivity(intent3);
-                break;
-            default:
-                finish();
-                break;
-        }
-    }
-
-    public List<MenuObject> getMenuObjects() {
-        // You can use any [resource, bitmap, drawable, color] as image:
-        // item.setResource(...)
-        // item.setBitmap(...)
-        // item.setDrawable(...)
-        // item.setColor(...)
-        // You can set image ScaleType:
-        // item.setScaleType(ScaleType.FIT_XY)
-        // You can use any [resource, drawable, color] as background:
-        // item.setBgResource(...)
-        // item.setBgDrawable(...)
-        // item.setBgColor(...)
-        // You can use any [color] as text color:
-        // item.setTextColor(...)
-        // You can set any [color] as divider color:
-        // item.setDividerColor(...)
-
-        List<MenuObject> menuObjects = new ArrayList<>();
-
-        MenuObject close = new MenuObject();
-        close.setResource(R.drawable.ic_left_arrow);
-
-        MenuObject showReview = new MenuObject("리뷰 보기");
-        showReview.setResource(R.drawable.ic_consulting_message);
-
-        MenuObject searchCategory = new MenuObject("카테고리 검색");
-        searchCategory.setResource(R.drawable.ic_search);
-
-        MenuObject makeReview = new MenuObject("리뷰 작성");
-        makeReview.setResource(R.drawable.ic_new_file);
-
-        MenuObject likeReview = new MenuObject("좋아한 리뷰");
-        likeReview.setResource(R.drawable.ic_like);
-
-        MenuObject setting = new MenuObject("설정");
-        setting.setResource(R.drawable.ic_settings);
-
-        menuObjects.add(close);
-        menuObjects.add(showReview);
-        menuObjects.add(searchCategory);
-        menuObjects.add(makeReview);
-        menuObjects.add(likeReview);
-        menuObjects.add(setting);
-        return menuObjects;
-    }
+    
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_setting, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.context_menu:
-                if (fragmentManager.findFragmentByTag(ContextMenuDialogFragment.TAG) == null) {
-                    mMenuDialogFragment.show(fragmentManager, ContextMenuDialogFragment.TAG);
-                }
-                break;
-        }
+        finish();
+
         return super.onOptionsItemSelected(item);
     }
 
