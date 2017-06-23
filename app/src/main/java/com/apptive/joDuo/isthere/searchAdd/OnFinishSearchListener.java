@@ -1,4 +1,4 @@
-package com.apptive.joDuo.isthere.search;
+package com.apptive.joDuo.isthere.searchAdd;
 
 public interface OnFinishSearchListener {
     public void onSuccess(AddressItem itemList);

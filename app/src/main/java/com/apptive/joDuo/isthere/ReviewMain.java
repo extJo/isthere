@@ -174,28 +174,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     // 맵이 초기화 된 이후에 마커가 지도에 떠야 오류가 나지 않음
     public void onMapViewInitialized(MapView mapView) {
-        // 커스텀 마커 추가
-//        MapPOIItem customMarker = new MapPOIItem();
-//        customMarker.setItemName("Custom Marker");
-//        customMarker.setTag(0);
-//        customMarker.setMapPoint(PUSAN_UNI_DOOR);
-//        customMarker.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-//        customMarker.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
-//        customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
-//        customMarker.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
-//        mapView.addPOIItem(customMarker);
-//
-//        MapPOIItem customMarker1 = new MapPOIItem();
-//        customMarker1.setItemName("Custom Marker1");
-//        customMarker1.setTag(1);
-//        customMarker1.setMapPoint(PUSAN_UNI_STATION);
-//        customMarker1.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
-//        customMarker1.setCustomImageResourceId(R.drawable.custom_pin_blue); // 마커 이미지.
-//        customMarker1.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
-//        customMarker1.setShowCalloutBalloonOnTouch(false); // balloon을 보여줄지 말지
-//        mapView.addPOIItem(customMarker1);
-
-        // showAll();
+        mapView.removeAllPOIItems();
 
         // Drawing review markers.
         drawReviewMarkers();
@@ -335,7 +314,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             case 1:
                 break;
             case 2:
-                category = new SearchCategory(this, leftListener, rightListener);
+                category = new SearchCategory(this);
                 category.show();
 
                 category.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -453,19 +432,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     }
 
 
-    // dialog event listener
 
-    private View.OnClickListener leftListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            category.dismiss();
-        }
-    };
-
-    private View.OnClickListener rightListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            category.dismiss();
-        }
-    };
 
     public ArrayList<IsThereReview> getReviews() {
         return reviews;
@@ -506,6 +473,10 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                 }
             }
         });
+    }
+
+    public void fetchData() {
+
     }
 
 

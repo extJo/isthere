@@ -1,5 +1,6 @@
 package com.apptive.joDuo.isthere;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -101,7 +102,7 @@ public class LikeReview extends AppCompatActivity implements OnMenuItemClickList
                 finish();
                 break;
             case 2:
-                category = new SearchCategory(this, leftListener, rightListener);
+                category = new SearchCategory(this);
                 category.show();
                 break;
             case 3:

@@ -1,4 +1,4 @@
-package com.apptive.joDuo.isthere.search;
+package com.apptive.joDuo.isthere.searchAdd;
 
 import android.content.Context;
 import android.os.AsyncTask;
