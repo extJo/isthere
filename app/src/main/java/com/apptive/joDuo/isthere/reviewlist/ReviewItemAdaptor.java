@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.androidquery.AQuery;
@@ -82,18 +83,25 @@ public class ReviewItemAdaptor extends BaseAdapter {
         likeToogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                item.isLiked = !item.isLiked;
+                if(httpHelper.getIdToken() != null) {
+                    item.isLiked = !item.isLiked;
 
-                AsyncTask.execute(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if (item.isLiked) { // i like it
-                            httpHelper.postLikeReview(httpHelper.getUserId(), item.review.getReviewId());
-                        } else { // i dont like it
-                            httpHelper.deleteLikeReview(httpHelper.getUserId(), item.review.getReviewId());
+                    AsyncTask.execute(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (item.isLiked) { // i like it
+                                httpHelper.postLikeReview(httpHelper.getUserId(), item.review.getReviewId());
+                            } else { // i dont like it
+                                httpHelper.deleteLikeReview(httpHelper.getUserId(), item.review.getReviewId());
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(context, "로그인이 필요한 서비스입니다. ", Toast.LENGTH_SHORT).show();
+                }
+
+
+
 
             }
         });
@@ -121,33 +129,18 @@ public class ReviewItemAdaptor extends BaseAdapter {
         AsyncTask.execute(new TimerTask() {
             @Override
             public void run() {
-                if (httpHelper.getIdToken() != null) { // if in login
-                    likeReviews = httpHelper.getLikeReviews(httpHelper.getUserId());
 
-                    // Make the like Review IDs array
-                    ArrayList<String> likeReviewIDs = new ArrayList<String>();
+                likeReviews = httpHelper.getLikeReviews(httpHelper.getUserId());
+
+                // Make the like Review IDs array
+                ArrayList<String> likeReviewIDs = new ArrayList<String>();
+                for (IsThereReview aReview : likeReviews) {
+                    likeReviewIDs.add(aReview.getReviewId());
+                }
+
+                if (likeReview && httpHelper.getIdToken() != null) {
                     for (IsThereReview aReview : likeReviews) {
-                        likeReviewIDs.add(aReview.getReviewId());
-                    }
-
-                    if (selectedReviews == null) {
-                        for (IsThereReview aReview : likeReviews) {
-                            listViewItemList.add(new IsThereReviewHolder(aReview, true));
-                        }
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                thisAdapter.notifyDataSetChanged();
-                            }
-                        }, 200);
-                        return;
-                    }
-
-                    // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
-                    for (IsThereReview aReview : selectedReviews) {
-                        boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());
-                        listViewItemList.add(new IsThereReviewHolder(aReview, isLiked));
+                        listViewItemList.add(new IsThereReviewHolder(aReview, true));
                     }
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(new Runnable() {
@@ -156,7 +149,22 @@ public class ReviewItemAdaptor extends BaseAdapter {
                             thisAdapter.notifyDataSetChanged();
                         }
                     }, 200);
+                    return;
                 }
+
+                // If a review in selectedReviews has the same likeReviewID then, holder has isLiked true, if not false
+                for (IsThereReview aReview : selectedReviews) {
+                    boolean isLiked = likeReviewIDs.contains(aReview.getReviewId());
+                    listViewItemList.add(new IsThereReviewHolder(aReview, isLiked));
+                }
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        thisAdapter.notifyDataSetChanged();
+                    }
+                }, 200);
+
             }
         });
     }
@@ -181,7 +189,6 @@ public class ReviewItemAdaptor extends BaseAdapter {
 
 
     }
-
 
 
 }

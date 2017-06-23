@@ -44,7 +44,7 @@ public class LikeReview extends AppCompatActivity {
 
         listview = (ListView) findViewById(R.id.review_likeList);
         // Adapter 생성
-        adapter = new ReviewItemAdaptor(this);
+        adapter = new ReviewItemAdaptor(this, true);
         listview.setAdapter(adapter);
         adapter.setListViewItemList(null);
 
