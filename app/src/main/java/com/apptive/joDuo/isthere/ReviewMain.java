@@ -326,6 +326,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                         currentCategory = searchCategory.getSelectedCategory();
                         currentDetailCategory = searchCategory.getSelectedDetailCateogry();
 
+                        mapView.removeAllPOIItems();
                         drawReviewMarkers();
                     }
                 });
