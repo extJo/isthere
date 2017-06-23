@@ -35,8 +35,6 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_margin="20dp"
-                android:background="@drawable/roundcorner_fullblue"
-                android:padding="10dp"
                 android:src="@drawable/ic_gps"/>
 
             <TextView
@@ -57,7 +55,7 @@
                 android:layout_below="@+id/review_name"
                 android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/review_image"
-                android:text="스타벅스 짱"
+                android:text="추가리뷰를 보시려면 눌러주세요"
                 android:textColor="@color/black"
                 android:textSize="12dp"/>
 

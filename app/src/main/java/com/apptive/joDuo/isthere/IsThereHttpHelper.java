@@ -665,7 +665,7 @@ public class IsThereHttpHelper {
             return isSucceed;
         }
 
-        isSucceed = postJsonObject(urlStr, reviewInfoJson, 200, new OnHttpCallback() {
+        isSucceed = delete(urlStr, reviewInfoJson, 200, new OnHttpCallback() {
             @Override
             public void onSucceed(HttpURLConnection connection) {
 

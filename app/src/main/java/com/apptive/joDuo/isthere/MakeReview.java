@@ -1,6 +1,7 @@
 package com.apptive.joDuo.isthere;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -295,7 +296,7 @@ public class MakeReview extends AppCompatActivity implements OnMenuItemClickList
                 finish();
                 break;
             case 2:
-                category = new SearchCategory(this, leftListener, rightListener);
+                category = new SearchCategory(this);
                 category.show();
                 break;
             case 3:

@@ -174,6 +174,8 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
 
     // 맵이 초기화 된 이후에 마커가 지도에 떠야 오류가 나지 않음
     public void onMapViewInitialized(MapView mapView) {
+        mapView.removeAllPOIItems();
+
         // Drawing review markers.
         drawReviewMarkers();
         showAll();
@@ -222,7 +224,6 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     // pin이 터치 되었을 때 call되는 method
     @Override
     public void onPOIItemSelected(MapView mapView, final MapPOIItem mapPOIItem) {
-        System.out.println("=============================");
 
         // show description
         description.setVisibility(View.VISIBLE);
@@ -313,7 +314,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             case 1:
                 break;
             case 2:
-                category = new SearchCategory(this, leftListener, rightListener);
+                category = new SearchCategory(this);
                 category.show();
 
                 category.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -431,19 +432,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
     }
 
 
-    // dialog event listener
 
-    private View.OnClickListener leftListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            category.dismiss();
-        }
-    };
-
-    private View.OnClickListener rightListener = new View.OnClickListener() {
-        public void onClick(View v) {
-            category.dismiss();
-        }
-    };
 
     public ArrayList<IsThereReview> getReviews() {
         return reviews;

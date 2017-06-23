@@ -83,6 +83,18 @@ public class ReviewItemAdaptor extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 item.isLiked = !item.isLiked;
+
+                AsyncTask.execute(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if (item.isLiked) { // i like it
+                            httpHelper.postLikeReview(httpHelper.getUserId(), item.review.getReviewId());
+                        } else { // i dont like it
+                            httpHelper.deleteLikeReview(httpHelper.getUserId(), item.review.getReviewId());
+                        }
+                    }
+                });
+
             }
         });
 

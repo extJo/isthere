@@ -1,8 +1,8 @@
 package com.apptive.joDuo.isthere;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +14,6 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimerTask;
 
 /**
  * Created by joseong-yun on 2017. 5. 22..
@@ -33,14 +32,10 @@ public class SearchCategory extends Dialog {
     private ArrayList<ArrayList<String>> categories;
     private ArrayList<MakeReview.CategoryHolder> categoryHolders = new ArrayList<>();
 
-    private View.OnClickListener mLeftClickListener;
-    private View.OnClickListener mRightClickListener;
 
     // 클릭버튼이 확인과 취소 두개일때 생성자 함수로 이벤트를 받는다
-    public SearchCategory(Context context, View.OnClickListener leftListener, View.OnClickListener rightListener) {
+    public SearchCategory(Context context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
-        this.mLeftClickListener = leftListener;
-        this.mRightClickListener = rightListener;
     }
 
     public SearchCategory() {
@@ -67,15 +62,9 @@ public class SearchCategory extends Dialog {
 
 
         // 클릭 이벤트 셋팅
-        if (mLeftClickListener != null && mRightClickListener != null) {
-            mLeftButton.setOnClickListener(mLeftClickListener);
-            mRightButton.setOnClickListener(mRightClickListener);
-        } else if (mLeftClickListener != null
-                && mRightClickListener == null) {
-            mLeftButton.setOnClickListener(mLeftClickListener);
-        } else {
+        mLeftButton.setOnClickListener(leftListener);
+        mRightButton.setOnClickListener(rightListener);
 
-        }
 
         // Get Categories
         AsyncTask.execute(new Runnable() {
@@ -83,7 +72,7 @@ public class SearchCategory extends Dialog {
             public void run() {
                 categories = MainActivity.GetHttpHelper().getCategories();
                 Category1 = new ArrayList<String>();
-                for(int i = 0; i < categories.size(); i++) {
+                for (int i = 0; i < categories.size(); i++) {
                     ArrayList<String> aCategories = categories.get(i);
                     Category1.add(categories.get(i).get(0)); // primary category
                     MakeReview.CategoryHolder aHolder = new MakeReview.CategoryHolder(aCategories.get(0), aCategories.subList(1, aCategories.size()));
@@ -118,8 +107,23 @@ public class SearchCategory extends Dialog {
     public String getSelectedCategory() {
         return firstSpinner.getText().toString();
     }
+
     public String getSelectedDetailCateogry() {
         return secondSpinner.getText().toString();
     }
 
+    // dialog event listener
+
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Intent intent = new Intent(getContext(), ReviewMain.class);
+            getContext().startActivity(intent);
+        }
+    };
+
+    private View.OnClickListener rightListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            dismiss();
+        }
+    };
 }
