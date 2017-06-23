@@ -116,8 +116,7 @@ public class SearchCategory extends Dialog {
 
     private View.OnClickListener leftListener = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent = new Intent(getContext(), ReviewMain.class);
-            getContext().startActivity(intent);
+            dismiss();
         }
     };
 

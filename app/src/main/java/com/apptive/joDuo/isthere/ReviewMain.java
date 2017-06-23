@@ -81,6 +81,9 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
         // Showing number of reviews that the marker has
         numberOfReviewsTV = (TextView) findViewById(R.id.review_review);
 
+        // Make category dialog
+        category = new SearchCategory(this);
+
         /* menu button lib 부분 */
         fragmentManager = getSupportFragmentManager();
         initToolbar();
@@ -115,6 +118,21 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                 }
             });
         }
+
+        category.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                SearchCategory searchCategory = (SearchCategory) dialog;
+
+                // Update current categories
+                currentCategory = searchCategory.getSelectedCategory();
+                currentDetailCategory = searchCategory.getSelectedDetailCateogry();
+
+                LogDebuger.debugPrinter(LogDebuger.TagType.REVIEW_MAIN, "Change Categories: " + currentCategory + " " + currentDetailCategory);
+                mapView.removeAllPOIItems();
+                drawReviewMarkers();
+            }
+        });
     }
 
     private View.OnClickListener makeDescriptionClickListener(final MapPOIItem poiItem) {
@@ -314,22 +332,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
             case 1:
                 break;
             case 2:
-                category = new SearchCategory(this);
                 category.show();
-
-                category.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        SearchCategory searchCategory = (SearchCategory) dialog;
-
-                        // Update current categories
-                        currentCategory = searchCategory.getSelectedCategory();
-                        currentDetailCategory = searchCategory.getSelectedDetailCateogry();
-
-                        mapView.removeAllPOIItems();
-                        drawReviewMarkers();
-                    }
-                });
                 break;
             case 3:
                 if(httpHelper.getIdToken() != null) {
