@@ -227,4 +227,5 @@ public class LoginPage extends Dialog {
 
         void onLoginFailed(boolean notMatched, boolean isException);
     }
+
 }

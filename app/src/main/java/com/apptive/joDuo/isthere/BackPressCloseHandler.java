@@ -24,6 +24,7 @@ public class BackPressCloseHandler {
       return;
     }
     if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+      MainActivity.GetHttpHelper().setIdTokenNull();
       activity.finish();
       toast.cancel();
     }

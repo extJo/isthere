@@ -61,7 +61,13 @@ public class Setting extends AppCompatActivity {
                     public void run() {
                         showToastTest("로그인에 성공하였습니다.");
                         loginPage.dismiss();
-                        Login.setText(sharedPreferences.getString("ID", ""));
+                        Login.setText(sharedPreferences.getString("ID" + " 로그아웃", "로그아웃"));
+                        Login.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                logoutPage.show();
+                            }
+                        });
                     }
                 }, 0);
             }

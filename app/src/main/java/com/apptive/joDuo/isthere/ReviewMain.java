@@ -129,6 +129,7 @@ public class ReviewMain extends AppCompatActivity implements OnMenuItemClickList
                 currentDetailCategory = searchCategory.getSelectedDetailCateogry();
 
                 LogDebuger.debugPrinter(LogDebuger.TagType.REVIEW_MAIN, "Change Categories: " + currentCategory + " " + currentDetailCategory);
+                description.setVisibility(View.INVISIBLE);
                 mapView.removeAllPOIItems();
                 drawReviewMarkers();
             }
